@@ -91,6 +91,23 @@ python bot.py
 
 > Остановить: `Ctrl + C`.
 
+## 🚂 Деплой на Railway
+
+Бот работает на long-polling, поэтому ему нужен постоянный процесс и постоянный
+диск для SQLite. На [Railway](https://railway.app) это пара минут:
+
+1. **New Project → Deploy from GitHub repo** → выбери этот репозиторий.
+   Сборка идёт через Nixpacks; команда запуска (`python bot.py`) уже задана в `railway.json`.
+2. **Variables** → добавь:
+   - `BOT_TOKEN` — токен от @BotFather
+   - `DB_PATH` = `/data/academy.db`
+   - `ADMIN_IDS` — твой Telegram ID (необязательно)
+3. **Volumes** → New Volume, mount path `/data` (чтобы база переживала рестарты).
+4. **Deploy.** В логах появится `🐍 Python Academy запущен как @...`.
+
+> ⚠️ Один токен — один запущенный экземпляр. Останови локальный `python bot.py`,
+> пока бот крутится на Railway (иначе Telegram вернёт `Conflict: getUpdates`).
+
 ## ⌨️ Команды
 
 `/start` · `/menu` · `/courses` · `/codes` · `/search` · `/career` · `/projects` · `/invite` · `/profile`
