@@ -1,0 +1,83 @@
+{
+  "id": 5,
+  "title": "Статика и деплой",
+  "subtitle": "Стили, структура и выход в свет",
+  "emoji": "🚀",
+  "lessons": [
+    {
+      "topic": "deploy",
+      "title": "Статика: CSS, картинки, JS",
+      "theory": "CSS, изображения и скрипты — это <b>статические</b> файлы. Во Flask они лежат в папке <code>static/</code>, а в шаблоне ссылку на них строят через <code>url_for('static', ...)</code>.",
+      "association": "🗄️ static/ — кладовка готовых вещей: стили и картинки не меняются от запроса к запросу, сервер просто отдаёт их как есть.",
+      "real_example": "style.css из static/ подключают в base.html — и все страницы сразу получают оформление.",
+      "example": "<!-- в шаблоне -->\n<link rel=\"stylesheet\"\n      href=\"{{ url_for('static', filename='style.css') }}\">\n\n<!-- файл лежит в static/style.css -->",
+      "code_explained": "• Статика лежит в папке <code>static/</code> рядом с приложением.\n• <code>url_for('static', filename='style.css')</code> строит корректный путь.\n• Не хардкодь '/static/...' — url_for надёжнее.\n• Так подключают CSS, картинки и JS.",
+      "common_mistakes": [
+        "Класть CSS вне папки static/ → 404.",
+        "Хардкодить путь вместо url_for('static', ...).",
+        "Забыть подключить style.css в базовом шаблоне."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "deploy",
+      "title": "Структура проекта",
+      "theory": "Аккуратный Flask-проект: <code>app.py</code> (код), <code>templates/</code> (HTML), <code>static/</code> (CSS/JS/картинки), <code>requirements.txt</code> (зависимости). Порядок в файлах = порядок в голове.",
+      "association": "🏠 Структура — комнаты в доме: код, шаблоны и статика по своим местам. В бардаке быстро теряешься, в порядке — всё под рукой.",
+      "real_example": "Любой Flask-туториал и реальный проект имеют такую раскладку — новому разработчику сразу понятно, что где.",
+      "example": "myapp/\n├── app.py\n├── requirements.txt\n├── templates/\n│   ├── base.html\n│   └── home.html\n└── static/\n    └── style.css",
+      "code_explained": "• <code>app.py</code> — точка входа и маршруты.\n• <code>templates/</code> — Jinja-шаблоны (Flask ищет их тут).\n• <code>static/</code> — неизменные файлы (CSS/JS/img).\n• <code>requirements.txt</code> — список пакетов для установки.",
+      "common_mistakes": [
+        "Сваливать всё в один файл и одну папку.",
+        "Переименовывать templates/static (Flask ждёт именно их).",
+        "Не фиксировать зависимости в requirements.txt."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "deploy",
+      "title": "Базовый шаблон-каркас",
+      "theory": "Один <code>base.html</code> с подключённым CSS, шапкой и футером, а все страницы его наследуют — это и порядок, и единый стиль. Соединяем Jinja-наследование и статику.",
+      "association": "🧩 base.html — рамка картины и паспарту: меняется только само изображение (контент), оформление вокруг — одно на все.",
+      "real_example": "Меняешь меню в base.html — оно обновляется на всех страницах сразу. Не нужно править десятки файлов.",
+      "example": "<!-- base.html -->\n<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n  <link rel=\"stylesheet\"\n        href=\"{{ url_for('static', filename='style.css') }}\">\n</head>\n<body>\n  <nav>Меню</nav>\n  {% block content %}{% endblock %}\n</body>\n</html>",
+      "code_explained": "• CSS подключается один раз в базовом шаблоне.\n• <code>{% block content %}</code> — место для контента страниц.\n• Страницы делают <code>{% extends 'base.html' %}</code>.\n• Единый каркас = единый вид + меньше дублей.",
+      "common_mistakes": [
+        "Подключать CSS в каждом файле отдельно.",
+        "Дублировать шапку/меню вместо наследования.",
+        "Забыть блок content в базовом шаблоне."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "deploy",
+      "title": "Безопасность: доверие к вводу",
+      "theory": "Главные правила: <b>не доверяй вводу</b>, <b>не показывай ошибки пользователю</b> (debug=False в проде), <b>экранируй вывод</b> (Jinja делает это сам). Это базовая защита от XSS и утечек.",
+      "association": "🛡️ Бэкенд — охрана клуба: проверяет всех на входе (валидация) и не пускает чужой «код» внутрь страницы (экранирование).",
+      "real_example": "Комментарий с тегами-скриптами Jinja покажет как текст, а не выполнит — это и есть защита от XSS «из коробки».",
+      "example": "# плохо: показываем сырую ошибку и debug в проде\napp.run(debug=True)   # ❌ в продакшене\n\n# хорошо\napp.run(debug=False)  # ✅\n# + валидация всех request.form/args",
+      "code_explained": "• <code>debug=False</code> в проде — иначе показываешь трейсбек и даёшь выполнять код.\n• Jinja экранирует {{ }} → защита от XSS.\n• Любой ввод (form, args, URL) проверяй на сервере.\n• Не клади секреты в код и в репозиторий.",
+      "common_mistakes": [
+        "Оставить debug=True на боевом сервере.",
+        "Отключать экранирование (|safe) для пользовательского текста.",
+        "Хранить пароли/ключи прямо в коде."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "deploy",
+      "title": "Выход в продакшен",
+      "theory": "Встроенный сервер Flask — только для разработки. В бою запускают через <b>WSGI-сервер</b> (gunicorn) за веб-сервером (nginx), на хостинге/VPS. Зависимости фиксируют в <code>requirements.txt</code>.",
+      "association": "🚀 app.run() — учебный картинг. Прод — гоночная трасса: нужен серьёзный двигатель (gunicorn) и команда механиков (nginx, хостинг).",
+      "real_example": "Боевой Flask: nginx принимает запросы, передаёт их gunicorn'у с несколькими worker-процессами, тот зовёт твоё приложение.",
+      "example": "# зависимости\npip freeze > requirements.txt\n\n# запуск в проде (пример)\ngunicorn app:app --workers 4",
+      "code_explained": "• <code>app.run()</code> — только локальная разработка.\n• <b>gunicorn</b> — производительный WSGI-сервер для прода.\n• <code>app:app</code> — файл app.py, объект Flask с именем app.\n• <b>nginx</b> впереди раздаёт статику и балансирует нагрузку.",
+      "common_mistakes": [
+        "Запускать app.run() как боевой сервер.",
+        "Не фиксировать версии пакетов → «у меня работало».",
+        "Открывать доступ без nginx/HTTPS."
+      ],
+      "xp": 35
+    }
+  ]
+}

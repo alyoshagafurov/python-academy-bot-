@@ -1,0 +1,197 @@
+{
+  "id": 4,
+  "title": "Функции и проекты",
+  "subtitle": "Продвинутый Python и большие сборки",
+  "emoji": "🟠",
+  "lessons": [
+    {
+      "topic": "functions",
+      "title": "Продвинутые функции: *args и **kwargs",
+      "theory": "Иногда число аргументов заранее неизвестно. <code>*args</code> собирает лишние позиционные аргументы в кортеж, <code>**kwargs</code> — именованные в словарь. Порядок: обычные → <code>*args</code> → <code>**kwargs</code>.",
+      "association": "🎒 <code>*args</code> — это «и всё остальное в рюкзак», а <code>**kwargs</code> — «подписанные коробки».",
+      "real_example": "🎮 Миссия: опиши постройку функцией, принимающей имя и любое число деталей.",
+      "example": "def describe(name, *details, **props):\n    mc.postToChat(f\"{name}: {len(details)} деталей\")\n    for key, val in props.items():\n        mc.postToChat(f\"{key} = {val}\")\n\ndescribe(\"Башня\", \"основа\", \"крыша\", высота=10, цвет=\"серый\")",
+      "code_explained": "• <code>*details</code> — кортеж всех лишних позиционных.\n• <code>**props</code> — словарь именованных аргументов.\n• <code>props.items()</code> перебирает пары ключ-значение.",
+      "common_mistakes": [
+        "Поставить <code>**kwargs</code> перед <code>*args</code>.",
+        "Забыть звёздочки в определении.",
+        "Думать, что *args — это список (это кортеж)."
+      ],
+      "quiz": {
+        "question": "Во что **kwargs собирает аргументы?",
+        "options": [
+          "В словарь",
+          "В список",
+          "В кортеж",
+          "В строку"
+        ],
+        "correct": 0,
+        "explanation": "**kwargs собирает именованные аргументы в словарь.",
+        "topic": "functions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "functions",
+      "title": "Докстринги и комментарии",
+      "theory": "<b>Докстринг</b> — описание функции в тройных кавычках сразу после <code>def</code>. Python хранит его, и <code>help(функция)</code> покажет. Комментарии <code>#</code> поясняют код, докстринги — документируют функции.",
+      "association": "📝 Докстринг — это инструкция к прибору: что делает функция, без чтения её кода.",
+      "real_example": "🎮 Миссия: добавь докстринг к функции стены и вызови help, чтобы его увидеть.",
+      "example": "def build_wall(x, y, z, w, h):\n    \"\"\"Строит стену шириной w и высотой h из камня.\"\"\"\n    for i in range(w):\n        for j in range(h):\n            mc.setBlock(x + i, y + j, z, block.STONE.id)\n\nhelp(build_wall)",
+      "code_explained": "• Тройные кавычки <code>\"\"\"...\"\"\"</code> после <code>def</code> — докстринг.\n• <code>help(build_wall)</code> покажет это описание.\n• Комментарий объясняет ПОЧЕМУ, докстринг — ЧТО.",
+      "common_mistakes": [
+        "Ставить докстринг до <code>def</code>, а не после.",
+        "Путать <code>#</code>-комментарий и докстринг.",
+        "Писать докстринг, который не отражает суть функции."
+      ],
+      "quiz": {
+        "question": "Где пишется докстринг?",
+        "options": [
+          "Сразу после def, в тройных кавычках",
+          "Перед def",
+          "В конце файла",
+          "В отдельном файле"
+        ],
+        "correct": 0,
+        "explanation": "Докстринг — первая строка внутри функции в тройных кавычках.",
+        "topic": "functions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "errors",
+      "title": "Свои исключения",
+      "theory": "Можно создавать <b>свои типы ошибок</b>: <code>class MyError(Exception)</code>. <code>raise</code> их бросает, <code>except MyError</code> ловит. Это помогает чётко сообщать, что именно пошло не так в твоём коде.",
+      "association": "🚧 Своё исключение — это особый дорожный знак: сразу понятно, какая именно проблема.",
+      "real_example": "🎮 Миссия: проверяй размер куба и бросай ошибку, если он недопустим.",
+      "example": "class InvalidSize(Exception):\n    pass\n\ndef build_cube(size):\n    if size <= 0 or size > 50:\n        raise InvalidSize(f\"Плохой размер: {size}\")\n    mc.postToChat(f\"Строю куб {size}\")\n\ntry:\n    build_cube(int(input(\"Размер: \")))\nexcept InvalidSize as e:\n    mc.postToChat(str(e))",
+      "code_explained": "• <code>class InvalidSize(Exception)</code> — свой тип ошибки.\n• <code>raise InvalidSize(...)</code> бросает её.\n• <code>except InvalidSize as e</code> ловит и читает сообщение.",
+      "common_mistakes": [
+        "Наследовать не от <code>Exception</code>.",
+        "Забыть <code>raise</code> — ошибка не бросится.",
+        "Ловить голым <code>except</code> вместо своего типа."
+      ],
+      "quiz": {
+        "question": "Чем бросают исключение?",
+        "options": [
+          "raise",
+          "throw",
+          "error",
+          "return"
+        ],
+        "correct": 0,
+        "explanation": "В Python исключение бросается ключевым словом raise.",
+        "topic": "errors"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "functions",
+      "title": "Проект: башня-пазл",
+      "theory": "Соберём интерактивный объект: башня из этажей, у каждого — <b>один случайный выход</b>. Игрок должен найти дверь на каждом уровне. Используем функции и <code>random</code>.",
+      "association": "🏰 Башня-пазл — это сериал: каждый этаж — серия с загадкой, и так до финала.",
+      "real_example": "🎮 Миссия: построй башню из 5 этажей со случайными выходами.",
+      "example": "import random\ndef floor(x, y, z, s):\n    mc.setBlocks(x, y, z, x+s, y+3, z+s, block.STONE.id)\n    mc.setBlocks(x+1, y+1, z+1, x+s-1, y+2, z+s-1, block.AIR.id)\n    side = random.choice([0, s])\n    mc.setBlock(x+side, y+1, z+s//2, block.AIR.id)\n\npos = mc.player.getTilePos()\nfor f in range(5):\n    floor(pos.x, pos.y + f*4, pos.z, 8)",
+      "code_explained": "• <code>setBlocks</code> заливает коробку, затем выдалбливает нутро.\n• <code>random.choice</code> выбирает сторону выхода.\n• Цикл строит 5 этажей друг над другом.",
+      "common_mistakes": [
+        "Делать выход в случайном месте без логики — игрок застрянет.",
+        "Забыть выдолбить внутренность этажа.",
+        "Ставить этажи вплотную без высоты прохода."
+      ],
+      "quiz": {
+        "question": "Что выбирает случайную сторону выхода?",
+        "options": [
+          "random.choice",
+          "setBlocks",
+          "range",
+          "input"
+        ],
+        "correct": 0,
+        "explanation": "random.choice([0, s]) случайно выбирает сторону для выхода.",
+        "topic": "functions"
+      },
+      "xp": 30
+    },
+    {
+      "topic": "modules",
+      "title": "Проект: лабиринт из файла",
+      "theory": "Профессиональный приём: <b>карта в файле</b>. CSV-файл задаёт лабиринт (1 — стена, 0 — проход), а Python читает его и строит. Меняешь файл — меняется лабиринт, код трогать не нужно.",
+      "association": "🗺️ Файл-карта — это чертёж: строитель (код) читает план и возводит точно по нему.",
+      "real_example": "🎮 Миссия: прочитай maze.csv и построй по нему стены лабиринта.",
+      "example": "import csv\n\ndef build_maze(filename, x, y, z):\n    with open(filename) as f:\n        for row_i, row in enumerate(csv.reader(f)):\n            for col_i, cell in enumerate(row):\n                if int(cell) == 1:\n                    for h in range(3):\n                        mc.setBlock(x+col_i, y+h, z+row_i, block.STONE.id)\n\npos = mc.player.getTilePos()\nbuild_maze(\"maze.csv\", pos.x, pos.y, pos.z)",
+      "code_explained": "• <code>csv.reader</code> читает файл по строкам.\n• <code>enumerate</code> даёт и индекс, и значение.\n• Где <code>1</code> — поднимаем стену из 3 блоков.",
+      "common_mistakes": [
+        "Забыть <code>int(cell)</code> — из файла приходят строки.",
+        "Не закрыть файл (используй <code>with open</code>).",
+        "Перепутать строки и столбцы (row/col)."
+      ],
+      "quiz": {
+        "question": "Что в maze.csv означает 1?",
+        "options": [
+          "Стену",
+          "Проход",
+          "Игрока",
+          "Выход"
+        ],
+        "correct": 0,
+        "explanation": "По договорённости 1 — стена, 0 — проход.",
+        "topic": "modules"
+      },
+      "xp": 30
+    },
+    {
+      "topic": "functions",
+      "title": "Проект: ферма-автомат PRO",
+      "theory": "Прокачаем ферму: вынесем логику в <b>функцию</b> с параметрами, добавим забор по периметру, воду и разные культуры. Чистый, переиспользуемый код — как у настоящего разработчика.",
+      "association": "🚜 PRO-ферма — это завод под ключ: одна функция строит целую систему по заданным размерам.",
+      "real_example": "🎮 Миссия: напиши функцию build_farm и поставь ферму с забором и поливом.",
+      "example": "def build_farm(x, y, z, w, L):\n    for i in range(-1, w + 1):\n        mc.setBlock(x+i, y, z-1, 85)\n        mc.setBlock(x+i, y, z+L, 85)\n    crops = [59, 141, 142]\n    for i in range(w):\n        for j in range(L):\n            if i % 4 == 0:\n                mc.setBlock(x+i, y-1, z+j, block.WATER.id)\n            else:\n                mc.setBlock(x+i, y-1, z+j, 60)\n                mc.setBlock(x+i, y, z+j, crops[i % 3])\n\npos = mc.player.getTilePos()\nbuild_farm(pos.x, pos.y, pos.z, 12, 8)",
+      "code_explained": "• ID 85 — забор по краям.\n• <code>crops</code> — пшеница(59), морковь(141), картофель(142).\n• Вода каждые 4 ряда, остальное — грядки.",
+      "common_mistakes": [
+        "Сажать культуры на воду вместо земли.",
+        "Забыть забор — мобы вытопчут урожай.",
+        "Жёстко прописать размеры вместо параметров функции."
+      ],
+      "quiz": {
+        "question": "Зачем выносить ферму в функцию?",
+        "options": [
+          "Чтобы переиспользовать с разными размерами",
+          "Чтобы было длиннее",
+          "Это обязательно",
+          "Для красоты"
+        ],
+        "correct": 0,
+        "explanation": "Функция с параметрами строит ферму любого размера одним вызовом.",
+        "topic": "functions"
+      },
+      "xp": 30
+    },
+    {
+      "topic": "functions",
+      "title": "Финальный проект и презентация",
+      "theory": "Выпускной урок: придумай и собери <b>свой проект</b>, объединив всё — функции, модули, файлы, обработку ошибок, докстринги. Раздели код на файлы (main, buildings, utils), добавь README. Покажи и расскажи, как он работает.",
+      "association": "🎓 Финальный проект — это твоя выпускная работа: собери из всех навыков что-то своё и уникальное.",
+      "real_example": "🎮 Миссия: спланируй проект (замок, город, аттракцион), раздели на функции и построй.",
+      "example": "from buildings import build_castle\n\ndef main():\n    \"\"\"Точка входа: строит замок выбранного размера.\"\"\"\n    size = input(\"Размер (S/M/L): \").upper()\n    sizes = {\"S\": 10, \"M\": 20, \"L\": 30}\n    pos = mc.player.getTilePos()\n    if size in sizes:\n        build_castle(pos.x, pos.y, pos.z, sizes[size])\n    else:\n        mc.postToChat(\"Неизвестный размер\")\n\nmain()",
+      "code_explained": "• Код разбит на файлы: <code>main.py</code>, <code>buildings.py</code>, <code>utils.py</code>.\n• <code>from buildings import ...</code> — переиспользование.\n• Словарь <code>sizes</code> + проверка <code>if</code> — чистая логика.",
+      "common_mistakes": [
+        "Сваливать весь код в один огромный файл.",
+        "Не добавить README с инструкцией запуска.",
+        "Забыть обработать неверный ввод размера."
+      ],
+      "quiz": {
+        "question": "Что отличает хороший финальный проект?",
+        "options": [
+          "Разбит на функции/файлы, есть документация",
+          "Самый длинный код",
+          "Без комментариев",
+          "Один файл на 1000 строк"
+        ],
+        "correct": 0,
+        "explanation": "Чистая структура: функции, модули, докстринги, README — признак мастерства.",
+        "topic": "functions"
+      },
+      "xp": 40
+    }
+  ]
+}

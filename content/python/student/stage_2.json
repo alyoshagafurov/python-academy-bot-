@@ -1,0 +1,365 @@
+{
+  "id": 2,
+  "title": "Async & Concurrency",
+  "subtitle": "Параллельно и быстро",
+  "emoji": "⚡",
+  "lessons": [
+    {
+      "topic": "async",
+      "title": "threading — потоки",
+      "theory": "Поток — параллельная линия выполнения внутри процесса. Из-за <b>GIL</b> потоки НЕ ускоряют вычисления (CPU), но отлично работают, когда код <b>ждёт I/O</b> (сеть, диск).",
+      "association": "🧵 Поток — официант. Пока повар готовит (I/O), официант не стоит столбом — обслуживает других гостей.",
+      "real_example": "Скачать 10 файлов и опросить 5 API одновременно — потоки ждут ответы параллельно. А перемножить матрицы быстрее не станет.",
+      "example": "import threading\n\ndef worker(n):\n    print(f'task {n}')\n\nthreads = [threading.Thread(target=worker, args=(i,)) for i in range(3)]\nfor t in threads:\n    t.start()\nfor t in threads:\n    t.join()",
+      "code_explained": "• <code>Thread(target=...)</code> создаёт поток.\n• <code>start()</code> запускает, <code>join()</code> ждёт завершения.\n• Три задачи «работают» параллельно (важно при I/O-ожидании).\n• Без join() главный поток может выйти раньше.",
+      "common_mistakes": [
+        "Ждать ускорения CPU-задач от потоков — GIL не даст.",
+        "Забыть join() → программа завершится, не дождавшись потоков.",
+        "Менять общие данные без блокировки → race condition."
+      ],
+      "practice": {
+        "question": "Для чего потоки в Python реально полезны?",
+        "options": [
+          "I/O-bound задачи (ожидание сети/диска)",
+          "ускорение вычислений",
+          "обход GIL",
+          "экономия памяти"
+        ],
+        "correct": 0,
+        "explanation": "Потоки выигрывают на ожидании I/O, а не на счёте.",
+        "topic": "async"
+      },
+      "quiz": {
+        "question": "Что мешает потокам ускорять CPU-вычисления в CPython?",
+        "options": [
+          "GIL",
+          "малый размер стека",
+          "asyncio",
+          "сборщик мусора"
+        ],
+        "correct": 0,
+        "explanation": "GIL пускает к байткоду только один поток за раз.",
+        "topic": "async"
+      },
+      "challenge": {
+        "question": "1000 HTTP-запросов (ждут ответ) + перемножение матриц. Где помогут потоки?",
+        "options": [
+          "только в HTTP-запросах",
+          "только в матрицах",
+          "везде одинаково",
+          "нигде"
+        ],
+        "correct": 0,
+        "explanation": "Потоки ускоряют I/O-ожидание; CPU-матрицы упрутся в GIL.",
+        "topic": "async"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "async",
+      "title": "multiprocessing — процессы",
+      "theory": "Процесс — отдельная программа со своей памятью и своим интерпретатором → <b>обходит GIL</b> и даёт настоящий параллелизм для CPU-задач. Цена: дороже потоков (память, передача данных).",
+      "association": "🏭 Процессы — отдельные кухни со своими поварами. GIL одной кухни не мешает другой, но передавать блюда между ними дороже.",
+      "real_example": "Обработка картинок, ML-инференс, тяжёлый счёт — по ядрам через Pool. Веб-серверы (gunicorn) поднимают несколько worker-процессов.",
+      "example": "from multiprocessing import Pool\n\ndef square(n):\n    return n * n\n\nwith Pool(4) as pool:\n    print(pool.map(square, [1, 2, 3, 4]))",
+      "code_explained": "• <code>Pool(4)</code> — четыре процесса-воркера.\n• <code>map</code> раскидывает задачи по ядрам.\n• Каждый процесс считает независимо (нет GIL-конфликта).\n• Результат собирается обратно → [1, 4, 9, 16].",
+      "common_mistakes": [
+        "Гонять мелкие задачи через процессы — overhead больше пользы.",
+        "Передавать огромные объекты — дорогая сериализация.",
+        "Использовать процессы для I/O — там лучше async/threads."
+      ],
+      "practice": {
+        "question": "Что даёт настоящий параллелизм CPU, обходя GIL?",
+        "options": [
+          "процессы (multiprocessing)",
+          "потоки",
+          "asyncio",
+          "генераторы"
+        ],
+        "correct": 0,
+        "explanation": "У каждого процесса свой интерпретатор и свой GIL.",
+        "topic": "async"
+      },
+      "quiz": {
+        "question": "Когда выбрать multiprocessing вместо threading?",
+        "options": [
+          "для CPU-bound вычислений",
+          "для ожидания сети",
+          "для экономии памяти",
+          "всегда"
+        ],
+        "correct": 0,
+        "explanation": "Тяжёлый счёт → процессы; ожидание I/O → потоки/async.",
+        "topic": "async"
+      },
+      "challenge": {
+        "question": "Почему передача данных между процессами дороже, чем между потоками?",
+        "options": [
+          "раздельная память → нужна сериализация",
+          "процессы медленнее в принципе",
+          "GIL мешает",
+          "из-за join()"
+        ],
+        "correct": 0,
+        "explanation": "Потоки делят память; процессы — нет, поэтому pickle/IPC.",
+        "topic": "async"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "async",
+      "title": "asyncio — событийный цикл",
+      "theory": "asyncio — один поток и один <b>event loop</b>, жонглирующий тысячами задач. Пока одна ждёт I/O, loop крутит другие. Без цены процессов — идеально для высоконагруженного I/O.",
+      "association": "🎪 Event loop — жонглёр: держит 100 мячей, подкидывает один (запускает запрос) и сразу переключается на следующий, пока первый «летит».",
+      "real_example": "Telegram-боты (aiogram!), FastAPI/uvicorn, чаты, парсеры на тысячи URL — всё на asyncio. Один процесс держит десятки тысяч соединений.",
+      "example": "import asyncio\n\nasync def main():\n    print('start')\n    await asyncio.sleep(1)\n    print('done')\n\nasyncio.run(main())",
+      "code_explained": "• <code>async def</code> — корутина (её можно ставить на паузу).\n• <code>asyncio.run()</code> запускает event loop.\n• <code>await asyncio.sleep(1)</code> отдаёт управление loop'у, НЕ блокируя.\n• В эту секунду loop мог бы крутить другие задачи.",
+      "common_mistakes": [
+        "Вызвать корутину без await → получишь объект, код не выполнится.",
+        "Поставить time.sleep() в async → блокирует ВЕСЬ loop.",
+        "Думать, что asyncio = многопоточность (это один поток)."
+      ],
+      "practice": {
+        "question": "Сколько потоков использует базовый asyncio event loop?",
+        "options": [
+          "один",
+          "по числу ядер",
+          "тысячи",
+          "два"
+        ],
+        "correct": 0,
+        "explanation": "asyncio — конкурентность в одном потоке.",
+        "topic": "async"
+      },
+      "quiz": {
+        "question": "Что делает await asyncio.sleep(1)?",
+        "options": [
+          "отдаёт управление циклу, не блокируя",
+          "блокирует поток на 1с",
+          "создаёт поток",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Это неблокирующая пауза — loop работает дальше.",
+        "topic": "async"
+      },
+      "challenge": {
+        "question": "Почему time.sleep(5) внутри async-функции — катастрофа?",
+        "options": [
+          "блокирует весь event loop на 5с",
+          "поднимает исключение",
+          "медленнее sleep",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Все задачи loop'а замрут на 5 секунд.",
+        "topic": "async"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "async",
+      "title": "async / await",
+      "theory": "<code>async</code> делает функцию корутиной, <code>await</code> — точка, где она ждёт результат, не блокируя loop. <code>asyncio.gather</code> запускает много корутин «одновременно».",
+      "association": "🍳 await — «поставил вариться и пошёл резать салат». Не стоишь над кастрюлей (блокировка), а делаешь другое, пока не готово.",
+      "real_example": "Запросить профиль + посты + друзей одного юзера через gather → в 3 раза быстрее, чем по очереди.",
+      "example": "import asyncio\n\nasync def fetch(name):\n    await asyncio.sleep(1)\n    return name\n\nasync def main():\n    results = await asyncio.gather(fetch('a'), fetch('b'), fetch('c'))\n    print(results)\n\nasyncio.run(main())",
+      "code_explained": "• Три корутины запускаются <code>gather</code>'ом.\n• Все «спят» 1с ОДНОВРЕМЕННО → общее время ≈ 1с, не 3с.\n• <code>gather</code> собирает результаты в список по порядку.\n• Это и есть «параллельный» I/O в одном потоке.",
+      "common_mistakes": [
+        "await в цикле по очереди вместо gather → теряешь параллелизм.",
+        "Забыть await у корутины/gather.",
+        "Звать блокирующий sync-код из корутины."
+      ],
+      "practice": {
+        "question": "Что вернёт asyncio.gather(a(), b(), c())?",
+        "options": [
+          "список результатов всех корутин",
+          "первый результат",
+          "None",
+          "ошибку"
+        ],
+        "correct": 0,
+        "explanation": "gather ждёт все и отдаёт список по порядку.",
+        "topic": "async"
+      },
+      "quiz": {
+        "question": "3 запроса по 1с: по очереди (await каждый) vs gather — время?",
+        "options": [
+          "≈3с против ≈1с",
+          "одинаково",
+          "≈1с против ≈3с",
+          "оба ≈3с"
+        ],
+        "correct": 0,
+        "explanation": "gather совмещает ожидания → ≈1с.",
+        "topic": "async"
+      },
+      "challenge": {
+        "question": "for url in urls: await fetch(url) — что не так для скорости?",
+        "options": [
+          "запросы идут последовательно",
+          "лишние потоки",
+          "утечка памяти",
+          "всё ок"
+        ],
+        "correct": 0,
+        "explanation": "Нужен gather/таски, чтобы ждать параллельно.",
+        "topic": "async"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "async",
+      "title": "aiohttp / httpx — async HTTP",
+      "theory": "<code>requests</code> блокирует loop — в async нужен async-клиент. <b>httpx</b>/<b>aiohttp</b> делают неблокирующие запросы; с gather можно опросить сотни URL почти за время одного.",
+      "association": "📮 AsyncClient — почтальон, который разносит 100 писем не по очереди, а раскидывает все сразу и собирает ответы по мере прихода.",
+      "real_example": "Агрегатор цен опрашивает 50 магазинов, краулер качает тысячи страниц, бэкенд ходит в 3 микросервиса параллельно.",
+      "example": "import asyncio, httpx\n\nasync def main():\n    async with httpx.AsyncClient() as client:\n        r = await client.get('https://httpbin.org/get')\n        print(r.status_code)\n\nasyncio.run(main())",
+      "code_explained": "• <code>async with httpx.AsyncClient()</code> — клиент с пулом соединений, закроется сам.\n• <code>await client.get(...)</code> — неблокирующий запрос.\n• <code>r.status_code</code> → 200 при успехе.\n• Несколько таких в gather → параллельно.",
+      "common_mistakes": [
+        "Использовать requests в async-коде — блокирует loop.",
+        "Создавать новый клиент на каждый запрос — теряешь пул.",
+        "Не ставить таймауты → зависшие запросы держат ресурсы."
+      ],
+      "practice": {
+        "question": "Почему requests.get нельзя в async-функции?",
+        "options": [
+          "он блокирующий — морозит event loop",
+          "он медленный",
+          "нет async-версии",
+          "можно"
+        ],
+        "correct": 0,
+        "explanation": "Синхронный вызов блокирует весь loop.",
+        "topic": "async"
+      },
+      "quiz": {
+        "question": "Зачем держать один httpx.AsyncClient как контекст?",
+        "options": [
+          "переиспользовать пул соединений",
+          "для красоты",
+          "обязательно по синтаксису",
+          "ради логов"
+        ],
+        "correct": 0,
+        "explanation": "Пул соединений = быстрее и меньше overhead.",
+        "topic": "async"
+      },
+      "challenge": {
+        "question": "100 URL по ~200мс. Как опросить почти за 200мс?",
+        "options": [
+          "собрать 100 client.get в asyncio.gather",
+          "цикл с await",
+          "потоки по одному",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "gather совмещает все ожидания.",
+        "topic": "async"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "async",
+      "title": "Race conditions и Lock",
+      "theory": "Когда несколько задач меняют общие данные «одновременно», результат непредсказуем — это <b>race condition</b>. <code>Lock</code> пускает в критическую секцию только одного за раз.",
+      "association": "🚻 Lock — ключ от одной кабинки. Без ключа двое заходят разом → хаос. С ключом — строгая очередь.",
+      "real_example": "Два запроса одновременно списывают деньги, инкремент счётчика лайков, выдача последнего товара — без защиты получишь двойное списание.",
+      "example": "import asyncio\n\nbalance = 100\nlock = asyncio.Lock()\n\nasync def withdraw(amount):\n    global balance\n    async with lock:\n        balance -= amount",
+      "code_explained": "• <code>asyncio.Lock()</code> — общий замок.\n• <code>async with lock</code> — только одна корутина внутри одновременно.\n• <code>balance -= amount</code> защищён от гонки.\n• Без lock два withdraw прочитали бы старый balance.",
+      "common_mistakes": [
+        "Думать, что в одном потоке asyncio гонок нет — они есть (на каждом await).",
+        "Держать lock слишком долго → теряешь параллелизм.",
+        "Забыть, что разные процессы lock в памяти не разделят (нужен Redis/БД)."
+      ],
+      "practice": {
+        "question": "Что предотвращает Lock?",
+        "options": [
+          "одновременный доступ к общим данным",
+          "утечки памяти",
+          "блокировку loop",
+          "медленный код"
+        ],
+        "correct": 0,
+        "explanation": "Lock сериализует доступ к критической секции.",
+        "topic": "async"
+      },
+      "quiz": {
+        "question": "Где в asyncio возможно переключение задач (и гонка)?",
+        "options": [
+          "на каждом await",
+          "только в потоках",
+          "нигде",
+          "при импорте"
+        ],
+        "correct": 0,
+        "explanation": "await — точка, где loop может отдать управление другой задаче.",
+        "topic": "async"
+      },
+      "challenge": {
+        "question": "Два запроса списывают деньги без lock. Что может пойти не так?",
+        "options": [
+          "оба прочитают старый баланс → двойное списание",
+          "ничего",
+          "ошибка синтаксиса",
+          "loop упадёт"
+        ],
+        "correct": 0,
+        "explanation": "Классический lost update.",
+        "topic": "async"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "async",
+      "title": "Semaphore и пулы задач",
+      "theory": "<code>Semaphore</code> ограничивает число одновременных операций. Запустить 10000 запросов разом — убьёшь себя и чужой сервер. Семафор держит, например, максимум 20 в полёте.",
+      "association": "🅿️ Semaphore — парковка на 20 мест. 21-я машина ждёт освобождения. Не пускаем толпу разом.",
+      "real_example": "Краулер с лимитом 20 одновременных запросов (вежливость + не словить бан), пул соединений к БД, rate-limit к внешнему API.",
+      "example": "import asyncio, httpx\n\nsem = asyncio.Semaphore(20)\n\nasync def fetch(client, url):\n    async with sem:\n        return await client.get(url)",
+      "code_explained": "• <code>Semaphore(20)</code> — максимум 20 одновременно.\n• <code>async with sem</code> — взять слот, освободить на выходе.\n• 1000 задач в gather, но в полёте всегда ≤ 20.\n• Остальные ждут свободный слот.",
+      "common_mistakes": [
+        "Без лимита запустить тысячи задач → нехватка сокетов/памяти, бан.",
+        "Слишком маленький лимит → медленно.",
+        "Путать Semaphore (N разом) и Lock (1 разом)."
+      ],
+      "practice": {
+        "question": "Что делает asyncio.Semaphore(20)?",
+        "options": [
+          "разрешает максимум 20 операций разом",
+          "создаёт 20 потоков",
+          "ждёт 20 секунд",
+          "20 повторов"
+        ],
+        "correct": 0,
+        "explanation": "Семафор ограничивает конкурентность числом.",
+        "topic": "async"
+      },
+      "quiz": {
+        "question": "Чем Semaphore отличается от Lock?",
+        "options": [
+          "Lock пускает одного, Semaphore — до N",
+          "ничем",
+          "Semaphore быстрее",
+          "Lock для процессов"
+        ],
+        "correct": 0,
+        "explanation": "Lock — частный случай Semaphore(1).",
+        "topic": "async"
+      },
+      "challenge": {
+        "question": "1000 URL без семафора в gather — главный риск?",
+        "options": [
+          "исчерпание сокетов/памяти и бан за флуд",
+          "медленно",
+          "дубли",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Лимит конкурентности обязателен при массовых запросах.",
+        "topic": "async"
+      },
+      "xp": 45
+    }
+  ]
+}

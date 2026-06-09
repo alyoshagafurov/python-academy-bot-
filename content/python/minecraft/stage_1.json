@@ -1,0 +1,333 @@
+{
+  "id": 1,
+  "title": "Первые команды",
+  "subtitle": "Подключаемся к миру и ставим блоки",
+  "emoji": "🟢",
+  "lessons": [
+    {
+      "topic": "install",
+      "title": "Установка и подключение",
+      "theory": "Чтобы управлять Minecraft из Python, нужны три вещи: <b>Minecraft Java</b>, <b>Python 3</b> и <b>Starter Kit</b> (сервер + библиотека <code>mcpi</code>). Запускаешь сервер, заходишь в игру через <i>Multiplayer → Direct Connect → localhost</i> — и Python может слать команды в мир.",
+      "association": "🔌 Это как пульт и телевизор: Minecraft — телевизор, Python — пульт. <code>mcpi</code> — это инфракрасный сигнал между ними.",
+      "real_example": "🎮 Твоя миссия: установи всё, запусти сервер, зайди на <code>localhost</code> и убедись, что игра ждёт команды.",
+      "example": "# Проверь, что Python установлен\npython --version\n\n# Стартовый набор скачай с\n# adventuresinminecraft.github.io",
+      "code_explained": "• Сначала запускаешь сервер (<code>StartServer</code>), потом игру, потом код.\n• Файлы с кодом клади в папку <code>MyAdventures</code> — иначе <code>import mcpi</code> не найдётся.\n• Версия Minecraft — <b>1.12</b>.",
+      "common_mistakes": [
+        "Запускать код раньше сервера — связи не будет.",
+        "Сохранять скрипты вне папки MyAdventures.",
+        "Подключаться не к localhost, а к чужому серверу."
+      ],
+      "quiz": {
+        "question": "Что нужно запустить ПЕРВЫМ?",
+        "options": [
+          "Сервер из Starter Kit",
+          "Сам код",
+          "Браузер",
+          "VS Code"
+        ],
+        "correct": 0,
+        "explanation": "Порядок: сервер → Minecraft → код. Без сервера Python не с кем общаться.",
+        "topic": "install"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "io",
+      "title": "Знакомство с API: первая команда",
+      "theory": "Minecraft работает по схеме <b>клиент-сервер</b>: мир — это сервер, а мы — клиент. <code>Minecraft.create()</code> устанавливает связь, а <code>postToChat()</code> пишет сообщение прямо в игровой чат. Этот заголовок из 3 строк ставится в начале <b>каждой</b> программы.",
+      "association": "🗣️ <code>postToChat</code> — это громкоговоритель: Python говорит, а мир в игре слышит.",
+      "real_example": "🎮 Миссия: выведи в чат «Привет, Minecraft!» и свои координаты.",
+      "example": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\n\nmc = minecraft.Minecraft.create()\n\nmc.postToChat(\"Привет, Minecraft!\")\n\npos = mc.player.getTilePos()\nmc.postToChat(f\"X:{pos.x} Y:{pos.y} Z:{pos.z}\")",
+      "code_explained": "• <code>minecraft.Minecraft.create()</code> — подключение к серверу.\n• <code>mc.postToChat(...)</code> — сообщение в чат.\n• <code>getTilePos()</code> — координаты блока, на котором ты стоишь.",
+      "common_mistakes": [
+        "Забыть строку <code>mc = minecraft.Minecraft.create()</code>.",
+        "Перепутать регистр: <code>Minecraft</code> и <code>minecraft</code> — разное.",
+        "Писать команды до подключения к серверу."
+      ],
+      "quiz": {
+        "question": "Что делает postToChat()?",
+        "options": [
+          "Пишет сообщение в игровой чат",
+          "Ставит блок",
+          "Двигает игрока",
+          "Сохраняет файл"
+        ],
+        "correct": 0,
+        "explanation": "postToChat выводит текст в чат Minecraft — так бот «разговаривает».",
+        "topic": "io"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "coords",
+      "title": "Координаты и блоки",
+      "theory": "Каждая точка мира задаётся тремя числами: <b>X</b> (восток-запад), <b>Y</b> (высота), <b>Z</b> (север-юг). <code>getBlock(x, y, z)</code> возвращает ID блока в этой точке. Ты стоишь <b>на</b> блоке, значит блок под ногами — на <code>y - 1</code>.",
+      "association": "🧭 Мир — это 3D-таблица. X и Z — пол (карта сверху), Y — этаж (высота). Нажми <b>F3</b> в игре, чтобы видеть координаты.",
+      "real_example": "🎮 Миссия: узнай, на каком блоке ты стоишь, и выведи его ID в чат.",
+      "example": "pos = mc.player.getTilePos()\nblock_id = mc.getBlock(pos.x, pos.y - 1, pos.z)\nmc.postToChat(f\"Подо мной блок ID: {block_id}\")",
+      "code_explained": "• <code>pos.x, pos.y, pos.z</code> — твои координаты.\n• <code>pos.y - 1</code> — блок прямо под ногами.\n• <code>getBlock(...)</code> возвращает числовой ID блока.",
+      "common_mistakes": [
+        "Искать блок на <code>pos.y</code> вместо <code>pos.y - 1</code>.",
+        "Путать Y (высота) с Z (север-юг).",
+        "Думать, что координаты дробные — у <code>getTilePos</code> они целые."
+      ],
+      "quiz": {
+        "question": "Какая координата отвечает за высоту?",
+        "options": [
+          "Y",
+          "X",
+          "Z",
+          "H"
+        ],
+        "correct": 0,
+        "explanation": "Y — это высота: больше Y = выше. X и Z — это «пол».",
+        "topic": "coords"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "loops",
+      "title": "Линия из блоков: цикл for",
+      "theory": "Цикл <code>for</code> повторяет действие много раз. <code>setBlock(x, y, z, id)</code> ставит один блок. Сместив координату на счётчик <code>i</code>, мы ставим блоки подряд — получается линия.",
+      "association": "🧱 Цикл — это конвейер: каждый шаг кладёт один кирпич, пока не выложит всю стену.",
+      "real_example": "🎮 Миссия: построй линию из 15 блоков камня от того места, где стоишь.",
+      "example": "pos = mc.player.getTilePos()\nfor i in range(15):\n    mc.setBlock(pos.x + i, pos.y, pos.z, block.STONE.id)\n\nmc.postToChat(\"Линия готова!\")",
+      "code_explained": "• <code>range(15)</code> даёт числа 0..14.\n• <code>pos.x + i</code> сдвигает каждый блок на 1 по X.\n• <code>block.STONE.id</code> — ID камня. Не забудь <code>.id</code>!",
+      "common_mistakes": [
+        "Забыть <code>.id</code>: нужно <code>block.STONE.id</code>, а не <code>block.STONE</code>.",
+        "Путать <code>setBlock</code> (1 блок) и <code>setBlocks</code> (область).",
+        "Сдвигать не ту координату — линия пойдёт не туда."
+      ],
+      "quiz": {
+        "question": "Сколько блоков поставит range(15)?",
+        "options": [
+          "15",
+          "14",
+          "16",
+          "0"
+        ],
+        "correct": 0,
+        "explanation": "range(15) даёт 0..14 — это 15 значений, значит 15 блоков.",
+        "topic": "loops"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "loops",
+      "title": "Плоскость: вложенные циклы",
+      "theory": "Один цикл строит линию, а <b>цикл внутри цикла</b> — плоскость. Внешний идёт по X, внутренний по Z. Получается квадрат или прямоугольник — фундамент для любых построек.",
+      "association": "🟦 Вложенный цикл — как печатная строка за строкой: для каждой строки (X) проходим все колонки (Z).",
+      "real_example": "🎮 Миссия: выложи платформу 10×10 из досок — будущий пол твоего дома.",
+      "example": "pos = mc.player.getTilePos()\nfor i in range(10):\n    for j in range(10):\n        mc.setBlock(pos.x + i, pos.y, pos.z + j, block.WOOD_PLANKS.id)",
+      "code_explained": "• Внешний <code>for i</code> — движение по X.\n• Внутренний <code>for j</code> — движение по Z.\n• На каждую пару (i, j) ставится один блок — итого 100 блоков.",
+      "common_mistakes": [
+        "Поставить внутренний цикл на ту же ось, что внешний.",
+        "Забыть отступ у внутреннего <code>for</code>.",
+        "Ожидать объём — два цикла дают плоскость, для куба нужен третий."
+      ],
+      "quiz": {
+        "question": "Сколько блоков поставят два вложенных range(10)?",
+        "options": [
+          "100",
+          "20",
+          "10",
+          "1000"
+        ],
+        "correct": 0,
+        "explanation": "10 × 10 = 100 блоков — это плоскость.",
+        "topic": "loops"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "lists",
+      "title": "Разные блоки из списка",
+      "theory": "<b>Список</b> хранит много значений. Положив в список ID блоков, можно в цикле брать их по очереди и строить разноцветные постройки. Обращение к элементу — по индексу: <code>ids[0]</code>.",
+      "association": "🎨 Список ID — это палитра художника: берёшь нужный цвет по номеру и красишь.",
+      "real_example": "🎮 Миссия: построй полосатую линию из 3 разных блоков (камень, доски, бревно).",
+      "example": "ids = [block.STONE.id, block.WOOD_PLANKS.id, block.WOOD.id]\npos = mc.player.getTilePos()\nfor i in range(3):\n    mc.setBlock(pos.x + i, pos.y, pos.z, ids[i])",
+      "code_explained": "• <code>ids</code> — список из трёх ID.\n• <code>ids[i]</code> берёт элемент по индексу i.\n• Индексы начинаются с 0: <code>ids[0]</code> — первый.",
+      "common_mistakes": [
+        "Обратиться к <code>ids[3]</code> — такого индекса нет (есть 0,1,2).",
+        "Считать, что первый элемент — <code>ids[1]</code>.",
+        "Смешать ID и объекты блоков в одном списке."
+      ],
+      "quiz": {
+        "question": "Какой индекс у первого элемента списка?",
+        "options": [
+          "0",
+          "1",
+          "-1",
+          "первый"
+        ],
+        "correct": 0,
+        "explanation": "В Python нумерация с нуля: первый элемент — ids[0].",
+        "topic": "lists"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "io",
+      "title": "Пользовательский ввод",
+      "theory": "<code>input()</code> спрашивает у человека значение и <b>всегда возвращает строку</b>. Чтобы использовать число (например, длину постройки), оборачиваем ввод в <code>int()</code>. Так программа становится интерактивной.",
+      "association": "👂 <code>input</code> — это уши программы: она слушает тебя и строит то, что попросишь.",
+      "real_example": "🎮 Миссия: спроси высоту башни и построй её прямо на месте игрока.",
+      "example": "height = int(input(\"Высота башни: \"))\npos = mc.player.getTilePos()\nfor i in range(height):\n    mc.setBlock(pos.x, pos.y + i, pos.z, block.STONE.id)",
+      "code_explained": "• <code>input(...)</code> показывает вопрос и ждёт ответ.\n• <code>int(...)</code> превращает строку в число.\n• <code>pos.y + i</code> поднимает каждый блок выше — растёт башня.",
+      "common_mistakes": [
+        "Забыть <code>int()</code> — строку нельзя использовать как число.",
+        "Ввести буквы вместо числа — будет ошибка (об этом урок 11).",
+        "Не сохранить результат <code>input()</code> в переменную."
+      ],
+      "quiz": {
+        "question": "Что возвращает input()?",
+        "options": [
+          "Строку",
+          "Число",
+          "Список",
+          "Ничего"
+        ],
+        "correct": 0,
+        "explanation": "input() всегда возвращает строку — для чисел нужен int().",
+        "topic": "io"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "strings",
+      "title": "f-строки: красивый вывод",
+      "theory": "<b>f-строка</b> — это строка с буквой <code>f</code> перед кавычками. Внутри фигурных скобок <code>{}</code> можно подставлять переменные и выражения. Это самый удобный способ собрать сообщение из текста и данных.",
+      "association": "🏷️ f-строка — это бланк с пропусками: текст готов, а в <code>{}</code> вставляются нужные значения.",
+      "real_example": "🎮 Миссия: выведи в чат приветствие со своим именем и координатами.",
+      "example": "pos = mc.player.getTilePos()\nname = input(\"Как тебя зовут? \")\nmc.postToChat(f\"Привет, {name}! Ты на высоте {pos.y}.\")",
+      "code_explained": "• Буква <code>f</code> включает подстановку.\n• <code>{name}</code> и <code>{pos.y}</code> заменяются значениями.\n• Внутри <code>{}</code> можно писать выражения: <code>{pos.y + 1}</code>.",
+      "common_mistakes": [
+        "Забыть букву <code>f</code> — тогда <code>{name}</code> выведется как текст.",
+        "Перепутать кавычки внутри и снаружи.",
+        "Ставить пробел между <code>f</code> и кавычкой."
+      ],
+      "quiz": {
+        "question": "Что выведет f\"{2 + 2}\"?",
+        "options": [
+          "4",
+          "2 + 2",
+          "{2 + 2}",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Внутри {} вычисляется выражение, поэтому выводится 4.",
+        "topic": "strings",
+        "code": "print(f\"{2 + 2}\")"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "loops",
+      "title": "Случайность: random",
+      "theory": "Модуль <code>random</code> даёт случайность. <code>random.choice(список)</code> выбирает случайный элемент, а <code>random.randint(a, b)</code> — случайное число от a до b. С их помощью можно сажать леса и генерировать узоры, которые каждый раз разные.",
+      "association": "🎲 <code>random</code> — это игральный кубик: каждый запуск выпадает другое число.",
+      "real_example": "🎮 Миссия: построй линию из 12 блоков, где каждый блок — случайный из трёх видов.",
+      "example": "import random\nids = [block.WOOD.id, block.WOOD_PLANKS.id, block.STONE.id]\npos = mc.player.getTilePos()\nfor i in range(12):\n    mc.setBlock(pos.x + i, pos.y, pos.z, random.choice(ids))",
+      "code_explained": "• <code>import random</code> — в начале файла.\n• <code>random.choice(ids)</code> берёт случайный ID.\n• Каждый запуск даёт другой узор.",
+      "common_mistakes": [
+        "Забыть <code>import random</code>.",
+        "Перепутать <code>choice</code> (элемент) и <code>randint</code> (число).",
+        "Ждать одинаковый результат при повторном запуске."
+      ],
+      "quiz": {
+        "question": "Что вернёт random.choice([1, 2, 3])?",
+        "options": [
+          "Случайный из 1,2,3",
+          "Всегда 1",
+          "Список",
+          "Сумму"
+        ],
+        "correct": 0,
+        "explanation": "choice выбирает случайный элемент из списка.",
+        "topic": "loops"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "tools",
+      "title": "Отладка через print",
+      "theory": "Когда что-то не работает, нужно увидеть, что происходит. <code>print()</code> выводит значения в консоль (а не в игру) — это главный инструмент отладки. Печатая переменные на каждом шаге, ты видишь, где ошибка.",
+      "association": "🔦 <code>print</code> — это фонарик: подсвечивает, что внутри программы прямо сейчас.",
+      "real_example": "🎮 Миссия: добавь print перед каждым setBlock и посмотри координаты в консоли IDLE.",
+      "example": "pos = mc.player.getTilePos()\nfor i in range(5):\n    print(f\"Ставлю блок на X={pos.x + i}\")\n    mc.setBlock(pos.x + i, pos.y, pos.z, block.STONE.id)",
+      "code_explained": "• <code>print(...)</code> выводит в консоль Python, а не в чат игры.\n• Для отладки это удобнее — не засоряет игровой чат.\n• Видишь значения — находишь ошибку.",
+      "common_mistakes": [
+        "Путать <code>print</code> (консоль) и <code>postToChat</code> (игра).",
+        "Удалять отладочные print до того, как всё заработало.",
+        "Думать, что print что-то меняет в мире."
+      ],
+      "quiz": {
+        "question": "Куда выводит print()?",
+        "options": [
+          "В консоль Python",
+          "В чат Minecraft",
+          "В файл",
+          "Никуда"
+        ],
+        "correct": 0,
+        "explanation": "print выводит в консоль (IDLE), postToChat — в игровой чат.",
+        "topic": "tools"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "errors",
+      "title": "Обработка ошибок: try / except",
+      "theory": "Пользователь может ввести что угодно. <code>try/except</code> ловит ошибки: если в <code>try</code> что-то ломается, выполняется <code>except</code>, и программа не падает. <code>ValueError</code> — ошибка неверного типа (например, буквы вместо числа).",
+      "association": "🛡️ <code>try/except</code> — это страховка: упал — поймали, продолжаем дальше.",
+      "real_example": "🎮 Миссия: сделай безопасный ввод высоты — если ввели не число, покажи подсказку.",
+      "example": "try:\n    height = int(input(\"Высота: \"))\n    mc.postToChat(f\"Строю башню {height}\")\nexcept ValueError:\n    mc.postToChat(\"Это не число! Попробуй снова.\")",
+      "code_explained": "• <code>try</code> — рискованный код.\n• <code>except ValueError</code> — что делать при ошибке типа.\n• Программа не падает, а вежливо реагирует.",
+      "common_mistakes": [
+        "Ловить любую ошибку голым <code>except:</code> — прячет настоящие баги.",
+        "Забыть двоеточие после <code>try</code> или <code>except</code>.",
+        "Ставить весь код в try, даже безопасный."
+      ],
+      "quiz": {
+        "question": "Когда сработает блок except ValueError?",
+        "options": [
+          "Когда int() не смог разобрать строку",
+          "Всегда",
+          "Никогда",
+          "При делении"
+        ],
+        "correct": 0,
+        "explanation": "ValueError возникает, когда int() получает не-число, например 'abc'.",
+        "topic": "errors"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "functions",
+      "title": "Проект модуля 1: забор с воротами",
+      "theory": "Соберём всё вместе: <b>ввод</b>, <b>вложенные циклы</b>, <b>условие</b> и <b>блоки</b>. Построим забор заданных размеров, оставив посередине проём под ворота. Это твой первый настоящий проект.",
+      "association": "🏗️ Проект — это сборка из деталей: каждая изученная команда — кирпичик общей постройки.",
+      "real_example": "🎮 Миссия: спроси высоту и длину, построй забор и оставь ворота в центре.",
+      "example": "h = int(input(\"Высота: \"))\nL = int(input(\"Длина: \"))\npos = mc.player.getTilePos()\nfor i in range(L):\n    for j in range(h):\n        if i == L // 2 and j < 2:\n            mc.setBlock(pos.x + i, pos.y + j, pos.z, block.AIR.id)\n        else:\n            mc.setBlock(pos.x + i, pos.y + j, pos.z, block.COBBLESTONE.id)",
+      "code_explained": "• <code>L // 2</code> — середина забора (целочисленное деление).\n• <code>if ... j &lt; 2</code> — нижние 2 блока в центре делаем воздухом (проём).\n• Остальное — булыжник.",
+      "common_mistakes": [
+        "Сделать ворота во всю высоту вместо нижних 2 блоков.",
+        "Использовать <code>/</code> вместо <code>//</code> для середины.",
+        "Забыть <code>else</code> — стена будет дырявой."
+      ],
+      "quiz": {
+        "question": "Зачем здесь block.AIR.id?",
+        "options": [
+          "Сделать проём (ворота)",
+          "Покрасить забор",
+          "Ускорить код",
+          "Это ошибка"
+        ],
+        "correct": 0,
+        "explanation": "AIR — это пустота: ставя воздух, мы «вырезаем» проём под ворота.",
+        "topic": "functions"
+      },
+      "xp": 30
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+{
+  "tasks": [
+    {
+      "id": "sum_two", "topic": "variables", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Напиши функцию <b>sum_two(a, b)</b>, которая возвращает сумму двух чисел.",
+      "func": "sum_two", "signature": "def sum_two(a, b):",
+      "examples": ["sum_two(2, 3) → 5", "sum_two(-1, 1) → 0"],
+      "tests": [[[2, 3], 5], [[-1, 1], 0], [[0, 0], 0], [[100, 200], 300]],
+      "hints": ["Верни a + b через return."],
+      "solution": "def sum_two(a, b):\n    return a + b"
+    },
+    {
+      "id": "is_even", "topic": "conditions", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Функция <b>is_even(n)</b> возвращает True, если число чётное, иначе False.",
+      "func": "is_even", "signature": "def is_even(n):",
+      "examples": ["is_even(4) → True", "is_even(7) → False"],
+      "tests": [[[4], true], [[7], false], [[0], true], [[-2], true], [[-3], false]],
+      "hints": ["Чётность проверяется остатком: n % 2 == 0."],
+      "solution": "def is_even(n):\n    return n % 2 == 0"
+    },
+    {
+      "id": "double_all", "topic": "lists", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Верни <b>новый</b> список, где каждый элемент <b>nums</b> умножен на 2.",
+      "func": "double_all", "signature": "def double_all(nums):",
+      "examples": ["double_all([1, 2, 3]) → [2, 4, 6]"],
+      "tests": [[[[1, 2, 3]], [2, 4, 6]], [[[]], []], [[[0, -1]], [0, -2]], [[[5]], [10]]],
+      "hints": ["Пройди по элементам и собери новый список: [x * 2 for x in nums]."],
+      "solution": "def double_all(nums):\n    return [x * 2 for x in nums]"
+    },
+    {
+      "id": "sum_list", "topic": "lists", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Верни сумму всех чисел в списке <b>nums</b>. Для пустого списка — 0.",
+      "func": "sum_list", "signature": "def sum_list(nums):",
+      "examples": ["sum_list([1, 2, 3]) → 6", "sum_list([]) → 0"],
+      "tests": [[[[1, 2, 3]], 6], [[[]], 0], [[[-1, 1]], 0], [[[10]], 10], [[[2, 2, 2]], 6]],
+      "hints": ["Заведи аккумулятор total = 0 и прибавляй к нему в цикле.", "Пустой список должен дать 0 — это edge case."],
+      "solution": "def sum_list(nums):\n    total = 0\n    for x in nums:\n        total += x\n    return total"
+    },
+    {
+      "id": "count_char", "topic": "strings", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Сколько раз символ <b>ch</b> встречается в строке <b>s</b>? Верни число.",
+      "func": "count_char", "signature": "def count_char(s, ch):",
+      "examples": ["count_char('hello', 'l') → 2"],
+      "tests": [[["hello", "l"], 2], [["", "a"], 0], [["aaa", "a"], 3], [["abc", "z"], 0]],
+      "hints": ["Перебери символы строки и считай совпадения с ch."],
+      "solution": "def count_char(s, ch):\n    return sum(1 for c in s if c == ch)"
+    },
+    {
+      "id": "count_vowels", "topic": "strings", "difficulty": "medium", "tier": "free", "xp": 15,
+      "prompt": "Верни количество гласных (a, e, i, o, u) в строке <b>s</b> (в нижнем регистре).",
+      "func": "count_vowels", "signature": "def count_vowels(s):",
+      "examples": ["count_vowels('hello') → 2"],
+      "tests": [[["hello"], 2], [["xyz"], 0], [[""], 0], [["aeiou"], 5], [["AEIOU"], 0]],
+      "hints": ["Перебери символы и считай те, что входят в 'aeiou'.", "Заглавные не считаются — это edge case."],
+      "solution": "def count_vowels(s):\n    return sum(1 for c in s if c in 'aeiou')"
+    },
+    {
+      "id": "max_of", "topic": "lists", "difficulty": "medium", "tier": "free", "xp": 15,
+      "prompt": "Верни максимум из списка чисел <b>nums</b> — без встроенного max().",
+      "func": "max_of", "signature": "def max_of(nums):",
+      "examples": ["max_of([1, 5, 2]) → 5"],
+      "tests": [[[[1, 5, 2]], 5], [[[-3, -1, -2]], -1], [[[42]], 42], [[[5, 5, 5]], 5]],
+      "hints": ["Инициализируй максимум ПЕРВЫМ элементом, не нулём — иначе сломаешься на отрицательных."],
+      "solution": "def max_of(nums):\n    m = nums[0]\n    for x in nums:\n        if x > m:\n            m = x\n    return m"
+    },
+    {
+      "id": "factorial", "topic": "loops", "difficulty": "medium", "tier": "pro", "xp": 15,
+      "prompt": "Верни факториал <b>n</b>: n! = 1·2·…·n. По определению factorial(0) = 1.",
+      "func": "factorial", "signature": "def factorial(n):",
+      "examples": ["factorial(5) → 120", "factorial(0) → 1"],
+      "tests": [[[0], 1], [[1], 1], [[3], 6], [[5], 120], [[6], 720]],
+      "hints": ["Заведи result = 1 и перемножай в цикле от 1 до n включительно.", "factorial(0) = 1 — не забудь этот случай."],
+      "solution": "def factorial(n):\n    result = 1\n    for i in range(1, n + 1):\n        result *= i\n    return result"
+    },
+    {
+      "id": "is_palindrome", "topic": "strings", "difficulty": "medium", "tier": "pro", "xp": 15,
+      "prompt": "Функция <b>is_palindrome(s)</b>: True, если строка читается одинаково слева направо и наоборот.",
+      "func": "is_palindrome", "signature": "def is_palindrome(s):",
+      "examples": ["is_palindrome('level') → True", "is_palindrome('abc') → False"],
+      "tests": [[["level"], true], [["abc"], false], [[""], true], [["a"], true], [["abba"], true]],
+      "hints": ["Сравни строку с её разворотом s[::-1].", "Пустая строка и один символ — палиндромы."],
+      "solution": "def is_palindrome(s):\n    return s == s[::-1]"
+    },
+    {
+      "id": "unique", "topic": "lists", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Верни список уникальных элементов <b>nums</b> в порядке их <b>первого появления</b>.",
+      "func": "unique", "signature": "def unique(nums):",
+      "examples": ["unique([1, 1, 2, 3, 3]) → [1, 2, 3]"],
+      "tests": [[[[1, 1, 2, 3, 3]], [1, 2, 3]], [[[]], []], [[[5, 5, 5]], [5]], [[[3, 1, 3, 2]], [3, 1, 2]]],
+      "hints": ["set() потеряет порядок — копи результат вручную, проверяя 'x not in out'."],
+      "solution": "def unique(nums):\n    out = []\n    for x in nums:\n        if x not in out:\n            out.append(x)\n    return out"
+    },
+    {
+      "id": "fib", "topic": "loops", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Верни <b>n</b>-е число Фибоначчи. fib(0) = 0, fib(1) = 1, дальше сумма двух предыдущих.",
+      "func": "fib", "signature": "def fib(n):",
+      "examples": ["fib(7) → 13", "fib(10) → 55"],
+      "tests": [[[0], 0], [[1], 1], [[2], 1], [[7], 13], [[10], 55]],
+      "hints": ["Держи две переменные a, b и сдвигай их: a, b = b, a + b.", "Реши циклом, без рекурсии — так быстрее."],
+      "solution": "def fib(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a"
+    },
+    {
+      "id": "word_count", "topic": "dict", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Верни словарь <b>{слово: сколько раз}</b> для строки <b>s</b> (слова разделены пробелами).",
+      "func": "word_count", "signature": "def word_count(s):",
+      "examples": ["word_count('a b a') → {'a': 2, 'b': 1}"],
+      "tests": [[["a b a"], {"a": 2, "b": 1}], [[""], {}], [["hi hi hi"], {"hi": 3}], [["x y z"], {"x": 1, "y": 1, "z": 1}]],
+      "hints": ["s.split() разобьёт по пробелам. Для пустой строки split даёт [] → {}.", "counts.get(w, 0) + 1 удобно копит счётчики."],
+      "solution": "def word_count(s):\n    counts = {}\n    for w in s.split():\n        counts[w] = counts.get(w, 0) + 1\n    return counts"
+    },
+    {
+      "id": "reverse_list", "topic": "lists", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Верни НОВЫЙ список — элементы <b>nums</b> в обратном порядке (без reversed и [::-1]).",
+      "func": "reverse_list", "signature": "def reverse_list(nums):",
+      "examples": ["reverse_list([1, 2, 3]) → [3, 2, 1]"],
+      "tests": [[[[1, 2, 3]], [3, 2, 1]], [[[]], []], [[[9]], [9]], [[[1, 2]], [2, 1]]],
+      "hints": ["Иди с конца или вставляй каждый элемент в начало результата."],
+      "solution": "def reverse_list(nums):\n    out = []\n    for x in nums:\n        out.insert(0, x)\n    return out"
+    },
+    {
+      "id": "fizzbuzz", "topic": "loops", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Верни список строк от 1 до <b>n</b>: 'Fizz' если кратно 3, 'Buzz' если 5, 'FizzBuzz' если 15, иначе число строкой.",
+      "func": "fizzbuzz", "signature": "def fizzbuzz(n):",
+      "examples": ["fizzbuzz(5) → ['1', '2', 'Fizz', '4', 'Buzz']"],
+      "tests": [
+        [[5], ["1", "2", "Fizz", "4", "Buzz"]],
+        [[3], ["1", "2", "Fizz"]],
+        [[15], ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz"]]
+      ],
+      "hints": ["Проверяй кратность 15 ПЕРЕД 3 и 5 — иначе FizzBuzz никогда не сработает."],
+      "solution": "def fizzbuzz(n):\n    out = []\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            out.append('FizzBuzz')\n        elif i % 3 == 0:\n            out.append('Fizz')\n        elif i % 5 == 0:\n            out.append('Buzz')\n        else:\n            out.append(str(i))\n    return out"
+    },
+    {
+      "id": "two_sum", "topic": "lists", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Верни индексы <b>[i, j]</b> (i &lt; j) двух чисел из <b>nums</b>, дающих в сумме <b>target</b>. Ответ гарантированно существует.",
+      "func": "two_sum", "signature": "def two_sum(nums, target):",
+      "examples": ["two_sum([2, 7, 11], 9) → [0, 1]"],
+      "tests": [[[[2, 7, 11], 9], [0, 1]], [[[3, 2, 4], 6], [1, 2]], [[[1, 5, 3], 8], [1, 2]]],
+      "hints": ["Классика собесов: словарь {значение: индекс} ищет дополнение за O(1)."],
+      "solution": "def two_sum(nums, target):\n    seen = {}\n    for i, x in enumerate(nums):\n        if target - x in seen:\n            return [seen[target - x], i]\n        seen[x] = i"
+    },
+    {
+      "id": "gcd", "topic": "loops", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Верни наибольший общий делитель (НОД) двух положительных чисел <b>a</b> и <b>b</b> — алгоритм Евклида.",
+      "func": "gcd", "signature": "def gcd(a, b):",
+      "examples": ["gcd(12, 8) → 4", "gcd(17, 5) → 1"],
+      "tests": [[[12, 8], 4], [[17, 5], 1], [[100, 10], 10], [[7, 7], 7], [[48, 36], 12]],
+      "hints": ["Евклид: пока b не ноль, делай a, b = b, a % b. Ответ — в a.", "Остаток % — ключ к решению."],
+      "solution": "def gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a"
+    },
+    {
+      "id": "flatten", "topic": "lists", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Разверни список списков <b>nested</b> в один плоский список (один уровень вложенности).",
+      "func": "flatten", "signature": "def flatten(nested):",
+      "examples": ["flatten([[1, 2], [3]]) → [1, 2, 3]"],
+      "tests": [[[[[1, 2], [3]]], [1, 2, 3]], [[[]], []], [[[[1], [2], [3]]], [1, 2, 3]], [[[[], [1]]], [1]]],
+      "hints": ["Два вложенных цикла: внешний по подспискам, внутренний по их элементам."],
+      "solution": "def flatten(nested):\n    out = []\n    for sub in nested:\n        for x in sub:\n            out.append(x)\n    return out"
+    },
+
+    {
+      "id": "reverse_string", "topic": "strings", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Верни строку <b>s</b>, записанную задом наперёд.",
+      "func": "reverse_string", "signature": "def reverse_string(s):",
+      "examples": ["reverse_string('abc') → 'cba'"],
+      "tests": [[["abc"], "cba"], [[""], ""], [["a"], "a"], [["level"], "level"], [["ab"], "ba"]],
+      "hints": ["Срез с шагом -1: s[::-1]."],
+      "solution": "def reverse_string(s):\n    return s[::-1]"
+    },
+    {
+      "id": "is_anagram", "topic": "strings", "difficulty": "medium", "tier": "pro", "xp": 15,
+      "prompt": "Функция <b>is_anagram(a, b)</b>: True, если строки состоят из одних и тех же букв (анаграммы).",
+      "func": "is_anagram", "signature": "def is_anagram(a, b):",
+      "examples": ["is_anagram('listen', 'silent') → True"],
+      "tests": [[["listen", "silent"], true], [["a", "b"], false], [["", ""], true], [["aab", "aba"], true], [["abc", "ab"], false]],
+      "hints": ["Отсортируй обе строки и сравни: sorted(a) == sorted(b)."],
+      "solution": "def is_anagram(a, b):\n    return sorted(a) == sorted(b)"
+    },
+    {
+      "id": "capitalize_words", "topic": "strings", "difficulty": "medium", "tier": "pro", "xp": 15,
+      "prompt": "Сделай первую букву каждого слова заглавной (остальные строчными). Слова разделены пробелами.",
+      "func": "capitalize_words", "signature": "def capitalize_words(s):",
+      "examples": ["capitalize_words('hello world') → 'Hello World'"],
+      "tests": [[["hello world"], "Hello World"], [[""], ""], [["a b"], "A B"], [["python"], "Python"], [["hELLO"], "Hello"]],
+      "hints": ["s.split() даёт слова; у каждого вызови .capitalize() и соедини через ' '."],
+      "solution": "def capitalize_words(s):\n    return ' '.join(w.capitalize() for w in s.split())"
+    },
+    {
+      "id": "count_words", "topic": "strings", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Сколько слов в строке <b>s</b>? Слова разделены пробелами.",
+      "func": "count_words", "signature": "def count_words(s):",
+      "examples": ["count_words('a b c') → 3"],
+      "tests": [[["a b c"], 3], [[""], 0], [["hello"], 1], [["   "], 0], [["one two"], 2]],
+      "hints": ["s.split() без аргументов сам отбрасывает лишние пробелы — посчитай len."],
+      "solution": "def count_words(s):\n    return len(s.split())"
+    },
+    {
+      "id": "most_common_char", "topic": "strings", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Верни самый частый символ строки <b>s</b>. При равенстве частот — наименьший по алфавиту.",
+      "func": "most_common_char", "signature": "def most_common_char(s):",
+      "examples": ["most_common_char('aabbb') → 'b'"],
+      "tests": [[["aabbb"], "b"], [["abc"], "a"], [["xxyy"], "x"], [["z"], "z"], [["bbaa"], "a"]],
+      "hints": ["Посчитай частоты в словарь, потом пройди по sorted(counts) и держи лучший.", "Перебор отсортированных ключей даёт тай-брейк 'наименьший по алфавиту' бесплатно."],
+      "solution": "def most_common_char(s):\n    counts = {}\n    for c in s:\n        counts[c] = counts.get(c, 0) + 1\n    best = None\n    for c in sorted(counts):\n        if best is None or counts[c] > counts[best]:\n            best = c\n    return best"
+    },
+
+    {
+      "id": "second_largest", "topic": "lists", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Верни второе по величине <b>различное</b> значение в списке <b>nums</b> (есть минимум два разных).",
+      "func": "second_largest", "signature": "def second_largest(nums):",
+      "examples": ["second_largest([1, 2, 3]) → 2"],
+      "tests": [[[[1, 2, 3]], 2], [[[3, 1, 2]], 2], [[[5, 5, 4]], 4], [[[1, 2, 2, 3]], 2], [[[10, 20]], 10]],
+      "hints": ["Убери дубликаты через set, отсортируй и возьми предпоследний: sorted(set(nums))[-2]."],
+      "solution": "def second_largest(nums):\n    u = sorted(set(nums))\n    return u[-2]"
+    },
+    {
+      "id": "chunk", "topic": "lists", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Разбей список <b>nums</b> на куски по <b>size</b> элементов (последний кусок может быть короче).",
+      "func": "chunk", "signature": "def chunk(nums, size):",
+      "examples": ["chunk([1, 2, 3, 4, 5], 2) → [[1, 2], [3, 4], [5]]"],
+      "tests": [[[[1, 2, 3, 4, 5], 2], [[1, 2], [3, 4], [5]]], [[[], 2], []], [[[1, 2, 3], 3], [[1, 2, 3]]], [[[1], 5], [[1]]]],
+      "hints": ["Шагай по индексам через range(0, len(nums), size) и режь срезами nums[i:i+size]."],
+      "solution": "def chunk(nums, size):\n    return [nums[i:i + size] for i in range(0, len(nums), size)]"
+    },
+    {
+      "id": "running_total", "topic": "lists", "difficulty": "medium", "tier": "free", "xp": 15,
+      "prompt": "Верни список <b>нарастающих сумм</b>: каждый элемент — сумма всех предыдущих включая текущий.",
+      "func": "running_total", "signature": "def running_total(nums):",
+      "examples": ["running_total([1, 2, 3]) → [1, 3, 6]"],
+      "tests": [[[[1, 2, 3]], [1, 3, 6]], [[[]], []], [[[5]], [5]], [[[1, -1, 1]], [1, 0, 1]]],
+      "hints": ["Держи бегущую сумму и добавляй её в результат на каждом шаге."],
+      "solution": "def running_total(nums):\n    out = []\n    total = 0\n    for x in nums:\n        total += x\n        out.append(total)\n    return out"
+    },
+    {
+      "id": "intersection", "topic": "lists", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Верни отсортированный список общих <b>различных</b> элементов списков <b>a</b> и <b>b</b>.",
+      "func": "intersection", "signature": "def intersection(a, b):",
+      "examples": ["intersection([1, 2, 3], [2, 3, 4]) → [2, 3]"],
+      "tests": [[[[1, 2, 3], [2, 3, 4]], [2, 3]], [[[1], [2]], []], [[[1, 1, 2], [2, 2, 3]], [2]], [[[3, 2, 1], [1, 2, 3]], [1, 2, 3]]],
+      "hints": ["Пересечение множеств: set(a) & set(b), затем sorted()."],
+      "solution": "def intersection(a, b):\n    return sorted(set(a) & set(b))"
+    },
+    {
+      "id": "rotate", "topic": "lists", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Сдвинь элементы списка <b>nums</b> вправо на <b>k</b> позиций (циклически).",
+      "func": "rotate", "signature": "def rotate(nums, k):",
+      "examples": ["rotate([1, 2, 3, 4], 1) → [4, 1, 2, 3]"],
+      "tests": [[[[1, 2, 3, 4], 1], [4, 1, 2, 3]], [[[1, 2, 3], 0], [1, 2, 3]], [[[1, 2, 3], 3], [1, 2, 3]], [[[1, 2], 3], [2, 1]], [[[], 2], []]],
+      "hints": ["Возьми k по модулю длины (k может быть больше длины).", "Хвост + голова: nums[-k:] + nums[:-k]."],
+      "solution": "def rotate(nums, k):\n    if not nums:\n        return []\n    k = k % len(nums)\n    return nums[-k:] + nums[:-k]"
+    },
+
+    {
+      "id": "merge_dicts", "topic": "dict", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Слей два словаря <b>a</b> и <b>b</b> в новый. При совпадении ключа побеждает значение из <b>b</b>.",
+      "func": "merge_dicts", "signature": "def merge_dicts(a, b):",
+      "examples": ["merge_dicts({'x': 1}, {'y': 2}) → {'x': 1, 'y': 2}"],
+      "tests": [[[{"x": 1}, {"y": 2}], {"x": 1, "y": 2}], [[{"x": 1}, {"x": 2}], {"x": 2}], [[{}, {}], {}], [[{"a": 1, "b": 2}, {"b": 3}], {"a": 1, "b": 3}]],
+      "hints": ["Распаковка словарей: {**a, **b} — правый перекрывает левый."],
+      "solution": "def merge_dicts(a, b):\n    return {**a, **b}"
+    },
+    {
+      "id": "invert_dict", "topic": "dict", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Поменяй местами ключи и значения словаря <b>d</b> (значения уникальны).",
+      "func": "invert_dict", "signature": "def invert_dict(d):",
+      "examples": ["invert_dict({'a': 'x'}) → {'x': 'a'}"],
+      "tests": [[[{"a": "x", "b": "y"}], {"x": "a", "y": "b"}], [[{}], {}], [[{"k": "v"}], {"v": "k"}]],
+      "hints": ["Собери новый словарь: {v: k for k, v in d.items()}."],
+      "solution": "def invert_dict(d):\n    return {v: k for k, v in d.items()}"
+    },
+    {
+      "id": "group_by_parity", "topic": "dict", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Раздели числа <b>nums</b> на чётные и нечётные: верни {'even': [...], 'odd': [...]} с сохранением порядка.",
+      "func": "group_by_parity", "signature": "def group_by_parity(nums):",
+      "examples": ["group_by_parity([1, 2, 3, 4]) → {'even': [2, 4], 'odd': [1, 3]}"],
+      "tests": [[[[1, 2, 3, 4]], {"even": [2, 4], "odd": [1, 3]}], [[[]], {"even": [], "odd": []}], [[[2, 4]], {"even": [2, 4], "odd": []}], [[[1]], {"even": [], "odd": [1]}]],
+      "hints": ["Заведи результат с двумя пустыми списками и клади число в нужный по n % 2."],
+      "solution": "def group_by_parity(nums):\n    out = {\"even\": [], \"odd\": []}\n    for x in nums:\n        if x % 2 == 0:\n            out[\"even\"].append(x)\n        else:\n            out[\"odd\"].append(x)\n    return out"
+    },
+    {
+      "id": "max_value_key", "topic": "dict", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Верни ключ с наибольшим значением в словаре <b>d</b>. При равенстве — наименьший ключ по алфавиту.",
+      "func": "max_value_key", "signature": "def max_value_key(d):",
+      "examples": ["max_value_key({'a': 1, 'b': 3, 'c': 2}) → 'b'"],
+      "tests": [[[{"a": 1, "b": 3, "c": 2}], "b"], [[{"x": 5}], "x"], [[{"a": 2, "b": 2}], "a"], [[{"m": 1, "n": 9}], "n"]],
+      "hints": ["Пройди по sorted(d) и держи ключ с максимальным значением — порядок даёт тай-брейк."],
+      "solution": "def max_value_key(d):\n    best = None\n    for k in sorted(d):\n        if best is None or d[k] > d[best]:\n            best = k\n    return best"
+    },
+    {
+      "id": "dict_from_pairs", "topic": "dict", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Собери словарь из списка пар <b>[ключ, значение]</b>. При повторе ключа побеждает последняя пара.",
+      "func": "dict_from_pairs", "signature": "def dict_from_pairs(pairs):",
+      "examples": ["dict_from_pairs([['a', 1], ['b', 2]]) → {'a': 1, 'b': 2}"],
+      "tests": [[[[["a", 1], ["b", 2]]], {"a": 1, "b": 2}], [[[]], {}], [[[["x", 9]]], {"x": 9}], [[[["a", 1], ["a", 2]]], {"a": 2}]],
+      "hints": ["Пройди по парам и присваивай out[key] = value."],
+      "solution": "def dict_from_pairs(pairs):\n    out = {}\n    for k, v in pairs:\n        out[k] = v\n    return out"
+    },
+
+    {
+      "id": "is_prime", "topic": "algorithms", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Функция <b>is_prime(n)</b>: True, если n — простое число (делится только на 1 и себя).",
+      "func": "is_prime", "signature": "def is_prime(n):",
+      "examples": ["is_prime(7) → True", "is_prime(8) → False"],
+      "tests": [[[2], true], [[3], true], [[4], false], [[1], false], [[17], true], [[20], false], [[0], false]],
+      "hints": ["Числа < 2 не простые.", "Достаточно проверять делители до корня: while i * i <= n."],
+      "solution": "def is_prime(n):\n    if n < 2:\n        return False\n    i = 2\n    while i * i <= n:\n        if n % i == 0:\n            return False\n        i += 1\n    return True"
+    },
+    {
+      "id": "sum_digits", "topic": "algorithms", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "Верни сумму цифр неотрицательного числа <b>n</b>.",
+      "func": "sum_digits", "signature": "def sum_digits(n):",
+      "examples": ["sum_digits(123) → 6"],
+      "tests": [[[123], 6], [[0], 0], [[9], 9], [[100], 1], [[45], 9]],
+      "hints": ["Бери последнюю цифру через n % 10 и отбрасывай её через n // 10 в цикле."],
+      "solution": "def sum_digits(n):\n    total = 0\n    while n > 0:\n        total += n % 10\n        n //= 10\n    return total"
+    },
+    {
+      "id": "binary_search", "topic": "algorithms", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "В отсортированном списке <b>nums</b> верни индекс <b>target</b> или -1, если его нет (двоичный поиск).",
+      "func": "binary_search", "signature": "def binary_search(nums, target):",
+      "examples": ["binary_search([1, 2, 3, 4, 5], 3) → 2"],
+      "tests": [[[[1, 2, 3, 4, 5], 3], 2], [[[1, 2, 3], 5], -1], [[[], 1], -1], [[[5], 5], 0], [[[1, 3, 5, 7], 7], 3]],
+      "hints": ["Держи границы lo и hi, бери середину mid = (lo + hi) // 2.", "Если в середине меньше target — двигай lo, иначе hi."],
+      "solution": "def binary_search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1"
+    },
+    {
+      "id": "bubble_sort", "topic": "algorithms", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Отсортируй список <b>nums</b> по возрастанию <b>своим</b> алгоритмом (без sorted/sort). Верни новый список.",
+      "func": "bubble_sort", "signature": "def bubble_sort(nums):",
+      "examples": ["bubble_sort([3, 1, 2]) → [1, 2, 3]"],
+      "tests": [[[[3, 1, 2]], [1, 2, 3]], [[[]], []], [[[1]], [1]], [[[5, 4, 3, 2, 1]], [1, 2, 3, 4, 5]], [[[2, 2, 1]], [1, 2, 2]]],
+      "hints": ["Скопируй список, потом многократно меняй соседей местами, если левый больше правого."],
+      "solution": "def bubble_sort(nums):\n    arr = list(nums)\n    n = len(arr)\n    for i in range(n):\n        for j in range(n - 1 - i):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n    return arr"
+    },
+    {
+      "id": "max_subarray", "topic": "algorithms", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Верни максимальную сумму непрерывного непустого подмассива списка <b>nums</b> (алгоритм Кадане).",
+      "func": "max_subarray", "signature": "def max_subarray(nums):",
+      "examples": ["max_subarray([-2, 1, -3, 4, -1, 2, 1, -5, 4]) → 6"],
+      "tests": [[[[1, 2, 3]], 6], [[[-1, -2, -3]], -1], [[[2, -1, 3]], 4], [[[5]], 5], [[[-2, 1, -3, 4, -1, 2, 1, -5, 4]], 6]],
+      "hints": ["Веди текущую сумму: cur = max(x, cur + x) — начинать заново или продолжать.", "Лучший ответ — максимум из всех cur."],
+      "solution": "def max_subarray(nums):\n    best = cur = nums[0]\n    for x in nums[1:]:\n        cur = max(x, cur + x)\n        best = max(best, cur)\n    return best"
+    },
+    {
+      "id": "digital_root", "topic": "algorithms", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Складывай цифры числа <b>n</b>, пока не останется одна цифра. Верни её (цифровой корень).",
+      "func": "digital_root", "signature": "def digital_root(n):",
+      "examples": ["digital_root(942) → 6  (9+4+2=15 → 1+5=6)"],
+      "tests": [[[16], 7], [[942], 6], [[0], 0], [[5], 5], [[99], 9]],
+      "hints": ["Внешний цикл: пока n >= 10. Внутри — сумма цифр, и присвой её n."],
+      "solution": "def digital_root(n):\n    while n >= 10:\n        s = 0\n        while n > 0:\n            s += n % 10\n            n //= 10\n        n = s\n    return n"
+    },
+
+    {
+      "id": "status_bucket", "topic": "backend", "difficulty": "easy", "tier": "free", "xp": 10,
+      "prompt": "По HTTP-коду <b>code</b> верни категорию: 'informational' (1xx), 'success' (2xx), 'redirect' (3xx), 'client_error' (4xx), 'server_error' (5xx).",
+      "func": "status_bucket", "signature": "def status_bucket(code):",
+      "examples": ["status_bucket(200) → 'success'", "status_bucket(404) → 'client_error'"],
+      "tests": [[[200], "success"], [[404], "client_error"], [[500], "server_error"], [[301], "redirect"], [[100], "informational"]],
+      "hints": ["Сравнивай по диапазонам сверху вниз: code < 200, < 300, < 400, < 500, иначе 5xx."],
+      "solution": "def status_bucket(code):\n    if code < 200:\n        return \"informational\"\n    if code < 300:\n        return \"success\"\n    if code < 400:\n        return \"redirect\"\n    if code < 500:\n        return \"client_error\"\n    return \"server_error\""
+    },
+    {
+      "id": "parse_query", "topic": "backend", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Распарси query-строку вида <b>'a=1&b=2'</b> в словарь {'a': '1', 'b': '2'}. При повторе ключа — последнее значение.",
+      "func": "parse_query", "signature": "def parse_query(qs):",
+      "examples": ["parse_query('a=1&b=2') → {'a': '1', 'b': '2'}"],
+      "tests": [[["a=1&b=2"], {"a": "1", "b": "2"}], [[""], {}], [["x=hello"], {"x": "hello"}], [["a=1&a=2"], {"a": "2"}]],
+      "hints": ["Пустая строка → пустой словарь.", "Разбей по '&', затем каждую часть по '=' (partition удобен)."],
+      "solution": "def parse_query(qs):\n    out = {}\n    if not qs:\n        return out\n    for part in qs.split(\"&\"):\n        k, _, v = part.partition(\"=\")\n        out[k] = v\n    return out"
+    },
+    {
+      "id": "valid_password", "topic": "backend", "difficulty": "medium", "tier": "pro", "xp": 20,
+      "prompt": "Пароль <b>s</b> валиден, если длина ≥ 8 И есть хотя бы одна цифра И хотя бы одна буква. Верни True/False.",
+      "func": "valid_password", "signature": "def valid_password(s):",
+      "examples": ["valid_password('abc12345') → True"],
+      "tests": [[["abc12345"], true], [["short1"], false], [["12345678"], false], [["abcdefgh"], false], [["Password1"], true]],
+      "hints": ["any(c.isdigit() for c in s) проверит наличие цифры; .isalpha() — буквы.", "Соедини три условия через and."],
+      "solution": "def valid_password(s):\n    has_digit = any(c.isdigit() for c in s)\n    has_alpha = any(c.isalpha() for c in s)\n    return len(s) >= 8 and has_digit and has_alpha"
+    },
+    {
+      "id": "normalize_path", "topic": "backend", "difficulty": "hard", "tier": "pro", "xp": 25,
+      "prompt": "Нормализуй URL-путь <b>path</b>: убери повторяющиеся слэши и завершающий слэш. Корень и пустой путь → '/'.",
+      "func": "normalize_path", "signature": "def normalize_path(path):",
+      "examples": ["normalize_path('/a//b/') → '/a/b'"],
+      "tests": [[["/a//b/"], "/a/b"], [["///"], "/"], [["/x/"], "/x"], [["/a/b"], "/a/b"], [[""], "/"]],
+      "hints": ["Разбей по '/', выкинь пустые сегменты, собери обратно.", "Если сегментов не осталось — верни '/'."],
+      "solution": "def normalize_path(path):\n    parts = [p for p in path.split(\"/\") if p]\n    if not parts:\n        return \"/\"\n    return \"/\" + \"/\".join(parts)"
+    }
+  ]
+}

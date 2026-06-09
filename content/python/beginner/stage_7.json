@@ -1,0 +1,212 @@
+{
+  "id": 7,
+  "title": "Инструменты разработчика",
+  "subtitle": "Как работают профи",
+  "emoji": "🧰",
+  "lessons": [
+    {
+      "topic": "tools",
+      "title": "venv — виртуальное окружение",
+      "theory": "<b>venv</b> — отдельная «песочница» с Python и пакетами под один проект. У каждого проекта свой набор библиотек, и они не конфликтуют между собой.",
+      "association": "🧳 venv — отдельный чемодан для каждой поездки. Вещи проекта А не валяются вперемешку с проектом Б. Закрыл чемодан — порядок.",
+      "real_example": "Проект А хочет старую версию библиотеки, проект Б — новую. Без venv они «дерутся»; с venv у каждого свой чемодан.",
+      "example": "python -m venv .venv\nsource .venv/bin/activate\n# теперь pip ставит пакеты только сюда\ndeactivate",
+      "code_explained": "• <code>python -m venv .venv</code> — создаём окружение в папке .venv.\n• <code>activate</code> — «входим» в песочницу.\n• Установленные пакеты живут только здесь.\n• <code>deactivate</code> — выходим обратно.",
+      "common_mistakes": [
+        "Ставить пакеты глобально и засорять систему.",
+        "Забыть активировать venv перед установкой.",
+        "Коммитить папку .venv в Git (её добавляют в .gitignore)."
+      ],
+      "practice": {
+        "question": "Зачем нужен venv?",
+        "options": [
+          "изолировать пакеты проекта",
+          "ускорить Python",
+          "рисовать графику",
+          "хранить пароли"
+        ],
+        "correct": 0,
+        "explanation": "venv изолирует зависимости одного проекта от других.",
+        "topic": "tools"
+      },
+      "quiz": {
+        "question": "Какой командой создают окружение?",
+        "options": [
+          "python -m venv .venv",
+          "pip venv",
+          "venv start",
+          "create venv"
+        ],
+        "correct": 0,
+        "explanation": "python -m venv <папка> создаёт окружение.",
+        "topic": "tools"
+      },
+      "challenge": {
+        "question": "Почему .venv добавляют в .gitignore?",
+        "options": [
+          "это локальное окружение, не код",
+          "она секретная",
+          "Git её не видит",
+          "для скорости"
+        ],
+        "correct": 0,
+        "explanation": "venv пересоздаётся локально и не должна попадать в репозиторий.",
+        "topic": "tools"
+      },
+      "xp": 30
+    },
+    {
+      "topic": "tools",
+      "title": "pip — установка пакетов",
+      "theory": "<b>pip</b> — менеджер пакетов Python: одной командой ставит чужие библиотеки из огромного хранилища PyPI. Не пишешь всё сам — берёшь готовое и подключаешь.",
+      "association": "🛒 pip — магазин приложений для Python. <code>pip install requests</code> — как «установить приложение» одним нажатием.",
+      "real_example": "pip install requests — работа с интернетом, pip install pillow — картинки, requirements.txt — общий «список покупок» для команды.",
+      "example": "pip install requests\npip freeze > requirements.txt\npip install -r requirements.txt",
+      "code_explained": "• <code>pip install requests</code> — ставит пакет requests.\n• <code>pip freeze > requirements.txt</code> — сохраняет список версий пакетов.\n• <code>pip install -r requirements.txt</code> — ставит всё из списка.\n• Так команда получает одинаковые версии.",
+      "common_mistakes": [
+        "Ставить пакеты без активного venv.",
+        "Забыть зафиксировать версии в requirements.txt.",
+        "Путать pip (пакеты) и python (запуск кода)."
+      ],
+      "practice": {
+        "question": "Что делает pip install requests?",
+        "options": [
+          "ставит пакет requests",
+          "запускает requests",
+          "удаляет requests",
+          "ищет файл"
+        ],
+        "correct": 0,
+        "explanation": "pip install ставит указанный пакет.",
+        "topic": "tools"
+      },
+      "quiz": {
+        "question": "Зачем нужен requirements.txt?",
+        "options": [
+          "список пакетов проекта",
+          "секретный ключ",
+          "главный файл кода",
+          "база данных"
+        ],
+        "correct": 0,
+        "explanation": "requirements.txt хранит зависимости, чтобы их легко повторить.",
+        "topic": "tools"
+      },
+      "challenge": {
+        "question": "Команда установки всех пакетов из файла?",
+        "options": [
+          "pip install -r requirements.txt",
+          "pip freeze",
+          "pip list",
+          "python requirements.txt"
+        ],
+        "correct": 0,
+        "explanation": "-r читает файл и ставит все пакеты из него.",
+        "topic": "tools"
+      },
+      "xp": 30
+    },
+    {
+      "topic": "tools",
+      "title": "requests — запросы к API",
+      "theory": "<b>requests</b> позволяет твоей программе ходить в интернет и забирать данные с сайтов и API — как браузер, но из кода. Отправляешь запрос по адресу → получаешь ответ с данными.",
+      "association": "📮 requests — почтальон. Отправил письмо по адресу (URL) → принёс ответ (данные). Сайт отвечает не картинкой, а чистыми данными для программы.",
+      "real_example": "Курс валют, погода, котировки, посты из соцсети — приложения берут это через API запросом requests. Теперь и ты можешь!",
+      "example": "import requests\n\nr = requests.get('https://api.github.com')\nprint(r.status_code)\ndata = r.json()\nprint(data['current_user_url'])",
+      "code_explained": "• <code>requests.get(URL)</code> — отправляем запрос на адрес.\n• <code>r.status_code</code> → 200, если всё хорошо.\n• <code>r.json()</code> — превращает ответ в словарь Python.\n• Дальше берём нужное поле как из обычного словаря.",
+      "common_mistakes": [
+        "Забыть, что нужен интернет и <code>pip install requests</code>.",
+        "Не проверять status_code (вдруг 404).",
+        "Думать, что r.json() есть всегда — не каждый ответ это JSON."
+      ],
+      "practice": {
+        "question": "Что делает requests.get(url)?",
+        "options": [
+          "запрашивает данные по адресу",
+          "создаёт сайт",
+          "удаляет файл",
+          "открывает браузер"
+        ],
+        "correct": 0,
+        "explanation": "get отправляет запрос и возвращает ответ сервера.",
+        "topic": "tools"
+      },
+      "quiz": {
+        "question": "Какой status_code означает «успех»?",
+        "options": [
+          "200",
+          "404",
+          "500",
+          "0"
+        ],
+        "correct": 0,
+        "explanation": "200 — запрос успешен. 404 — не найдено.",
+        "topic": "tools"
+      },
+      "challenge": {
+        "question": "Что делает r.json()?",
+        "options": [
+          "превращает ответ в словарь Python",
+          "сохраняет файл",
+          "открывает сайт",
+          "шифрует"
+        ],
+        "correct": 0,
+        "explanation": "json() парсит JSON-ответ в словарь или список Python.",
+        "topic": "tools"
+      },
+      "xp": 30
+    },
+    {
+      "topic": "tools",
+      "title": "Основы Git",
+      "theory": "<b>Git</b> — машина времени для кода. Он сохраняет версии проекта (<b>commit</b>), позволяет вести параллельные линии работы (<b>branch</b>) и отправлять код в облако (<b>push</b>). Сломал — вернулся к рабочей версии.",
+      "association": "💾 Git — сохранения в игре. commit — точка сохранения, branch — отдельная попытка пройти уровень по-своему, push — выгрузить сейв в облако, чтобы не потерять.",
+      "real_example": "Командная разработка, бэкап кода на GitHub, эксперимент в ветке без страха сломать главное — это всё Git, стандарт индустрии.",
+      "example": "git add .\ngit commit -m 'Добавил вход'\ngit branch new-feature\ngit push",
+      "code_explained": "• <code>git add .</code> — отметить изменённые файлы.\n• <code>git commit -m '...'</code> — точка сохранения с подписью.\n• <code>git branch new-feature</code> — отдельная ветка для эксперимента.\n• <code>git push</code> — отправить сохранения в облако (GitHub).",
+      "common_mistakes": [
+        "Делать commit без понятного сообщения.",
+        "Коммитить секреты (.env, пароли).",
+        "Путать commit (локально) и push (в облако)."
+      ],
+      "practice": {
+        "question": "Что такое commit?",
+        "options": [
+          "точка сохранения версии",
+          "удаление кода",
+          "запуск программы",
+          "ветка"
+        ],
+        "correct": 0,
+        "explanation": "commit фиксирует версию проекта, как сохранение в игре.",
+        "topic": "tools"
+      },
+      "quiz": {
+        "question": "Что делает git push?",
+        "options": [
+          "отправляет код в облако",
+          "удаляет ветку",
+          "запускает тесты",
+          "создаёт файл"
+        ],
+        "correct": 0,
+        "explanation": "push выгружает коммиты на удалённый сервер (например, GitHub).",
+        "topic": "tools"
+      },
+      "challenge": {
+        "question": "Зачем нужны ветки (branch)?",
+        "options": [
+          "работать над новым, не ломая основное",
+          "ускорить Git",
+          "удалять историю",
+          "хранить пароли"
+        ],
+        "correct": 0,
+        "explanation": "Ветка — отдельная линия работы; основное остаётся целым.",
+        "topic": "tools"
+      },
+      "xp": 30
+    }
+  ]
+}

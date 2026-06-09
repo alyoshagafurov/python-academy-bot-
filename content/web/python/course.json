@@ -1,0 +1,15 @@
+{
+  "id": "web_python",
+  "language": "web",
+  "track": "python",
+  "title": "Python + Web",
+  "emoji": "🌐",
+  "description": "Как Python отдаёт HTML: запрос-ответ, шаблоны Jinja2, Flask и формы. Нужна база HTML.",
+  "stages": [
+    "stage_1",
+    "stage_2",
+    "stage_3",
+    "stage_4",
+    "stage_5"
+  ]
+}

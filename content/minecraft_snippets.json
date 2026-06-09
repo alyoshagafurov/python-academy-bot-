@@ -1,0 +1,184 @@
+{
+  "snippets": [
+    {
+      "id": "house",
+      "category": "buildings",
+      "title": "Дом",
+      "description": "Каменный дом с полом, дверью и факелами",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nx, y, z = pos.x + 3, pos.y, pos.z + 3\nw, h, d = 7, 4, 5\n\nmc.setBlocks(x, y, z, x+w, y+h, z+d, block.STONE.id)\nmc.setBlocks(x+1, y+1, z+1, x+w-1, y+h-1, z+d-1, block.AIR.id)\nmc.setBlocks(x+1, y, z+1, x+w-1, y, z+d-1, block.WOOD_PLANKS.id)\nmc.setBlocks(x+3, y+1, z, x+3, y+2, z, block.AIR.id)\nmc.setBlock(x+1, y+2, z+1, block.TORCH.id)\nmc.postToChat(\"Дом готов!\")",
+      "tip": "Меняй w, h, d — получишь дом другого размера."
+    },
+    {
+      "id": "tower",
+      "category": "buildings",
+      "title": "Башня",
+      "description": "Круглая башня с окнами",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nx, y, z = pos.x + 3, pos.y, pos.z + 3\nheight, r = 20, 3\n\nfor h in range(height):\n    for dx in range(-r, r+1):\n        for dz in range(-r, r+1):\n            dist = (dx*dx + dz*dz) ** 0.5\n            if r-1 < dist <= r:\n                b = block.GLASS.id if h % 4 == 3 else block.STONE.id\n                mc.setBlock(x+dx, y+h, z+dz, b)\nmc.postToChat(\"Башня готова!\")",
+      "tip": "Меняй height и r — высота и толщина башни."
+    },
+    {
+      "id": "street",
+      "category": "buildings",
+      "title": "Улица из домов",
+      "description": "5 домиков в ряд вдоль дороги",
+      "difficulty": "medium",
+      "code": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\n\ndef house(x, y, z):\n    mc.setBlocks(x, y, z, x+5, y+3, z+4, block.STONE.id)\n    mc.setBlocks(x+1, y+1, z+1, x+4, y+2, z+3, block.AIR.id)\n    mc.setBlocks(x+2, y+1, z, x+3, y+2, z, block.AIR.id)\n    mc.setBlock(x+1, y+2, z+1, block.TORCH.id)\n\nmc.setBlocks(pos.x, pos.y-1, pos.z, pos.x+44, pos.y-1, pos.z+2, 4)\nfor i in range(5):\n    house(pos.x + i*9, pos.y, pos.z + 4)\nmc.postToChat(\"Улица построена!\")",
+      "tip": "Добавь деревья между домами для уюта."
+    },
+    {
+      "id": "castle",
+      "category": "buildings",
+      "title": "Замок",
+      "description": "Замок со стенами, башнями и воротами",
+      "difficulty": "hard",
+      "code": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nx, y, z = pos.x + 5, pos.y, pos.z + 5\ns = 20\n\nmc.setBlocks(x, y, z, x+s, y+6, z, block.STONE.id)\nmc.setBlocks(x, y, z, x, y+6, z+s, block.STONE.id)\nmc.setBlocks(x+s, y, z, x+s, y+6, z+s, block.STONE.id)\nmc.setBlocks(x, y, z+s, x+s, y+6, z+s, block.STONE.id)\nfor tx, tz in [(x,z),(x+s,z),(x,z+s),(x+s,z+s)]:\n    for h in range(10):\n        mc.setBlock(tx, y+h, tz, block.STONE.id)\nmc.setBlocks(x+s//2-1, y+1, z, x+s//2+1, y+4, z, block.AIR.id)\nmc.postToChat(\"Замок построен!\")",
+      "tip": "Окружи замок рвом с водой для эпичности."
+    },
+    {
+      "id": "magic_bridge",
+      "category": "effects",
+      "title": "Волшебный мост",
+      "description": "Стекло появляется под ногами над пропастью",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\nimport time\n\nmc = minecraft.Minecraft.create()\nmc.postToChat(\"Волшебный мост активирован!\")\n\nwhile True:\n    pos = mc.player.getTilePos()\n    below = mc.getBlock(pos.x, pos.y - 1, pos.z)\n    if below == block.AIR.id or below == block.WATER.id:\n        mc.setBlock(pos.x, pos.y - 1, pos.z, block.GLASS.id)\n    time.sleep(0.1)",
+      "tip": "Останови программу клавишами Ctrl+C в IDLE."
+    },
+    {
+      "id": "sword_teleport",
+      "category": "effects",
+      "title": "Телепорт мечом",
+      "description": "Кликни мечом по блоку — окажешься там",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\nimport time\n\nmc = minecraft.Minecraft.create()\nmc.postToChat(\"Возьми меч и кликни по блоку!\")\n\nwhile True:\n    for e in mc.events.pollBlockHits():\n        mc.player.setTilePos(e.pos.x, e.pos.y + 1, e.pos.z)\n        mc.postToChat(\"Телепорт!\")\n    time.sleep(0.2)",
+      "tip": "Это правый клик мечом по любому блоку."
+    },
+    {
+      "id": "block_friend",
+      "category": "effects",
+      "title": "Блокфренд",
+      "description": "Алмазный блок ходит за тобой",
+      "difficulty": "medium",
+      "code": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\nimport time\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nfx, fy, fz = pos.x + 2, pos.y, pos.z\nmc.postToChat(\"У тебя теперь есть друг!\")\n\nwhile True:\n    pos = mc.player.getTilePos()\n    dx, dz = pos.x - fx, pos.z - fz\n    if 1 < abs(dx) + abs(dz) < 15:\n        mc.setBlock(fx, fy, fz, block.AIR.id)\n        if abs(dx) > abs(dz):\n            fx += 1 if dx > 0 else -1\n        else:\n            fz += 1 if dz > 0 else -1\n        fy = mc.getHeight(fx, fz)\n        mc.setBlock(fx, fy, fz, block.DIAMOND_BLOCK.id)\n    time.sleep(0.5)",
+      "tip": "Друг обходит препятствия по поверхности."
+    },
+    {
+      "id": "rainbow",
+      "category": "effects",
+      "title": "Радуга",
+      "description": "Дуга из цветной шерсти",
+      "difficulty": "medium",
+      "code": "import mcpi.minecraft as minecraft\nimport math\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\ncolors = [14, 1, 4, 5, 3, 11, 10]\nmc.postToChat(\"Рисую радугу...\")\n\nfor i, color in enumerate(colors):\n    r = 20 + i * 2\n    for angle in range(0, 181, 3):\n        rad = math.radians(angle)\n        x = int(r * math.cos(rad))\n        y = int(r * math.sin(rad))\n        mc.setBlock(pos.x + x, pos.y + y, pos.z, 35, color)\nmc.postToChat(\"Радуга готова!\")",
+      "tip": "Отойди и посмотри на радугу сбоку."
+    },
+    {
+      "id": "block_rain",
+      "category": "effects",
+      "title": "Дождь из блоков",
+      "description": "Случайные блоки падают с неба",
+      "difficulty": "medium",
+      "code": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\nimport random, time\n\nmc = minecraft.Minecraft.create()\nmc.postToChat(\"Дождь из блоков!\")\nblocks = [block.WOOL.id, block.GOLD_BLOCK.id, block.GLASS.id]\npos = mc.player.getTilePos()\n\nfor _ in range(50):\n    x = pos.x + random.randint(-10, 10)\n    z = pos.z + random.randint(-10, 10)\n    mc.setBlock(x, pos.y + 20, z, random.choice(blocks))\n    time.sleep(0.2)\nmc.postToChat(\"Дождь закончился!\")",
+      "tip": "Блоки падают по физике Minecraft."
+    },
+    {
+      "id": "hot_floor",
+      "category": "games",
+      "title": "Горячий пол",
+      "description": "Не наступи на лаву — игра на выживание",
+      "difficulty": "medium",
+      "code": "import mcpi.minecraft as minecraft\nimport mcpi.block as block\nimport random, time\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nsize, score = 10, 0\nmc.postToChat(\"ГОРЯЧИЙ ПОЛ! Не наступи на лаву!\")\nmc.setBlocks(pos.x, pos.y-1, pos.z, pos.x+size, pos.y-1, pos.z+size, 1)\n\nwhile True:\n    for _ in range(3):\n        rx = pos.x + random.randint(0, size)\n        rz = pos.z + random.randint(0, size)\n        mc.setBlock(rx, pos.y-1, rz, block.LAVA.id)\n    time.sleep(2)\n    p = mc.player.getTilePos()\n    if mc.getBlock(p.x, p.y-1, p.z) == block.LAVA.id:\n        mc.postToChat(\"GAME OVER! Очки: \" + str(score))\n        break\n    score += 1\n    mc.postToChat(\"Очки: \" + str(score))\n    mc.setBlocks(pos.x, pos.y-1, pos.z, pos.x+size, pos.y-1, pos.z+size, 1)",
+      "tip": "Больше лавы за раунд = выше сложность."
+    },
+    {
+      "id": "geozone",
+      "category": "games",
+      "title": "Геозона",
+      "description": "Бот реагирует, когда ты входишь в зону",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\nimport time\n\nmc = minecraft.Minecraft.create()\nzones = {\n    \"Безопасность\": (0, 0, 20, 20),\n    \"Опасность\": (21, 0, 40, 20),\n}\n\ndef inside(pos, x1, z1, x2, z2):\n    return x1 <= pos.x <= x2 and z1 <= pos.z <= z2\n\nmc.postToChat(\"Зоны активны!\")\nwhile True:\n    pos = mc.player.getTilePos()\n    for name, (x1, z1, x2, z2) in zones.items():\n        if inside(pos, x1, z1, x2, z2):\n            mc.postToChat(\"Ты в зоне: \" + name)\n            break\n    time.sleep(1)",
+      "tip": "Впиши координаты зон из своего мира (F3)."
+    },
+    {
+      "id": "chess_board",
+      "category": "games",
+      "title": "Шахматная доска",
+      "description": "Доска 8x8 из чёрной и белой шерсти",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\n\nfor x in range(8):\n    for z in range(8):\n        shade = 0 if (x + z) % 2 == 0 else 15\n        mc.setBlock(pos.x+x, pos.y, pos.z+z, 35, shade)\nmc.postToChat(\"Шахматная доска готова!\")",
+      "tip": "Замени оттенки 0 и 15 на свои цвета."
+    },
+    {
+      "id": "clear_area",
+      "category": "tools",
+      "title": "Очистить область",
+      "description": "Сносит всё вокруг в радиусе 10",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nr = 10\nmc.setBlocks(pos.x-r, pos.y, pos.z-r, pos.x+r, pos.y+20, pos.z+r, 0)\nmc.postToChat(\"Область очищена!\")",
+      "tip": "Увеличь r, чтобы расчистить больше."
+    },
+    {
+      "id": "scanner",
+      "category": "tools",
+      "title": "3D-сканер",
+      "description": "Сохраняет постройку в файл build.csv",
+      "difficulty": "hard",
+      "code": "import mcpi.minecraft as minecraft\nimport csv\n\nmc = minecraft.Minecraft.create()\n\ndef scan(x1, y1, z1, x2, y2, z2, filename):\n    count = 0\n    with open(filename, \"w\", newline=\"\") as f:\n        w = csv.writer(f)\n        for y in range(y1, y2+1):\n            for x in range(x1, x2+1):\n                for z in range(z1, z2+1):\n                    b = mc.getBlock(x, y, z)\n                    if b != 0:\n                        w.writerow([x-x1, y-y1, z-z1, b])\n                        count += 1\n    mc.postToChat(\"Сохранено блоков: \" + str(count))\n\npos = mc.player.getTilePos()\nscan(pos.x, pos.y, pos.z, pos.x+10, pos.y+10, pos.z+10, \"build.csv\")",
+      "tip": "Сначала определи границы постройки через F3."
+    },
+    {
+      "id": "printer",
+      "category": "tools",
+      "title": "3D-принтер",
+      "description": "Строит постройку из файла build.csv",
+      "difficulty": "hard",
+      "code": "import mcpi.minecraft as minecraft\nimport csv\n\nmc = minecraft.Minecraft.create()\n\ndef build(filename, sx, sy, sz):\n    count = 0\n    with open(filename) as f:\n        for row in csv.reader(f):\n            x, y, z, b = (int(v) for v in row)\n            mc.setBlock(sx+x, sy+y, sz+z, b)\n            count += 1\n    mc.postToChat(\"Построено блоков: \" + str(count))\n\npos = mc.player.getTilePos()\nbuild(\"build.csv\", pos.x, pos.y, pos.z)",
+      "tip": "Связка со сканером: сканируй → перейди → печатай."
+    },
+    {
+      "id": "stairway",
+      "category": "tools",
+      "title": "Лестница в небо",
+      "description": "Спиральная лестница на любую высоту",
+      "difficulty": "medium",
+      "code": "import mcpi.minecraft as minecraft\nimport math\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nheight, r = 50, 4\n\nfor h in range(height):\n    a = math.radians(h * 15)\n    x = int(r * math.cos(a))\n    z = int(r * math.sin(a))\n    mc.setBlock(pos.x+x, pos.y+h, pos.z+z, 44)\n    mc.setBlock(pos.x+x, pos.y+h+1, pos.z+z, 85)\nmc.postToChat(\"Лестница готова!\")",
+      "tip": "r — ширина спирали, 15 — шаг поворота."
+    },
+    {
+      "id": "sphere",
+      "category": "art",
+      "title": "Сфера",
+      "description": "Полая сфера из стекла",
+      "difficulty": "medium",
+      "code": "import mcpi.minecraft as minecraft\nimport math\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nr = 10\ncx, cy, cz = pos.x, pos.y + r + 2, pos.z\n\nfor x in range(-r, r+1):\n    for y in range(-r, r+1):\n        for z in range(-r, r+1):\n            if r-1 < math.sqrt(x*x + y*y + z*z) < r:\n                mc.setBlock(cx+x, cy+y, cz+z, 20)\nmc.postToChat(\"Сфера готова!\")",
+      "tip": "Для заполненной сферы: условие dist < r."
+    },
+    {
+      "id": "circle",
+      "category": "art",
+      "title": "Круг",
+      "description": "Плоский круг на земле",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\nimport math\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nr = 15\n\nfor x in range(-r, r+1):\n    for z in range(-r, r+1):\n        if math.sqrt(x*x + z*z) < r:\n            mc.setBlock(pos.x+x, pos.y, pos.z+z, 41)\nmc.postToChat(\"Золотой круг готов!\")",
+      "tip": "Для кольца добавь условие dist > r - 2."
+    },
+    {
+      "id": "spiral",
+      "category": "art",
+      "title": "Спираль",
+      "description": "3D-спираль из светящихся блоков",
+      "difficulty": "medium",
+      "code": "import mcpi.minecraft as minecraft\nimport math\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nheight, r = 40, 8\n\nfor i in range(height * 10):\n    t = i / 10\n    a = math.radians(t * 20)\n    x = int(r * math.cos(a))\n    z = int(r * math.sin(a))\n    mc.setBlock(pos.x+x, pos.y+int(t), pos.z+z, 89)\nmc.postToChat(\"Спираль готова!\")",
+      "tip": "Меняй 20 — скорость закрутки спирали."
+    },
+    {
+      "id": "heart",
+      "category": "art",
+      "title": "Пиксельное сердце",
+      "description": "Большое сердце из красной шерсти",
+      "difficulty": "easy",
+      "code": "import mcpi.minecraft as minecraft\n\nmc = minecraft.Minecraft.create()\npos = mc.player.getTilePos()\nheart = [\n    \"  XX XX  \",\n    \" XXXXXXX \",\n    \"XXXXXXXXX\",\n    \"XXXXXXXXX\",\n    \" XXXXXXX \",\n    \"  XXXXX  \",\n    \"   XXX   \",\n    \"    X    \",\n]\nfor y, row in enumerate(heart):\n    for x, ch in enumerate(row):\n        if ch == \"X\":\n            mc.setBlock(pos.x+x, pos.y+len(heart)-y, pos.z, 35, 14)\nmc.postToChat(\"Сердце готово!\")",
+      "tip": "Нарисуй свой рисунок, заменив X в схеме."
+    }
+  ]
+}

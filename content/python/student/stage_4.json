@@ -1,0 +1,416 @@
+{
+  "id": 4,
+  "title": "Web & API",
+  "subtitle": "Бэкенд, который отвечает",
+  "emoji": "🌐",
+  "lessons": [
+    {
+      "topic": "web",
+      "title": "FastAPI — первый эндпоинт",
+      "theory": "<b>FastAPI</b> — современный async-фреймворк для API. Декоратор привязывает функцию к URL; FastAPI сам валидирует вход, сериализует ответ в JSON и генерирует доки (/docs).",
+      "association": "🍽️ Эндпоинт — окно выдачи: URL это номер окна, функция — повар. Пришёл запрос → приготовил → выдал JSON.",
+      "real_example": "GET /users/42 отдаёт профиль, POST /orders создаёт заказ. На FastAPI работают тысячи прод-API; интерактивные доки /docs — бесплатно.",
+      "example": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/users/{user_id}')\nasync def get_user(user_id: int):\n    return {'id': user_id, 'name': 'Alex'}",
+      "code_explained": "• <code>@app.get('/users/{user_id}')</code> — маршрут с параметром пути.\n• <code>user_id: int</code> — FastAPI сам проверит, что это число.\n• Возврат dict → автоматически JSON.\n• /docs показывает интерактивную документацию.",
+      "common_mistakes": [
+        "Блокирующий код (time.sleep, requests) в async-эндпоинте.",
+        "Возвращать сырые ORM-объекты без схемы ответа.",
+        "Не задавать типы → нет валидации."
+      ],
+      "practice": {
+        "question": "Что делает @app.get('/path')?",
+        "options": [
+          "привязывает функцию к GET на этот URL",
+          "отправляет запрос",
+          "создаёт БД",
+          "рендерит HTML"
+        ],
+        "correct": 0,
+        "explanation": "Декоратор регистрирует маршрут.",
+        "topic": "web"
+      },
+      "quiz": {
+        "question": "В /users/abc передали не число при user_id: int. Что вернёт FastAPI?",
+        "options": [
+          "ошибку валидации 422",
+          "500",
+          "None",
+          "пустой JSON"
+        ],
+        "correct": 0,
+        "explanation": "Тип в сигнатуре = автоматическая валидация.",
+        "topic": "web"
+      },
+      "challenge": {
+        "question": "Почему requests.get внутри async-эндпоинта — плохо?",
+        "options": [
+          "блокирует event loop → падает пропускная способность",
+          "медленнее",
+          "не работает",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Нужен httpx/async-клиент.",
+        "topic": "web"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "web",
+      "title": "Pydantic v2 — валидация",
+      "theory": "<b>Pydantic</b> описывает форму данных классом и валидирует вход автоматически. FastAPI построен на нём: пришёл JSON → проверены типы и правила → ты работаешь с чистым объектом.",
+      "association": "🛂 Pydantic — паспортный контроль на входе в API: не прошёл проверку (нет email, возраст строкой) — заворачивают с понятной ошибкой.",
+      "real_example": "Схема регистрации: email — валидный, age ≥ 0, password ≥ 8 символов. Невалидный запрос отклоняется до бизнес-логики.",
+      "example": "from pydantic import BaseModel, EmailStr, Field\n\nclass SignUp(BaseModel):\n    email: EmailStr\n    age: int = Field(ge=0)\n    password: str = Field(min_length=8)",
+      "code_explained": "• <code>BaseModel</code> — базовый класс схемы.\n• <code>EmailStr</code> проверит формат email.\n• <code>Field(ge=0)</code> — возраст ≥ 0, <code>min_length=8</code> — пароль.\n• Невалидный вход → 422 с деталями, автоматически.",
+      "common_mistakes": [
+        "Валидировать руками вместо схемы.",
+        "Возвращать модель БД с паролем — нужна отдельная Response-схема.",
+        "Путать Pydantic v1 и v2 (синтаксис разный)."
+      ],
+      "practice": {
+        "question": "Что Pydantic делает с входящим JSON?",
+        "options": [
+          "валидирует и превращает в объект",
+          "сохраняет в БД",
+          "логирует",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Проверка типов/правил + парсинг.",
+        "topic": "web"
+      },
+      "quiz": {
+        "question": "Field(min_length=8) на password — что проверяет?",
+        "options": [
+          "что пароль не короче 8 символов",
+          "что он уникален",
+          "что он зашифрован",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Правило минимальной длины.",
+        "topic": "web"
+      },
+      "challenge": {
+        "question": "Почему ответ юзера лучше отдавать отдельной схемой, а не моделью БД?",
+        "options": [
+          "чтобы не отдать пароль/секретные поля",
+          "для скорости",
+          "так короче",
+          "обязательно"
+        ],
+        "correct": 0,
+        "explanation": "Response-схема контролирует, что выходит наружу.",
+        "topic": "web"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "web",
+      "title": "JWT-аутентификация",
+      "theory": "<b>JWT</b> — подписанный токен, который клиент носит с собой. Сервер не хранит сессии: проверяет подпись и доверяет содержимому (user_id). Stateless — легко масштабировать.",
+      "association": "🎫 JWT — браслет с фестиваля: на входе выдали подписанный браслет, дальше охрана проверяет подпись, не сверяясь со списком. Подделать без секрета нельзя.",
+      "real_example": "Логин → сервер выдаёт JWT → клиент шлёт его в заголовке на каждый запрос → сервер достаёт user_id из токена. Так работает почти любой SPA/мобильный бэкенд.",
+      "example": "import jwt\n\ntoken = jwt.encode({'user_id': 42}, SECRET, algorithm='HS256')\npayload = jwt.decode(token, SECRET, algorithms=['HS256'])\nprint(payload['user_id'])",
+      "code_explained": "• <code>jwt.encode(payload, SECRET)</code> — подписанный токен.\n• Клиент хранит его и шлёт в каждом запросе.\n• <code>jwt.decode</code> проверяет подпись секретом; подделан → ошибка.\n• Внутри user_id → серверу не нужна БД сессий.",
+      "common_mistakes": [
+        "Класть в JWT секреты: payload читается всеми (он подписан, не зашифрован).",
+        "Бессрочные токены без exp.",
+        "Хранить SECRET в коде/git."
+      ],
+      "practice": {
+        "question": "Хранит ли сервер JWT-сессии в БД?",
+        "options": [
+          "нет — JWT stateless",
+          "да, всегда",
+          "только refresh",
+          "зависит от БД"
+        ],
+        "correct": 0,
+        "explanation": "Проверка по подписи, без хранилища сессий.",
+        "topic": "web"
+      },
+      "quiz": {
+        "question": "Можно ли положить пароль в payload JWT?",
+        "options": [
+          "нет — payload читается всеми",
+          "да, он зашифрован",
+          "да, если короткий",
+          "только хеш"
+        ],
+        "correct": 0,
+        "explanation": "JWT подписан, но НЕ зашифрован.",
+        "topic": "web"
+      },
+      "challenge": {
+        "question": "Чем плох JWT без поля exp?",
+        "options": [
+          "токен вечный — украли = доступ навсегда",
+          "он невалиден",
+          "медленный",
+          "ничем"
+        ],
+        "correct": 0,
+        "explanation": "Нужен срок жизни + refresh-токен.",
+        "topic": "web"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "web",
+      "title": "OAuth2 (основы)",
+      "theory": "<b>OAuth2</b> — протокол «войти через Google/GitHub» без передачи пароля стороннему сайту. Сервис выдаёт токен с ограниченными правами (<b>scope</b>). FastAPI имеет встроенные схемы OAuth2.",
+      "association": "🅿️ OAuth2 — гостевой пропуск отеля: доступ к спортзалу и бассейну (scope), но не мастер-ключ от всех номеров. И пароль владельца не светится.",
+      "real_example": "«Войти через GitHub», доступ приложения к Google-календарю — пользователь разрешает конкретные права, не отдавая пароль.",
+      "example": "from fastapi.security import OAuth2PasswordBearer\nfrom fastapi import Depends\n\noauth2 = OAuth2PasswordBearer(tokenUrl='token')\n\n@app.get('/me')\nasync def me(token: str = Depends(oauth2)):\n    return decode_user(token)",
+      "code_explained": "• <code>OAuth2PasswordBearer</code> — токен в заголовке Authorization: Bearer ...\n• <code>Depends(oauth2)</code> — FastAPI достанет токен.\n• Нет токена → 401 автоматически.\n• decode_user проверяет токен и возвращает юзера.",
+      "common_mistakes": [
+        "Путать аутентификацию (кто ты) и авторизацию (что можно).",
+        "Запрашивать слишком широкий scope.",
+        "Не проверять срок/подпись токена."
+      ],
+      "practice": {
+        "question": "Что OAuth2 даёт вместо передачи пароля?",
+        "options": [
+          "ограниченный токен доступа (scope)",
+          "хеш пароля",
+          "cookie",
+          "сессию в БД"
+        ],
+        "correct": 0,
+        "explanation": "Делегированный доступ без пароля.",
+        "topic": "web"
+      },
+      "quiz": {
+        "question": "Что такое scope в OAuth2?",
+        "options": [
+          "набор разрешённых прав токена",
+          "срок жизни",
+          "имя юзера",
+          "тип шифрования"
+        ],
+        "correct": 0,
+        "explanation": "Scope ограничивает, что токену можно.",
+        "topic": "web"
+      },
+      "challenge": {
+        "question": "Чем отличается аутентификация от авторизации?",
+        "options": [
+          "кто ты vs что тебе разрешено",
+          "это синонимы",
+          "скорость vs память",
+          "вход vs выход"
+        ],
+        "correct": 0,
+        "explanation": "AuthN — личность; AuthZ — права.",
+        "topic": "web"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "web",
+      "title": "Middleware",
+      "theory": "<b>Middleware</b> — прослойка, через которую проходит КАЖДЫЙ запрос до и после хендлера. Идеально для сквозных задач: логирование, CORS, замер времени, обработка ошибок.",
+      "association": "🛂 Middleware — рамка металлоискателя: все проходят через неё перед залом (хендлером) и на выходе. Один контроль для всех.",
+      "real_example": "Логировать каждый запрос с временем ответа, добавлять CORS, ловить необработанные исключения — в одном месте, не дублируя в каждом эндпоинте.",
+      "example": "@app.middleware('http')\nasync def add_time(request, call_next):\n    start = time.time()\n    response = await call_next(request)\n    response.headers['X-Time'] = str(time.time() - start)\n    return response",
+      "code_explained": "• Код до <code>call_next</code> — выполняется ДО хендлера.\n• <code>await call_next(request)</code> — передаём запрос в эндпоинт.\n• Код после — выполняется ПОСЛЕ (добавляем заголовок).\n• Срабатывает для всех маршрутов сразу.",
+      "common_mistakes": [
+        "Тяжёлая логика в middleware → тормозит все запросы.",
+        "Забыть вернуть response.",
+        "Дублировать в каждом эндпоинте то, чему место в middleware."
+      ],
+      "practice": {
+        "question": "Через что проходит каждый запрос до хендлера?",
+        "options": [
+          "middleware",
+          "роутер БД",
+          "кеш",
+          "очередь"
+        ],
+        "correct": 0,
+        "explanation": "Middleware — общий слой на пути запроса.",
+        "topic": "web"
+      },
+      "quiz": {
+        "question": "Что делает await call_next(request)?",
+        "options": [
+          "передаёт запрос дальше (в эндпоинт)",
+          "закрывает соединение",
+          "логирует",
+          "валидирует"
+        ],
+        "correct": 0,
+        "explanation": "Это вызов следующего звена цепочки.",
+        "topic": "web"
+      },
+      "challenge": {
+        "question": "Логировать время ответа всех 50 эндпоинтов. Лучшее место?",
+        "options": [
+          "одно middleware",
+          "код в каждом эндпоинте",
+          "в БД-триггере",
+          "в Pydantic"
+        ],
+        "correct": 0,
+        "explanation": "Сквозную задачу решают одним middleware.",
+        "topic": "web"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "web",
+      "title": "Background tasks",
+      "theory": "Некоторые задачи (отправить email, отчёт) не нужны клиенту прямо сейчас. <b>Background task</b> выполняет их ПОСЛЕ ответа — клиент не ждёт. Для тяжёлого/гарантированного — очереди (Celery).",
+      "association": "📨 Background task — «отправлю письмо, как ты уйдёшь». Не держишь гостя у двери, пока пишешь письмо.",
+      "real_example": "После регистрации — мгновенный ответ юзеру, а welcome-email уходит фоном. Логи, уведомления, прогрев кеша — туда же.",
+      "example": "from fastapi import BackgroundTasks\n\n@app.post('/signup')\nasync def signup(bg: BackgroundTasks):\n    bg.add_task(send_welcome_email, 'a@b.com')\n    return {'ok': True}",
+      "code_explained": "• <code>BackgroundTasks</code> внедряется FastAPI.\n• <code>bg.add_task(func, args)</code> — поставить задачу.\n• <code>return</code> уходит клиенту СРАЗУ.\n• send_welcome_email выполнится после отправки ответа.",
+      "common_mistakes": [
+        "Гонять тяжёлые/долгие задачи в background-tasks (нужен Celery).",
+        "Рассчитывать на гарантию (упал процесс — задача потеряна).",
+        "Блокирующий код внутри задачи."
+      ],
+      "practice": {
+        "question": "Когда выполнится background task?",
+        "options": [
+          "после отправки ответа клиенту",
+          "до обработки запроса",
+          "никогда",
+          "в отдельной БД"
+        ],
+        "correct": 0,
+        "explanation": "Сначала ответ, потом фоновая работа.",
+        "topic": "web"
+      },
+      "quiz": {
+        "question": "Зачем слать welcome-email в фоне?",
+        "options": [
+          "клиент получает ответ мгновенно",
+          "email важнее ответа",
+          "для логов",
+          "это обязательно"
+        ],
+        "correct": 0,
+        "explanation": "Не заставляем юзера ждать отправку.",
+        "topic": "web"
+      },
+      "challenge": {
+        "question": "Почему для тяжёлой/гарантированной обработки нужен Celery?",
+        "options": [
+          "BackgroundTasks живут в процессе веб-сервера — упал = потеряно",
+          "Celery быстрее",
+          "так модно",
+          "FastAPI требует"
+        ],
+        "correct": 0,
+        "explanation": "Очередь переживает рестарт и масштабируется воркерами.",
+        "topic": "web"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "web",
+      "title": "WebSockets",
+      "theory": "HTTP — «запрос-ответ» и соединение закрылось. <b>WebSocket</b> — постоянное двустороннее соединение: сервер сам шлёт данные клиенту в реальном времени, без опроса.",
+      "association": "📞 WebSocket — телефонный звонок (линия открыта, говорят оба), а HTTP — обмен письмами (спросил-ответил-разошлись).",
+      "real_example": "Чат, онлайн-игры, котировки, индикатор «печатает...», live-уведомления — везде, где сервер пушит данные мгновенно.",
+      "example": "from fastapi import WebSocket\n\n@app.websocket('/ws')\nasync def ws(websocket: WebSocket):\n    await websocket.accept()\n    while True:\n        msg = await websocket.receive_text()\n        await websocket.send_text(f'echo: {msg}')",
+      "code_explained": "• <code>@app.websocket('/ws')</code> — ws-маршрут.\n• <code>accept()</code> — принимаем соединение.\n• <code>receive_text()</code> — ждём сообщение клиента.\n• <code>send_text()</code> — шлём обратно; цикл держит линию.",
+      "common_mistakes": [
+        "Брать WebSocket там, где хватит обычного запроса.",
+        "Не обрабатывать дисконнект клиента.",
+        "Хранить соединения без учёта нескольких воркеров (нужен Redis pub/sub)."
+      ],
+      "practice": {
+        "question": "Чем WebSocket отличается от HTTP-запроса?",
+        "options": [
+          "постоянное двустороннее соединение",
+          "он быстрее",
+          "только для картинок",
+          "ничем"
+        ],
+        "correct": 0,
+        "explanation": "Сервер может слать данные сам, в любой момент.",
+        "topic": "web"
+      },
+      "quiz": {
+        "question": "Когда нужен WebSocket, а не REST?",
+        "options": [
+          "когда сервер пушит данные в реальном времени",
+          "для CRUD",
+          "для файлов",
+          "всегда"
+        ],
+        "correct": 0,
+        "explanation": "Чат, котировки, live-обновления.",
+        "topic": "web"
+      },
+      "challenge": {
+        "question": "Чат на 3 воркерах: юзеры на разных воркерах не видят сообщения. Решение?",
+        "options": [
+          "общий канал — Redis pub/sub",
+          "больше воркеров",
+          "WebSocket не подходит",
+          "опрос БД"
+        ],
+        "correct": 0,
+        "explanation": "Нужна шина сообщений между процессами.",
+        "topic": "web"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "web",
+      "title": "Server-Sent Events (SSE)",
+      "theory": "<b>SSE</b> — односторонний поток сервер→клиент поверх обычного HTTP. Легче WebSocket, когда нужно только вещать (без ответов): прогресс, лента, стриминг.",
+      "association": "📻 SSE — радио: станция вещает, ты слушаешь. WebSocket — рация (говорят оба). Нужно лишь принимать — радио проще.",
+      "real_example": "Прогресс-бар долгой операции, лента уведомлений, стриминг ответа LLM по токенам — сервер шлёт события, клиент слушает.",
+      "example": "from sse_starlette.sse import EventSourceResponse\n\n@app.get('/events')\nasync def events():\n    async def gen():\n        for i in range(3):\n            yield {'data': f'tick {i}'}\n            await asyncio.sleep(1)\n    return EventSourceResponse(gen())",
+      "code_explained": "• Генератор <code>gen()</code> выдаёт события по одному.\n• <code>yield {'data': ...}</code> — одно событие клиенту.\n• <code>await asyncio.sleep(1)</code> — поток держится открытым.\n• Клиент (EventSource) получает события в реальном времени.",
+      "common_mistakes": [
+        "Брать SSE, когда нужен и обратный канал (тогда WebSocket).",
+        "Забыть, что SSE поверх HTTP (лимиты соединений).",
+        "Не закрывать поток."
+      ],
+      "practice": {
+        "question": "SSE — поток в каком направлении?",
+        "options": [
+          "сервер → клиент (односторонний)",
+          "клиент → сервер",
+          "двусторонний",
+          "peer-to-peer"
+        ],
+        "correct": 0,
+        "explanation": "Только вещание от сервера.",
+        "topic": "web"
+      },
+      "quiz": {
+        "question": "Когда SSE лучше WebSocket?",
+        "options": [
+          "нужен только поток сервер→клиент",
+          "нужен чат",
+          "нужны бинарные данные",
+          "всегда"
+        ],
+        "correct": 0,
+        "explanation": "Для одностороннего стрима SSE проще.",
+        "topic": "web"
+      },
+      "challenge": {
+        "question": "Стриминг ответа LLM по токенам в браузер: SSE или WebSocket?",
+        "options": [
+          "SSE — данные идут только от сервера",
+          "WebSocket обязателен",
+          "ни то ни другое",
+          "обычный GET"
+        ],
+        "correct": 0,
+        "explanation": "Обратный канал не нужен → SSE достаточно.",
+        "topic": "web"
+      },
+      "xp": 50
+    }
+  ]
+}

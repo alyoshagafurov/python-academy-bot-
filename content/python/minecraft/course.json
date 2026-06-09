@@ -1,0 +1,14 @@
+{
+  "id": "python_minecraft",
+  "language": "python",
+  "track": "minecraft",
+  "title": "Minecraft + Python",
+  "emoji": "🟩",
+  "description": "Программируй свой мир: учим Python, управляя Minecraft — от первой команды до своих проектов.",
+  "stages": [
+    "stage_1",
+    "stage_2",
+    "stage_3",
+    "stage_4"
+  ]
+}

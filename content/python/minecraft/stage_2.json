@@ -1,0 +1,332 @@
+{
+  "id": 2,
+  "title": "Данные и переменные",
+  "subtitle": "Числа, строки, списки, словари",
+  "emoji": "🔵",
+  "lessons": [
+    {
+      "topic": "types",
+      "title": "Числа и арифметика",
+      "theory": "Python считает: <code>+</code> <code>-</code> <code>*</code> <code>/</code>, целочисленное деление <code>//</code>, остаток <code>%</code> и степень <code>**</code>. С математикой можно считать объёмы и строить точные фигуры.",
+      "association": "🧮 Операторы — это калькулятор внутри кода: <code>**</code> возводит в степень, <code>//</code> делит без остатка.",
+      "real_example": "🎮 Миссия: спроси длину стороны и построй из неё куб, а в чат выведи его объём.",
+      "example": "side = int(input(\"Сторона куба: \"))\nmc.postToChat(f\"Объём: {side ** 3}\")\npos = mc.player.getTilePos()\nfor x in range(side):\n    for y in range(side):\n        for z in range(side):\n            mc.setBlock(pos.x+x, pos.y+y, pos.z+z, block.GLASS.id)",
+      "code_explained": "• <code>side ** 3</code> — сторона в кубе (объём).\n• Три вложенных цикла дают объём (3D).\n• <code>//</code> пригодится для симметрии и середин.",
+      "common_mistakes": [
+        "Путать <code>/</code> (с остатком, float) и <code>//</code> (целое).",
+        "Считать <code>**</code> умножением — это степень.",
+        "Строить куб с огромной стороной — мир не резиновый."
+      ],
+      "quiz": {
+        "question": "Чему равно 2 ** 3?",
+        "options": [
+          "8",
+          "6",
+          "9",
+          "5"
+        ],
+        "correct": 0,
+        "explanation": "** — это степень: 2 в кубе = 2·2·2 = 8.",
+        "topic": "types"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "strings",
+      "title": "Строки и методы",
+      "theory": "Строка — это текст. У строк есть методы: <code>.upper()</code> (ЗАГЛАВНЫЕ), <code>.lower()</code> (строчные), <code>.replace(a, b)</code> (замена), <code>.split()</code> (разбить на слова), <code>len()</code> (длина). Строки <b>неизменяемы</b> — методы возвращают новую строку.",
+      "association": "🔤 Методы строк — это фильтры в фоторедакторе: исходник не меняется, получаешь новую версию.",
+      "real_example": "🎮 Миссия: спроси имя игрока и поприветствуй его ЗАГЛАВНЫМИ буквами в чате.",
+      "example": "name = input(\"Имя: \")\nmc.postToChat(f\"Привет, {name.upper()}!\")\nmc.postToChat(f\"В имени {len(name)} букв\")",
+      "code_explained": "• <code>name.upper()</code> — копия имени заглавными.\n• <code>len(name)</code> — количество символов.\n• Исходная переменная <code>name</code> не меняется.",
+      "common_mistakes": [
+        "Думать, что <code>.upper()</code> меняет саму переменную.",
+        "Забыть скобки: <code>name.upper</code> без <code>()</code> не вызовет метод.",
+        "Применять <code>len()</code> как метод: <code>name.len()</code> — неверно."
+      ],
+      "quiz": {
+        "question": "Что вернёт 'mc'.upper()?",
+        "options": [
+          "MC",
+          "mc",
+          "Mc",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "upper() возвращает строку заглавными буквами: 'MC'.",
+        "topic": "strings"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "lists",
+      "title": "Списки и операции",
+      "theory": "Список хранит много значений и легко меняется: <code>.append(x)</code> добавляет в конец, <code>.pop()</code> убирает последний, <code>len()</code> считает элементы, <code>in</code> проверяет наличие. Удобно копить координаты поставленных блоков.",
+      "association": "🎒 Список — это рюкзак: <code>append</code> — положить вещь, <code>pop</code> — достать последнюю.",
+      "real_example": "🎮 Миссия: поставь 5 блоков, запомни их координаты в список и выведи, сколько их.",
+      "example": "blocks = []\npos = mc.player.getTilePos()\nfor i in range(5):\n    mc.setBlock(pos.x + i, pos.y, pos.z, block.GOLD_BLOCK.id)\n    blocks.append((pos.x + i, pos.y, pos.z))\nmc.postToChat(f\"Поставлено: {len(blocks)}\")",
+      "code_explained": "• <code>blocks = []</code> — пустой список.\n• <code>.append((...))</code> добавляет координаты блока.\n• <code>len(blocks)</code> — сколько блоков накопили.",
+      "common_mistakes": [
+        "Менять список во время цикла <code>for</code> по нему.",
+        "Путать <code>append</code> (добавить) и <code>pop</code> (убрать).",
+        "Обратиться к <code>blocks[5]</code>, когда элементов 0..4."
+      ],
+      "quiz": {
+        "question": "Что делает list.append(x)?",
+        "options": [
+          "Добавляет x в конец",
+          "Удаляет x",
+          "Сортирует",
+          "Считает длину"
+        ],
+        "correct": 0,
+        "explanation": "append добавляет элемент в конец списка.",
+        "topic": "lists"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "dict",
+      "title": "Словари: ключ → значение",
+      "theory": "Словарь хранит пары <b>ключ: значение</b>. Идеально для связки «имя блока → ID». Доступ по ключу мгновенный: <code>blocks['stone']</code>. Проверка наличия — через <code>in</code>.",
+      "association": "📒 Словарь — это телефонная книга: по имени (ключу) сразу находишь номер (значение).",
+      "real_example": "🎮 Миссия: сделай словарь блоков и ставь блок по его имени, введённому игроком.",
+      "example": "blocks = {\"камень\": block.STONE.id, \"золото\": block.GOLD_BLOCK.id}\nname = input(\"Какой блок? \")\npos = mc.player.getTilePos()\nif name in blocks:\n    mc.setBlock(pos.x, pos.y, pos.z, blocks[name])\nelse:\n    mc.postToChat(\"Не знаю такой блок\")",
+      "code_explained": "• <code>{ключ: значение}</code> — создание словаря.\n• <code>name in blocks</code> — есть ли такой ключ.\n• <code>blocks[name]</code> — значение по ключу.",
+      "common_mistakes": [
+        "Обратиться к <code>blocks[name]</code>, когда ключа нет — будет ошибка.",
+        "Делать ключи неуникальными — последний перезапишет.",
+        "Путать ключи и значения местами."
+      ],
+      "quiz": {
+        "question": "Как безопасно проверить ключ в словаре?",
+        "options": [
+          "name in blocks",
+          "blocks[name]",
+          "blocks.find",
+          "len(blocks)"
+        ],
+        "correct": 0,
+        "explanation": "Оператор in проверяет наличие ключа без ошибки.",
+        "topic": "dict"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "conditions",
+      "title": "Булевы значения и сравнения",
+      "theory": "Сравнения дают <b>True</b> или <b>False</b>: <code>==</code> равно, <code>!=</code> не равно, <code>&gt;</code> больше, <code>&lt;</code> меньше, <code>&gt;=</code>, <code>&lt;=</code>. Это основа всех условий — на них держится логика игры.",
+      "association": "🚦 Сравнение — это вопрос «да или нет»: <code>5 &gt; 3</code> → True, мир отвечает «да».",
+      "real_example": "🎮 Миссия: проверь, стоит ли игрок в зоне X от 0 до 100, и сообщи об этом.",
+      "example": "pos = mc.player.getTilePos()\ninside = pos.x >= 0 and pos.x <= 100\nmc.postToChat(f\"В зоне: {inside}\")",
+      "code_explained": "• <code>pos.x &gt;= 0</code> и <code>pos.x &lt;= 100</code> — два сравнения.\n• <code>and</code> объединяет их.\n• Результат — <code>True</code> или <code>False</code>.",
+      "common_mistakes": [
+        "Путать <code>=</code> (присвоить) и <code>==</code> (сравнить).",
+        "Писать <code>True</code> с маленькой буквы.",
+        "Сравнивать строку и число без конвертации."
+      ],
+      "quiz": {
+        "question": "Чему равно 5 != 5?",
+        "options": [
+          "False",
+          "True",
+          "0",
+          "5"
+        ],
+        "correct": 0,
+        "explanation": "!= значит «не равно». 5 равно 5, поэтому 5 != 5 — это False.",
+        "topic": "conditions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "conversion",
+      "title": "Конвертация типов",
+      "theory": "Тип значения можно менять: <code>int('5')</code>→5, <code>str(5)</code>→'5', <code>float('3.14')</code>→3.14. Без конвертации не сложить введённое число и не собрать сообщение из числа.",
+      "association": "🔄 Конвертация — обмен валюты: то же значение, другой формат.",
+      "real_example": "🎮 Миссия: спроси два числа, сложи их и выведи сумму в чат.",
+      "example": "a = int(input(\"Первое: \"))\nb = int(input(\"Второе: \"))\nmc.postToChat(\"Сумма: \" + str(a + b))",
+      "code_explained": "• <code>int(input())</code> — строку превращаем в число.\n• <code>str(a + b)</code> — число обратно в строку для склейки.\n• Без <code>str()</code> нельзя сложить число и текст.",
+      "common_mistakes": [
+        "<code>int('abc')</code> — ошибка, строка не число.",
+        "Складывать строку и число без <code>str()</code>.",
+        "Терять дробь: <code>int(3.9)</code> = 3, а не 4."
+      ],
+      "quiz": {
+        "question": "Во что превратит int('7')?",
+        "options": [
+          "Число 7",
+          "Строку '7'",
+          "7.0",
+          "Ошибку"
+        ],
+        "correct": 0,
+        "explanation": "int('7') возвращает целое число 7.",
+        "topic": "conversion"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "lists",
+      "title": "Сложные структуры данных",
+      "theory": "Структуры можно вкладывать: <b>список словарей</b> отлично описывает набор построек, где у каждой есть имя и координаты. Перебираем циклом и обращаемся по ключу.",
+      "association": "🗂️ Список словарей — это каталог: каждая карточка (словарь) описывает один объект.",
+      "real_example": "🎮 Миссия: храни 2 постройки как список словарей и выведи их координаты.",
+      "example": "builds = [\n    {\"name\": \"Башня\", \"x\": 10, \"z\": 10},\n    {\"name\": \"Мост\", \"x\": 20, \"z\": 15},\n]\nfor b in builds:\n    mc.postToChat(f\"{b['name']}: X={b['x']} Z={b['z']}\")",
+      "code_explained": "• <code>builds</code> — список из словарей.\n• <code>for b in builds</code> — перебор построек.\n• <code>b['name']</code> — доступ к полю словаря.",
+      "common_mistakes": [
+        "Путать скобки: список <code>[]</code>, словарь <code>{}</code>.",
+        "Обращаться к несуществующему ключу.",
+        "Забыть кавычки у строкового ключа."
+      ],
+      "quiz": {
+        "question": "Что такое список словарей?",
+        "options": [
+          "Список, где элементы — словари",
+          "Словарь списков",
+          "Два списка",
+          "Ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Это список, каждый элемент которого — отдельный словарь (карточка).",
+        "topic": "lists"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "functions",
+      "title": "Модуль math: круги и фигуры",
+      "theory": "Модуль <code>math</code> даёт математику: <code>math.sqrt(x)</code> — корень, <code>math.floor</code>/<code>ceil</code> — округление, <code>math.pi</code> — число пи. С корнем можно вычислять расстояние и рисовать круги.",
+      "association": "📐 <code>math</code> — это набор чертёжных инструментов: циркуль (круг), линейка (расстояние).",
+      "real_example": "🎮 Миссия: нарисуй на земле круг заданного радиуса из золота.",
+      "example": "import math\nr = int(input(\"Радиус: \"))\npos = mc.player.getTilePos()\nfor x in range(-r, r + 1):\n    for z in range(-r, r + 1):\n        if math.sqrt(x*x + z*z) < r:\n            mc.setBlock(pos.x+x, pos.y, pos.z+z, block.GOLD_BLOCK.id)",
+      "code_explained": "• <code>math.sqrt(x*x + z*z)</code> — расстояние от центра.\n• Если оно меньше радиуса — точка внутри круга.\n• Координаты должны быть целыми (range даёт целые).",
+      "common_mistakes": [
+        "Забыть <code>import math</code>.",
+        "Сравнивать с <code>r</code> неверно: <code>&lt;= r</code> даст круг чуть больше.",
+        "Передавать в setBlock дробные координаты."
+      ],
+      "quiz": {
+        "question": "Что вернёт math.sqrt(9)?",
+        "options": [
+          "3.0",
+          "81",
+          "9",
+          "4.5"
+        ],
+        "correct": 0,
+        "explanation": "sqrt — квадратный корень: корень из 9 равен 3.",
+        "topic": "functions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "tools",
+      "title": "Модуль time: анимация",
+      "theory": "<code>time.sleep(секунды)</code> делает паузу. Без паузы блоки ставятся мгновенно; с паузой получается <b>анимация</b> — блок за блоком, как в мультике.",
+      "association": "⏱️ <code>sleep</code> — это стоп-кадр: задержка между кадрами и есть мультфильм.",
+      "real_example": "🎮 Миссия: построй башню, где блоки появляются по одному каждые полсекунды.",
+      "example": "import time\npos = mc.player.getTilePos()\nfor i in range(10):\n    mc.setBlock(pos.x, pos.y + i, pos.z, block.STONE.id)\n    time.sleep(0.5)",
+      "code_explained": "• <code>time.sleep(0.5)</code> — пауза полсекунды.\n• Пауза в цикле = анимация роста.\n• Слишком короткая пауза (&lt; 0.1) грузит процессор.",
+      "common_mistakes": [
+        "Забыть <code>import time</code>.",
+        "Ставить паузу 0 — анимации не будет.",
+        "Делать паузу слишком большой — скучно ждать."
+      ],
+      "quiz": {
+        "question": "Что делает time.sleep(1)?",
+        "options": [
+          "Пауза на 1 секунду",
+          "Ставит 1 блок",
+          "Ускоряет код",
+          "Спит навсегда"
+        ],
+        "correct": 0,
+        "explanation": "sleep(1) приостанавливает программу на 1 секунду.",
+        "topic": "tools"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "comprehension",
+      "title": "List comprehension",
+      "theory": "<b>List comprehension</b> создаёт список одной строкой: <code>[выражение for x in последовательность]</code>. Можно добавить фильтр <code>if</code>. Компактно и читаемо — если не переусердствовать.",
+      "association": "✨ Comprehension — это фабрика-автомат: задал правило, и список собрался сам.",
+      "real_example": "🎮 Миссия: собери список квадратов чисел 0..9 и выведи его в чат.",
+      "example": "squares = [i * i for i in range(10)]\nmc.postToChat(str(squares))\n\neven = [x for x in range(10) if x % 2 == 0]\nmc.postToChat(str(even))",
+      "code_explained": "• <code>[i*i for i in range(10)]</code> — список квадратов.\n• <code>if x % 2 == 0</code> — фильтр (только чётные).\n• Заменяет цикл с <code>append</code> одной строкой.",
+      "common_mistakes": [
+        "Делать слишком сложные comprehension — теряется читаемость.",
+        "Забыть, что результат — список (для вывода нужен <code>str()</code>).",
+        "Путать порядок: сначала выражение, потом <code>for</code>."
+      ],
+      "quiz": {
+        "question": "Что создаст [i for i in range(3)]?",
+        "options": [
+          "[0, 1, 2]",
+          "[1, 2, 3]",
+          "[3]",
+          "range(3)"
+        ],
+        "correct": 0,
+        "explanation": "range(3) даёт 0,1,2 — comprehension соберёт их в список.",
+        "topic": "comprehension"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "types",
+      "title": "Повторение модулей 1-2",
+      "theory": "Закрепим пройденное: <b>типы</b> (int, float, str, bool), <b>структуры</b> (список, словарь), <b>ввод/вывод</b> и <b>преобразования</b>. Понимание этих основ — фундамент всего курса.",
+      "association": "🔁 Повторение — это тренировка перед матчем: разогрел всё, что умеешь, чтобы играть уверенно.",
+      "real_example": "🎮 Миссия: посчитай, сколько РАЗНЫХ блоков под линией из 5 клеток.",
+      "example": "pos = mc.player.getTilePos()\ntypes = {mc.getBlock(pos.x + i, pos.y - 1, pos.z) for i in range(5)}\nmc.postToChat(f\"Разных блоков: {len(types)}\")",
+      "code_explained": "• <code>{...}</code> здесь — множество (set), хранит только уникальные.\n• <code>len(types)</code> — сколько уникальных типов блоков.\n• Set автоматически убирает повторы.",
+      "common_mistakes": [
+        "Путать множество <code>{}</code> и словарь <code>{}</code> (у словаря — пары).",
+        "Думать, что set хранит порядок.",
+        "Забывать, что getBlock возвращает число (ID)."
+      ],
+      "quiz": {
+        "question": "Что хранит множество (set)?",
+        "options": [
+          "Только уникальные значения",
+          "Пары ключ-значение",
+          "Упорядоченный список",
+          "Текст"
+        ],
+        "correct": 0,
+        "explanation": "Множество хранит уникальные элементы, повторы отбрасываются.",
+        "topic": "types"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "functions",
+      "title": "Проект модуля 2: авто-ферма",
+      "theory": "Большой проект: <b>ввод</b> размеров, <b>вложенные циклы</b>, <b>условие</b> для каналов воды. Построим грядку с пшеницей и поливом — как настоящая ферма в Minecraft.",
+      "association": "🌾 Ферма — это система: земля, вода и посевы работают вместе по правилам.",
+      "real_example": "🎮 Миссия: спроси ширину и длину поля, засей пшеницей, через каждые 4 клетки — вода.",
+      "example": "w = int(input(\"Ширина: \"))\nL = int(input(\"Длина: \"))\npos = mc.player.getTilePos()\nfor x in range(w):\n    for z in range(L):\n        if x % 4 == 0:\n            mc.setBlock(pos.x+x, pos.y-1, pos.z+z, block.WATER.id)\n        else:\n            mc.setBlock(pos.x+x, pos.y-1, pos.z+z, 60)\n            mc.setBlock(pos.x+x, pos.y, pos.z+z, 59)",
+      "code_explained": "• <code>x % 4 == 0</code> — каждый 4-й ряд делаем водой.\n• ID 60 — вспаханная земля, 59 — пшеница.\n• Вода нужна, чтобы посевы росли.",
+      "common_mistakes": [
+        "Лить воду на каждую клетку — посевы смоет.",
+        "Сажать пшеницу без земли под ней.",
+        "Путать <code>%</code> (остаток) с <code>//</code>."
+      ],
+      "quiz": {
+        "question": "Что значит x % 4 == 0?",
+        "options": [
+          "Каждый 4-й ряд",
+          "Все ряды",
+          "Последний ряд",
+          "Ни одного"
+        ],
+        "correct": 0,
+        "explanation": "Остаток от деления на 4 равен 0 у рядов 0, 4, 8 — каждый четвёртый.",
+        "topic": "functions"
+      },
+      "xp": 30
+    }
+  ]
+}

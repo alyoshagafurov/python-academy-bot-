@@ -1,0 +1,83 @@
+{
+  "id": 5,
+  "title": "Вёрстка и сетки",
+  "subtitle": "Расположение элементов",
+  "emoji": "📐",
+  "lessons": [
+    {
+      "topic": "layout",
+      "title": "Box model: margin, padding, border",
+      "theory": "Каждый элемент — это <b>коробка</b>: содержимое, вокруг него <code>padding</code> (внутренний отступ), затем <code>border</code> (рамка) и <code>margin</code> (внешний отступ между коробками).",
+      "association": "🎁 Подарок: сам предмет — контент, обёрточная бумага вплотную — padding, коробка — border, расстояние до других подарков на полке — margin.",
+      "real_example": "Отступы внутри кнопки (padding) делают её «воздушной», а margin между карточками не даёт им слипаться.",
+      "example": ".card {\n  padding: 16px;\n  border: 1px solid gray;\n  margin: 8px;\n}",
+      "code_explained": "• <code>padding</code> — отступ ВНУТРИ, между рамкой и текстом.\n• <code>border</code> — рамка: толщина, тип, цвет.\n• <code>margin</code> — отступ СНАРУЖИ, между элементами.\n• Запомни порядок изнутри наружу: content → padding → border → margin.",
+      "common_mistakes": [
+        "Путать padding (внутри) и margin (снаружи).",
+        "Удивляться, что элемент шире из-за padding (см. box-sizing).",
+        "Лепить отступы то margin, то padding бессистемно."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "layout",
+      "title": "display: block, inline, none",
+      "theory": "Свойство <code>display</code> управляет поведением коробки: <code>block</code> — во всю ширину с новой строки, <code>inline</code> — в строке, <code>inline-block</code> — в строке, но с размерами, <code>none</code> — спрятать совсем.",
+      "association": "🚦 display — режим элемента: block — занять целую полосу, inline — встать в общий поток, none — стать невидимкой.",
+      "real_example": "display:none скрывает мобильное меню до клика; inline-block выстраивает кнопки в ряд с заданными размерами.",
+      "example": ".menu { display: none; }\n.tag {\n  display: inline-block;\n  width: 80px;\n}",
+      "code_explained": "• <code>block</code> — новый ряд, во всю ширину (div, p).\n• <code>inline</code> — в строке, ширину не задать (span, a).\n• <code>inline-block</code> — в строке, но размеры работают.\n• <code>none</code> — элемент исчезает и не занимает места.",
+      "common_mistakes": [
+        "Пытаться задать ширину inline-элементу (не сработает).",
+        "Путать display:none (нет в потоке) и visibility:hidden (место остаётся).",
+        "Забывать вернуть display при показе скрытого блока."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "layout",
+      "title": "Flexbox — выравнивание в ряд",
+      "theory": "<b>Flexbox</b> выстраивает элементы в ряд или колонку и легко их выравнивает. Родителю задают <code>display: flex</code>, направление — <code>flex-direction</code>, выравнивание — <code>justify-content</code> и <code>align-items</code>.",
+      "association": "🚌 Flex — рассадка пассажиров в ряд: можно прижать к началу, к концу, раскидать равномерно или прибить к центру.",
+      "real_example": "Шапка сайта «логотип слева, меню справа», ряд карточек, центрирование кнопки — почти всегда Flexbox.",
+      "example": ".header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}",
+      "code_explained": "• <code>display: flex</code> на родителе включает флекс.\n• <code>justify-content</code> — выравнивание по главной оси (лево/центр/между).\n• <code>align-items: center</code> — по поперечной оси (вертикально по центру).\n• <code>flex-direction: column</code> — выстроить в колонку.",
+      "common_mistakes": [
+        "Задавать flex дочернему элементу вместо родителя-контейнера.",
+        "Путать justify-content (главная ось) и align-items (поперечная).",
+        "Забыть, что ось зависит от flex-direction."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "layout",
+      "title": "CSS Grid — сетки",
+      "theory": "<b>Grid</b> — двумерная сетка из строк и колонок. На родителе: <code>display: grid</code> и <code>grid-template-columns</code> с шириной колонок. Идеален для галерей и сложных раскладок.",
+      "association": "♟️ Grid — шахматная доска: ты заранее расчерчиваешь клетки (строки и колонки), а элементы занимают свои клетки.",
+      "real_example": "Галерея фото 3 в ряд, сетка товаров в магазине, дашборд с плитками — это CSS Grid.",
+      "example": ".gallery {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  gap: 10px;\n}",
+      "code_explained": "• <code>display: grid</code> включает сетку.\n• <code>grid-template-columns: 1fr 1fr 1fr</code> — три равные колонки.\n• <code>fr</code> — доля свободного места.\n• <code>gap</code> — расстояние между ячейками.",
+      "common_mistakes": [
+        "Использовать Grid там, где хватило бы простого Flexbox (ряд).",
+        "Забыть gap и получить слипшиеся ячейки.",
+        "Путать колонки (columns) и строки (rows)."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "layout",
+      "title": "Адаптивность: media queries",
+      "theory": "<b>Media queries</b> применяют стили в зависимости от ширины экрана — так сайт выглядит хорошо и на телефоне, и на мониторе. Это основа <b>адаптивного</b> дизайна (responsive).",
+      "association": "📱↔️🖥️ Media query — гардероб по погоде: узкий экран — одна «одежда» (колонка), широкий — другая (несколько колонок).",
+      "real_example": "На телефоне меню сворачивается в одну колонку, на десктопе разворачивается в ряд — это media queries.",
+      "example": ".menu {\n  display: flex;\n}\n@media (max-width: 600px) {\n  .menu {\n    flex-direction: column;\n  }\n}",
+      "code_explained": "• <code>@media (max-width: 600px)</code> — стили для экранов уже 600px.\n• Внутри — обычные правила, которые перекрывают базовые.\n• Так на телефоне меню становится колонкой.\n• Не забудь &lt;meta viewport&gt; в HTML — без него media queries «не чувствуют» телефон.",
+      "common_mistakes": [
+        "Забыть meta viewport → адаптив не работает на телефоне.",
+        "Делать слишком много брейкпоинтов вместо пары ключевых.",
+        "Проектировать только под десктоп, забывая про мобильные."
+      ],
+      "xp": 20
+    }
+  ]
+}

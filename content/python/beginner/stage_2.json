@@ -1,0 +1,535 @@
+{
+  "id": 2,
+  "title": "Контейнеры и циклы",
+  "subtitle": "Данные и повторения",
+  "emoji": "📍",
+  "lessons": [
+    {
+      "topic": "lists",
+      "title": "list — списки",
+      "theory": "Список (<b>list</b>) — рюкзак 🎒: упорядоченный набор, который можно менять. Доступ по индексу, счёт с <b>0</b>.",
+      "association": "🎒 list — рюкзак: много вещей по порядку, нумерация с нуля.",
+      "real_example": "Плейлист песен, список покупок, участники чата.",
+      "example": "bag = ['книга', 'ключи', 'вода']\nprint(bag[0])\nbag.append('зонт')\nprint(len(bag))",
+      "code_explained": "• <code>[...]</code> — список.\n• <code>bag[0]</code> → книга (счёт с 0).\n• <code>append</code> добавляет в конец.\n• <code>len</code> → 4.",
+      "common_mistakes": [
+        "Думать, что счёт начинается с 1 (на самом деле с 0).",
+        "<code>bag[10]</code> при 3 элементах — IndexError.",
+        "Забыть кавычки у строковых элементов."
+      ],
+      "practice": {
+        "question": "Что лежит на месте [0]?",
+        "options": [
+          "яблоко",
+          "банан",
+          "сок",
+          "0"
+        ],
+        "correct": 0,
+        "explanation": "Счёт с 0 → яблоко.",
+        "topic": "lists",
+        "code": "f = ['яблоко', 'банан', 'сок']\nprint(f[0])"
+      },
+      "quiz": {
+        "question": "Что делает метод append?",
+        "options": [
+          "добавляет в конец",
+          "удаляет элемент",
+          "сортирует",
+          "считает длину"
+        ],
+        "correct": 0,
+        "explanation": "append добавляет элемент в конец списка.",
+        "topic": "lists"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "3",
+          "2",
+          "30",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "append добавил 30 → список из 3 элементов → len = 3.",
+        "topic": "lists",
+        "code": "a = [10, 20]\na.append(30)\nprint(len(a))"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "tuple",
+      "title": "tuple — кортежи",
+      "theory": "Кортеж (<b>tuple</b>) — как список, но <b>неизменяемый</b> 📌. Создаётся в круглых скобках. Подходит для данных, которые не должны меняться.",
+      "association": "📌 tuple — список, «приколотый гвоздём»: посмотреть можно, поменять нельзя.",
+      "real_example": "Координаты точки (x, y), дата (год, месяц, день) — менять не нужно.",
+      "example": "point = (10, 20)\nprint(point[0])\nprint(point[1])",
+      "code_explained": "• <code>(10, 20)</code> — кортеж из двух чисел.\n• <code>point[0]</code> → 10.\n• Изменить <code>point[0] = 5</code> нельзя — будет ошибка.",
+      "common_mistakes": [
+        "Пытаться изменить элемент кортежа.",
+        "Путать () кортеж и [] список.",
+        "Кортеж из 1 элемента: нужна запятая — (5,)."
+      ],
+      "practice": {
+        "question": "В каких скобках создаётся tuple?",
+        "options": [
+          "( )",
+          "[ ]",
+          "{ }",
+          "< >"
+        ],
+        "correct": 0,
+        "explanation": "Кортеж создаётся в круглых скобках ( ).",
+        "topic": "tuple"
+      },
+      "quiz": {
+        "question": "Можно ли изменить элемент кортежа?",
+        "options": [
+          "Нет",
+          "Да",
+          "Только первый",
+          "Только числа"
+        ],
+        "correct": 0,
+        "explanation": "tuple неизменяемый — менять элементы нельзя.",
+        "topic": "tuple"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "20",
+          "10",
+          "(10, 20)",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "point[1] → второй элемент = 20.",
+        "topic": "tuple",
+        "code": "point = (10, 20)\nprint(point[1])"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "slices",
+      "title": "Срезы (slices)",
+      "theory": "<b>Срез</b> берёт часть списка или строки: <code>a[start:stop]</code> — от start до stop, причём <b>stop не включается</b>. Счёт с 0.",
+      "association": "✂️ Срез — отрезать кусок батона: с какого по какой ломтик.",
+      "real_example": "Первые 3 элемента списка, первые буквы строки, диапазон страниц.",
+      "example": "a = [10, 20, 30, 40, 50]\nprint(a[1:3])\nprint(a[:2])\nprint(a[-1])",
+      "code_explained": "• <code>a[1:3]</code> → [20, 30] (индексы 1, 2; 3 не включён).\n• <code>a[:2]</code> → [10, 20] (с начала).\n• <code>a[-1]</code> → 50 (последний).",
+      "common_mistakes": [
+        "Думать, что stop включается (он не включается).",
+        "Путать индекс и значение элемента.",
+        "<code>a[5]</code> при длине 5 — выход за край."
+      ],
+      "practice": {
+        "question": "Что выведет a[0:2] для [1, 2, 3]?",
+        "options": [
+          "[1, 2]",
+          "[1, 2, 3]",
+          "[2, 3]",
+          "[1]"
+        ],
+        "correct": 0,
+        "explanation": "Берём индексы 0 и 1 → [1, 2].",
+        "topic": "slices"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "[20, 30]",
+          "[10, 20, 30]",
+          "[20, 30, 40]",
+          "[30]"
+        ],
+        "correct": 0,
+        "explanation": "Срез [1:3] → индексы 1 и 2 → [20, 30].",
+        "topic": "slices",
+        "code": "a = [10, 20, 30, 40]\nprint(a[1:3])"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "50",
+          "10",
+          "[50]",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "a[-1] — последний элемент = 50.",
+        "topic": "slices",
+        "code": "a = [10, 20, 30, 40, 50]\nprint(a[-1])"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "while",
+      "title": "Цикл while",
+      "theory": "Цикл <b>while</b> повторяет блок, <b>пока условие истинно</b> 🔁. Важно менять переменную внутри, иначе цикл станет бесконечным.",
+      "association": "🔁 while — «пока не устал — беги». Условие стало ложным → стоп.",
+      "real_example": "Ждать правильный пароль, считать до 10, игровой цикл.",
+      "example": "i = 1\nwhile i <= 3:\n    print(i)\n    i = i + 1",
+      "code_explained": "• <code>i</code> стартует с 1.\n• Пока <code>i &lt;= 3</code> — печатаем и увеличиваем.\n• Выведет 1, 2, 3, затем стоп.",
+      "common_mistakes": [
+        "Забыть менять переменную → бесконечный цикл.",
+        "Забыть двоеточие или отступ.",
+        "Условие изначально ложно — цикл не выполнится ни разу."
+      ],
+      "practice": {
+        "question": "Сколько раз увеличится i?",
+        "options": [
+          "3",
+          "2",
+          "4",
+          "бесконечно"
+        ],
+        "correct": 0,
+        "explanation": "i = 1, 2, 3 → 3 повтора.",
+        "topic": "while",
+        "code": "i = 1\nwhile i <= 3:\n    i = i + 1"
+      },
+      "quiz": {
+        "question": "Что нужно менять в while, чтобы он не стал вечным?",
+        "options": [
+          "переменную условия",
+          "название цикла",
+          "print",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Нужно менять переменную, от которой зависит условие.",
+        "topic": "while"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "0 1 2",
+          "1 2 3",
+          "0 1 2 3",
+          "бесконечно"
+        ],
+        "correct": 0,
+        "explanation": "i=0; пока i<3 печатаем 0, 1, 2.",
+        "topic": "while",
+        "code": "i = 0\nwhile i < 3:\n    print(i)\n    i += 1"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "loops",
+      "title": "Цикл for",
+      "theory": "Цикл <b>for</b> перебирает элементы коллекции по очереди 🔁. Удобно проходить список, строку или range.",
+      "association": "🔁 for — раздать каждому по очереди: «для каждого элемента — сделать».",
+      "real_example": "Поздороваться с каждым гостем, сложить цены в корзине.",
+      "example": "for fruit in ['яблоко', 'банан']:\n    print(fruit)",
+      "code_explained": "• <code>for fruit in [...]</code> — fruit по очереди равен каждому элементу.\n• Тело печатает fruit.\n• Выведет: яблоко, затем банан.",
+      "common_mistakes": [
+        "Менять список прямо во время перебора.",
+        "Забыть двоеточие или отступ.",
+        "Думать, что нужен индекс — for даёт сам элемент."
+      ],
+      "practice": {
+        "question": "Что перебирает for в `for x in [1, 2, 3]`?",
+        "options": [
+          "элементы списка",
+          "индексы",
+          "длину",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "for берёт сами элементы по очереди.",
+        "topic": "loops"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "a, затем b",
+          "ab",
+          "['a', 'b']",
+          "0 1"
+        ],
+        "correct": 0,
+        "explanation": "for печатает каждый элемент: a, потом b.",
+        "topic": "loops",
+        "code": "for c in ['a', 'b']:\n    print(c)"
+      },
+      "challenge": {
+        "question": "Что выведет код (сумма)?",
+        "options": [
+          "6",
+          "3",
+          "123",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "0 + 1 + 2 + 3 = 6.",
+        "topic": "loops",
+        "code": "s = 0\nfor n in [1, 2, 3]:\n    s += n\nprint(s)"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "range",
+      "title": "range()",
+      "theory": "<code>range(n)</code> даёт числа 0..n-1. <code>range(a, b)</code> — a..b-1. Часто используют с for, чтобы повторить действие N раз.",
+      "association": "🔢 range — линейка чисел: с какого по какое (конец не включён).",
+      "real_example": "Повторить 5 раз, пронумеровать строки, сделать отсчёт.",
+      "example": "for i in range(3):\n    print(i)\nfor i in range(1, 4):\n    print(i)",
+      "code_explained": "• <code>range(3)</code> → 0, 1, 2.\n• <code>range(1, 4)</code> → 1, 2, 3 (4 не входит).\n• Удобно повторять действие N раз.",
+      "common_mistakes": [
+        "Думать, что range(3) включает 3.",
+        "Забывать, что в range(1, 4) число 4 не входит.",
+        "Печатать range напрямую без list()."
+      ],
+      "practice": {
+        "question": "Какие числа даёт range(3)?",
+        "options": [
+          "0 1 2",
+          "1 2 3",
+          "0 1 2 3",
+          "3"
+        ],
+        "correct": 0,
+        "explanation": "range(3) → 0, 1, 2.",
+        "topic": "range"
+      },
+      "quiz": {
+        "question": "Сколько раз выполнится for i in range(5)?",
+        "options": [
+          "5",
+          "4",
+          "6",
+          "0"
+        ],
+        "correct": 0,
+        "explanation": "range(5) → 0..4 → 5 повторов.",
+        "topic": "range"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "1 2 3",
+          "0 1 2 3",
+          "1 2 3 4",
+          "2 3 4"
+        ],
+        "correct": 0,
+        "explanation": "range(1, 4) → 1, 2, 3.",
+        "topic": "range",
+        "code": "for i in range(1, 4):\n    print(i)"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "strings",
+      "title": "Методы строк",
+      "theory": "У строк есть <b>методы</b>: <code>.upper()</code> (ВЕРХНИЙ), <code>.lower()</code> (нижний), <code>.replace(a, b)</code> (замена), <code>len()</code> (длина). Строка неизменяема — методы возвращают <b>новую</b>.",
+      "association": "🔤 Методы строк — фоторедактор текста: применил фильтр → получил новую «картинку».",
+      "real_example": "Привести email к нижнему регистру, заменить слово, посчитать символы.",
+      "example": "s = 'Python'\nprint(s.upper())\nprint(s.lower())\nprint(len(s))",
+      "code_explained": "• <code>s.upper()</code> → 'PYTHON'.\n• <code>s.lower()</code> → 'python'.\n• <code>len(s)</code> → 6.\n• Сама s при этом не меняется.",
+      "common_mistakes": [
+        "Думать, что s.upper() меняет s (она возвращает новую строку).",
+        "Забыть скобки: s.upper без () не вызовет метод.",
+        "Писать len без скобок."
+      ],
+      "practice": {
+        "question": "Что вернёт 'hi'.upper()?",
+        "options": [
+          "HI",
+          "hi",
+          "Hi",
+          "HI()"
+        ],
+        "correct": 0,
+        "explanation": ".upper() переводит в верхний регистр → HI.",
+        "topic": "strings"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "6",
+          "Python",
+          "'Python'",
+          "5"
+        ],
+        "correct": 0,
+        "explanation": "len('Python') = 6 символов.",
+        "topic": "strings",
+        "code": "print(len('Python'))"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "JAVA",
+          "java",
+          "Java",
+          "JAVA()"
+        ],
+        "correct": 0,
+        "explanation": ".upper() → 'JAVA'.",
+        "topic": "strings",
+        "code": "s = 'java'\nprint(s.upper())"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "dict",
+      "title": "dict — словари",
+      "theory": "Словарь (<b>dict</b>) — записная книжка 📒: пары <b>ключ → значение</b>. Доступ по ключу, а не по индексу.",
+      "association": "📒 dict — телефонная книга: имя (ключ) → номер (значение).",
+      "real_example": "Профиль игрока {'name': 'Алекс', 'xp': 100}, настройки, словарь переводов.",
+      "example": "user = {'name': 'Алекс', 'xp': 100}\nprint(user['name'])\nuser['xp'] = 120\nprint(user['xp'])",
+      "code_explained": "• <code>{ключ: значение, ...}</code> — словарь.\n• <code>user['name']</code> → Алекс.\n• <code>user['xp'] = 120</code> — меняем значение по ключу.",
+      "common_mistakes": [
+        "Обращаться по индексу user[0] вместо ключа.",
+        "Несуществующий ключ → KeyError.",
+        "Думать, что ключи могут повторяться."
+      ],
+      "practice": {
+        "question": "Как получить значение по ключу 'name'?",
+        "options": [
+          "user['name']",
+          "user.name",
+          "user(0)",
+          "user-&gt;name"
+        ],
+        "correct": 0,
+        "explanation": "Доступ по ключу в квадратных скобках: user['name'].",
+        "topic": "dict"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "100",
+          "'xp'",
+          "xp",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "user['xp'] → 100.",
+        "topic": "dict",
+        "code": "user = {'name': 'A', 'xp': 100}\nprint(user['xp'])"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "120",
+          "100",
+          "xp",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Поменяли значение по ключу xp на 120.",
+        "topic": "dict",
+        "code": "u = {'xp': 100}\nu['xp'] = 120\nprint(u['xp'])"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "set",
+      "title": "set — множества",
+      "theory": "Множество (<b>set</b>) — мешок <b>уникальных</b> значений 🎲: дубликаты исчезают, порядок не важен. Быстрая проверка «есть ли элемент».",
+      "association": "🎲 set — коллекция без повторов: каждый предмет в одном экземпляре.",
+      "real_example": "Уникальные теги, список без дублей, общие друзья (пересечение множеств).",
+      "example": "nums = {1, 2, 2, 3}\nprint(nums)\nprint(2 in nums)",
+      "code_explained": "• <code>{1, 2, 2, 3}</code> → {1, 2, 3} (дубликат убран).\n• <code>2 in nums</code> → True.\n• Порядок элементов не гарантирован.",
+      "common_mistakes": [
+        "Ожидать определённый порядок элементов (его нет).",
+        "Путать {} — это пустой dict, а не set.",
+        "Обращаться по индексу set[0] — так нельзя."
+      ],
+      "practice": {
+        "question": "Что хранит set?",
+        "options": [
+          "уникальные значения",
+          "пары ключ-значение",
+          "упорядоченный список",
+          "только числа"
+        ],
+        "correct": 0,
+        "explanation": "set хранит уникальные значения без повторов.",
+        "topic": "set"
+      },
+      "quiz": {
+        "question": "Сколько элементов в {1, 2, 2, 3}?",
+        "options": [
+          "3",
+          "4",
+          "2",
+          "1"
+        ],
+        "correct": 0,
+        "explanation": "Дубликат 2 убирается → {1, 2, 3} → 3 элемента.",
+        "topic": "set"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "True",
+          "False",
+          "3",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "3 есть в множестве → True.",
+        "topic": "set",
+        "code": "print(3 in {1, 2, 3})"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "comprehension",
+      "title": "list comprehension",
+      "theory": "<b>List comprehension</b> — короткая запись создания списка ✨: <code>[выражение for x in коллекция]</code>. Заменяет цикл с append одной строкой.",
+      "association": "✨ Comprehension — конвейер: «возьми каждый x → преобразуй → собери в список».",
+      "real_example": "Квадраты чисел, отфильтровать чётные, привести список к верхнему регистру.",
+      "example": "squares = [x * x for x in range(5)]\nprint(squares)\nevens = [n for n in range(10) if n % 2 == 0]\nprint(evens)",
+      "code_explained": "• <code>[x*x for x in range(5)]</code> → [0, 1, 4, 9, 16].\n• Можно добавить условие if.\n• <code>evens</code> → [0, 2, 4, 6, 8].",
+      "common_mistakes": [
+        "Делать слишком сложные comprehension — теряется читаемость.",
+        "Забыть квадратные скобки [].",
+        "Путать порядок: выражение идёт ПЕРЕД for."
+      ],
+      "practice": {
+        "question": "Что создаёт [x for x in range(3)]?",
+        "options": [
+          "[0, 1, 2]",
+          "[1, 2, 3]",
+          "[3]",
+          "range(3)"
+        ],
+        "correct": 0,
+        "explanation": "Собирает x для x из range(3) → [0, 1, 2].",
+        "topic": "comprehension"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "[0, 1, 4]",
+          "[1, 2, 3]",
+          "[0, 1, 2]",
+          "[1, 4, 9]"
+        ],
+        "correct": 0,
+        "explanation": "x*x для 0, 1, 2 → 0, 1, 4.",
+        "topic": "comprehension",
+        "code": "print([x * x for x in range(3)])"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "[0, 2, 4]",
+          "[1, 3, 5]",
+          "[0, 1, 2, 3, 4]",
+          "[2, 4]"
+        ],
+        "correct": 0,
+        "explanation": "Чётные из range(5): 0, 2, 4.",
+        "topic": "comprehension",
+        "code": "print([n for n in range(5) if n % 2 == 0])"
+      },
+      "xp": 20
+    }
+  ]
+}

@@ -1,0 +1,365 @@
+{
+  "id": 5,
+  "title": "Архитектура",
+  "subtitle": "Код, который масштабируется",
+  "emoji": "🏛️",
+  "lessons": [
+    {
+      "topic": "architecture",
+      "title": "SOLID — глубоко",
+      "theory": "SOLID — пять принципов поддерживаемого кода. Глубоко: <b>O</b> — фичи добавляй новыми классами, не правя старые; <b>L</b> — потомок не ломает ожидания базового; <b>I</b> — узкие интерфейсы; <b>D</b> — завязывайся на абстракции (Protocol), не на реализации.",
+      "association": "🧩 SOLID — модульная мебель: новые секции добавляешь, не перепиливая старые (OCP); любая полка влезает в шкаф того же стандарта (LSP).",
+      "real_example": "PaymentProvider как Protocol: добавить Stripe/PayPal = новый класс, существующий код не трогаешь. Это спрашивают на собесах middle.",
+      "example": "from typing import Protocol\n\nclass PaymentProvider(Protocol):\n    def charge(self, amount: int) -> bool: ...\n\nclass Stripe:\n    def charge(self, amount: int) -> bool:\n        return True\n\ndef checkout(p: PaymentProvider, amount: int) -> bool:\n    return p.charge(amount)",
+      "code_explained": "• <code>PaymentProvider</code> — абстракция (контракт).\n• <code>checkout</code> зависит от Protocol, не от Stripe (DIP).\n• Новый провайдер = новый класс, checkout не меняется (OCP).\n• Любой провайдер взаимозаменяем (LSP).",
+      "common_mistakes": [
+        "«Толстые» интерфейсы с 20 методами (нарушение ISP).",
+        "<code>if isinstance(p, Stripe)</code> внутри checkout (нарушение OCP/DIP).",
+        "Потомок, бросающий NotImplementedError на методе базового (нарушение LSP)."
+      ],
+      "practice": {
+        "question": "D в SOLID требует завязываться на…",
+        "options": [
+          "абстракции (Protocol/ABC)",
+          "конкретные классы",
+          "глобальные переменные",
+          "наследование"
+        ],
+        "correct": 0,
+        "explanation": "Dependency Inversion: зависимость от абстракций.",
+        "topic": "architecture"
+      },
+      "quiz": {
+        "question": "Добавили PayPal новым классом, checkout не тронули. Какой принцип соблюдён?",
+        "options": [
+          "O — Open/Closed",
+          "S",
+          "L",
+          "I"
+        ],
+        "correct": 0,
+        "explanation": "Открыт для расширения, закрыт для изменения.",
+        "topic": "architecture"
+      },
+      "challenge": {
+        "question": "Square наследует Rectangle, но ломает set_width/set_height. Что нарушено?",
+        "options": [
+          "L — Liskov Substitution",
+          "S",
+          "O",
+          "D"
+        ],
+        "correct": 0,
+        "explanation": "Потомок не заменяет базовый без сюрпризов.",
+        "topic": "architecture"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "architecture",
+      "title": "Repository pattern",
+      "theory": "<b>Repository</b> прячет, КАК и ГДЕ хранятся данные. Бизнес-логика говорит <code>repo.get(id)</code>, не зная про SQL/ORM. Подменяешь БД на фейк в тестах, меняешь Postgres на другое — логика не трогается.",
+      "association": "📚 Repository — библиотекарь: ты просишь «книгу №42», а как он её достаёт (полка/склад) — не твоя забота.",
+      "real_example": "Сервис регистрации зависит от интерфейса репозитория; в тестах — InMemoryUserRepo, в проде — SqlUserRepo. БД не нужна для unit-тестов.",
+      "example": "from typing import Protocol\n\nclass UserRepo(Protocol):\n    def add(self, user) -> None: ...\n    def get(self, user_id: int): ...\n\nclass SqlUserRepo:\n    def __init__(self, session):\n        self.session = session\n    def get(self, user_id):\n        return self.session.get(User, user_id)",
+      "code_explained": "• <code>UserRepo</code> — контракт хранилища.\n• <code>SqlUserRepo</code> реализует его через ORM-сессию.\n• Сервис принимает UserRepo, про SQL не знает.\n• Тест подсунет InMemoryUserRepo.",
+      "common_mistakes": [
+        "Протекание SQL/ORM в бизнес-логику — тогда репозиторий бесполезен.",
+        "Возвращать ORM-Query вместо готовых объектов.",
+        "Один God-Repository на всё приложение."
+      ],
+      "practice": {
+        "question": "Что прячет Repository?",
+        "options": [
+          "как и где хранятся данные",
+          "бизнес-правила",
+          "HTTP-роуты",
+          "логирование"
+        ],
+        "correct": 0,
+        "explanation": "Repository изолирует доступ к данным.",
+        "topic": "architecture"
+      },
+      "quiz": {
+        "question": "Зачем Repository для тестов?",
+        "options": [
+          "подменить БД на in-memory без изменения логики",
+          "ускорить SQL",
+          "кешировать",
+          "логировать"
+        ],
+        "correct": 0,
+        "explanation": "Тестируешь логику без реальной БД.",
+        "topic": "architecture"
+      },
+      "challenge": {
+        "question": "UserRepo.get_active_premium_users_sorted_by_date() — что не так?",
+        "options": [
+          "репозиторий обрастает бизнес-логикой",
+          "слишком быстро",
+          "нет типов",
+          "всё ок"
+        ],
+        "correct": 0,
+        "explanation": "Специфичные методы тянут логику в слой данных.",
+        "topic": "architecture"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "architecture",
+      "title": "Unit of Work",
+      "theory": "<b>Unit of Work</b> группирует операции репозиториев в ОДНУ транзакцию: либо всё коммитится, либо всё откатывается. Сервис не вызывает commit вручную — UoW гарантирует атомарность бизнес-операции.",
+      "association": "🛒 UoW — корзина: складываешь изменения, на кассе (commit) оплачиваешь всё разом; передумал — оставил корзину (rollback).",
+      "real_example": "«Оформить заказ» = создать Order + списать товар + записать платёж. UoW оборачивает в транзакцию: упало на платеже → откат заказа и товара.",
+      "example": "async with uow:\n    uow.orders.add(order)\n    uow.inventory.reduce(item_id, qty)\n    await uow.commit()\n# исключение до commit → __aexit__ делает rollback",
+      "code_explained": "• <code>async with uow</code> — открыли транзакцию.\n• Несколько репозиториев в ОДНОЙ сессии.\n• <code>commit()</code> фиксирует всё разом.\n• Ошибка до commit → автоматический rollback.",
+      "common_mistakes": [
+        "Коммитить в каждом репозитории отдельно — теряешь атомарность.",
+        "Делить одну сессию между запросами разных юзеров.",
+        "Забыть rollback при ошибке."
+      ],
+      "practice": {
+        "question": "Что гарантирует Unit of Work?",
+        "options": [
+          "атомарность: всё в одной транзакции",
+          "скорость",
+          "кеширование",
+          "типобезопасность"
+        ],
+        "correct": 0,
+        "explanation": "Все операции бизнес-действия — атомарны.",
+        "topic": "architecture"
+      },
+      "quiz": {
+        "question": "Кто вызывает commit при паттерне UoW?",
+        "options": [
+          "сервис через UoW",
+          "каждый репозиторий сам",
+          "БД автоматически",
+          "никто"
+        ],
+        "correct": 0,
+        "explanation": "UoW централизует commit/rollback.",
+        "topic": "architecture"
+      },
+      "challenge": {
+        "question": "Заказ создан, платёж упал — без UoW. Итог?",
+        "options": [
+          "заказ без оплаты (рассинхрон)",
+          "автооткат",
+          "ничего",
+          "двойная оплата"
+        ],
+        "correct": 0,
+        "explanation": "UoW откатил бы всё вместе.",
+        "topic": "architecture"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "architecture",
+      "title": "DI-контейнеры",
+      "theory": "<b>DI-контейнер</b> собирает граф зависимостей за тебя: описал «как создать Service (нужен Repo, которому нужна session)» — контейнер строит цепочку. В FastAPI это <code>Depends</code>.",
+      "association": "🏗️ DI-контейнер — прораб: говоришь «нужен дом», он сам нанимает рабочих, заказывает материалы и собирает в нужном порядке.",
+      "real_example": "FastAPI: Depends(get_db) → Depends(get_repo) → Depends(get_service). Контейнер строит цепочку на каждый запрос, эндпоинт получает готовый сервис.",
+      "example": "from fastapi import Depends\n\ndef get_repo(session = Depends(get_session)) -> UserRepo:\n    return SqlUserRepo(session)\n\n@app.get('/users/{uid}')\nasync def read(uid: int, repo: UserRepo = Depends(get_repo)):\n    return repo.get(uid)",
+      "code_explained": "• Цепочка: get_session → get_repo → эндпоинт.\n• <code>Depends()</code> говорит FastAPI «построй это».\n• Эндпоинт получает готовый repo.\n• В тестах — <code>app.dependency_overrides</code>.",
+      "common_mistakes": [
+        "Создавать зависимости руками внутри — теряешь подменяемость.",
+        "Глобальные синглтоны вместо инъекции.",
+        "Слишком глубокий граф «ради чистоты»."
+      ],
+      "practice": {
+        "question": "Что делает DI-контейнер?",
+        "options": [
+          "собирает граф зависимостей автоматически",
+          "хранит данные",
+          "кеширует",
+          "логирует"
+        ],
+        "correct": 0,
+        "explanation": "Строит и внедряет зависимости.",
+        "topic": "architecture"
+      },
+      "quiz": {
+        "question": "Как в FastAPI подменить зависимость в тестах?",
+        "options": [
+          "app.dependency_overrides",
+          "monkeypatch sys",
+          "правкой кода",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "Официальный механизм оверрайда зависимостей.",
+        "topic": "architecture"
+      },
+      "challenge": {
+        "question": "Сервису нужен Repo, репозиторию — session на запрос. Кто это собирает?",
+        "options": [
+          "DI-контейнер (Depends), на каждый запрос",
+          "сам сервис",
+          "БД",
+          "middleware"
+        ],
+        "correct": 0,
+        "explanation": "Контейнер строит цепочку per-request.",
+        "topic": "architecture"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "architecture",
+      "title": "Слоистая архитектура",
+      "theory": "Слои: <b>API</b> (роуты) → <b>Service</b> (бизнес-логика) → <b>Repository</b> (данные). Зависимости направлены ВНУТРЬ: API знает про Service, Service про Repo, но не наоборот. Это основа Clean Architecture.",
+      "association": "🧅 Слои — луковица: внешние (API) зависят от внутренних (бизнес), но ядро не знает про оболочку. Поменял Telegram на REST — ядро не тронуто.",
+      "real_example": "Бот и REST API используют ОДИН service-слой. Логика регистрации — в сервисе, а handler (aiogram) и endpoint (FastAPI) — тонкие адаптеры. (Как в этом боте: handlers → services → models!)",
+      "example": "# handler — тонкий адаптер\nasync def signup_handler(data):\n    return await UserService(repo).register(data.email)\n\n# service — бизнес-правила\nclass UserService:\n    def __init__(self, repo):\n        self.repo = repo\n    async def register(self, email): ...",
+      "code_explained": "• handler принимает запрос и зовёт сервис.\n• Бизнес-правила — в UserService.\n• Сервис ходит в БД через repo.\n• Поменяли транспорт (бот↔API) — сервис не меняется.",
+      "common_mistakes": [
+        "SQL прямо в роуте/хендлере (всё в одном слое).",
+        "Бизнес-логика в моделях БД.",
+        "Циклические зависимости между слоями."
+      ],
+      "practice": {
+        "question": "Куда направлены зависимости в слоистой архитектуре?",
+        "options": [
+          "внутрь: API → Service → Repository",
+          "наружу",
+          "во все стороны",
+          "случайно"
+        ],
+        "correct": 0,
+        "explanation": "Внешние слои зависят от внутренних, не наоборот.",
+        "topic": "architecture"
+      },
+      "quiz": {
+        "question": "Где должна жить бизнес-логика регистрации?",
+        "options": [
+          "в service-слое",
+          "в handler",
+          "в модели БД",
+          "в middleware"
+        ],
+        "correct": 0,
+        "explanation": "Сервис — дом бизнес-правил.",
+        "topic": "architecture"
+      },
+      "challenge": {
+        "question": "Бот и REST делают одно и то же. Как не дублировать логику?",
+        "options": [
+          "вынести в общий service-слой",
+          "скопировать код",
+          "две БД",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "Handler/endpoint — тонкие адаптеры над сервисом.",
+        "topic": "architecture"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "architecture",
+      "title": "CQRS (введение)",
+      "theory": "<b>CQRS</b> — разделяй ЧТЕНИЕ и ЗАПИСЬ. Команды (меняют состояние) и запросы (читают) идут разными путями. Не всегда нужно, но на масштабе даёт оптимизировать чтение (реплики, денормализация) отдельно от записи.",
+      "association": "🍽️ CQRS — в ресторане заказ (команда) идёт на кухню, а меню (запрос) лежит на столе. Разные пути, разная оптимизация.",
+      "real_example": "Лента соцсети: запись поста (команда) — в основную БД; чтение ленты (запрос) — из денормализованного кеша/реплики, оптимизированного под скорость.",
+      "example": "# команда — меняет состояние\nasync def create_order(cmd: CreateOrder) -> int: ...\n\n# запрос — только читает (может идти в реплику/кеш)\nasync def get_order_summary(order_id: int) -> OrderSummaryDTO: ...",
+      "code_explained": "• <code>create_order</code> — команда, пишет в основную БД.\n• <code>get_order_summary</code> — запрос, отдаёт DTO для UI.\n• Чтение масштабируется репликами независимо.\n• Запись и чтение эволюционируют отдельно.",
+      "common_mistakes": [
+        "Тащить CQRS в простой CRUD (оверинжиниринг).",
+        "Путать с обязательным Event Sourcing — это разные вещи.",
+        "Разносить хранилища без необходимости."
+      ],
+      "practice": {
+        "question": "Что разделяет CQRS?",
+        "options": [
+          "чтение (queries) и запись (commands)",
+          "клиент и сервер",
+          "БД и кеш",
+          "слои"
+        ],
+        "correct": 0,
+        "explanation": "Command Query Responsibility Segregation.",
+        "topic": "architecture"
+      },
+      "quiz": {
+        "question": "Когда CQRS оправдан?",
+        "options": [
+          "чтение и запись надо масштабировать по-разному",
+          "всегда",
+          "в простом CRUD",
+          "никогда"
+        ],
+        "correct": 0,
+        "explanation": "На масштабе/сложной модели.",
+        "topic": "architecture"
+      },
+      "challenge": {
+        "question": "CRUD-сервис на 100 юзеров. Нужен ли CQRS?",
+        "options": [
+          "нет — это оверинжиниринг",
+          "да, обязательно",
+          "да, для скорости",
+          "да, для красоты"
+        ],
+        "correct": 0,
+        "explanation": "Сложность без выгоды — антипаттерн.",
+        "topic": "architecture"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "architecture",
+      "title": "Паттерны проектирования",
+      "theory": "Паттерны — проверенные решения частых задач. На бэкенде чаще: <b>Factory</b> (создание), <b>Strategy</b> (взаимозаменяемые алгоритмы), <b>Adapter</b> (совместить чужой интерфейс), <b>Singleton</b> (осторожно!). Знай, но не лепи везде.",
+      "association": "🧰 Паттерны — набор отвёрток под разные винты. Профи берёт нужную, а не закручивает всё молотком (или Singleton'ом).",
+      "real_example": "Strategy для способов доставки (разные расчёты), Adapter для интеграции legacy-API, Factory для нотификаторов (email/sms/push).",
+      "example": "from typing import Protocol\n\nclass Delivery(Protocol):\n    def cost(self, weight: float) -> int: ...\n\nclass Courier:\n    def cost(self, w): return 300\nclass Pickup:\n    def cost(self, w): return 0",
+      "code_explained": "• <code>Delivery</code> — общий интерфейс (Strategy).\n• Courier/Pickup — взаимозаменяемые стратегии.\n• Клиент выбирает стратегию в рантайме.\n• Новая доставка = новый класс (это и OCP).",
+      "common_mistakes": [
+        "Лепить паттерны без нужды → усложнение.",
+        "Singleton как глобальная переменная — прячет зависимости, мешает тестам.",
+        "Путать паттерн с фреймворком."
+      ],
+      "practice": {
+        "question": "Strategy позволяет…",
+        "options": [
+          "менять алгоритм на взаимозаменяемый в рантайме",
+          "хранить один экземпляр",
+          "совмещать интерфейсы",
+          "создавать объекты"
+        ],
+        "correct": 0,
+        "explanation": "Семейство взаимозаменяемых алгоритмов.",
+        "topic": "architecture"
+      },
+      "quiz": {
+        "question": "Какой паттерн совмещает чужой интерфейс с твоим?",
+        "options": [
+          "Adapter",
+          "Strategy",
+          "Singleton",
+          "Factory"
+        ],
+        "correct": 0,
+        "explanation": "Adapter переводит один интерфейс в другой.",
+        "topic": "architecture"
+      },
+      "challenge": {
+        "question": "Залепили Singleton на сервис. Почему боль для тестов?",
+        "options": [
+          "глобальное состояние нельзя изолировать между тестами",
+          "слишком быстро",
+          "много памяти",
+          "не боль"
+        ],
+        "correct": 0,
+        "explanation": "Скрытое глобальное состояние ломает изоляцию.",
+        "topic": "architecture"
+      },
+      "xp": 50
+    }
+  ]
+}

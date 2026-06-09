@@ -1,0 +1,416 @@
+{
+  "id": 6,
+  "title": "Тестирование и качество",
+  "subtitle": "Код, которому доверяют",
+  "emoji": "🧪",
+  "lessons": [
+    {
+      "topic": "testing",
+      "title": "pytest — основы",
+      "theory": "Тест — код, проверяющий код. <b>pytest</b>: функция <code>test_*</code>, проверка через <code>assert</code>. Тесты ловят регрессии и документируют поведение. Зелёные тесты = уверенность в деплое.",
+      "association": "✅ Тесты — ремни безопасности: пишешь раз, и при каждом изменении они ловят, если сломалось.",
+      "real_example": "test_register_creates_user проверяет регистрацию; CI гоняет тесты на каждый PR → сломанный код не доедет до прода. (У этого бота 29 тестов именно для этого!)",
+      "example": "def add(a, b):\n    return a + b\n\ndef test_add():\n    assert add(2, 3) == 5\n    assert add(-1, 1) == 0",
+      "code_explained": "• <code>test_add</code> — pytest найдёт по префиксу test_.\n• <code>assert</code> проверяет ожидание.\n• Упал assert → красный тест с понятной разницей.\n• <code>pytest</code> запускает все тесты разом.",
+      "common_mistakes": [
+        "Тесты без assert — ничего не проверяют.",
+        "Один тест на 50 строк проверяет всё — непонятно, что сломалось.",
+        "Тесты, зависящие от порядка/общего состояния."
+      ],
+      "practice": {
+        "question": "По какому префиксу pytest находит тесты?",
+        "options": [
+          "test_",
+          "check_",
+          "spec_",
+          "t_"
+        ],
+        "correct": 0,
+        "explanation": "pytest собирает функции с префиксом test_.",
+        "topic": "testing"
+      },
+      "quiz": {
+        "question": "add возвращает 6. Что делает assert add(2,3)==5?",
+        "options": [
+          "тест падает (красный)",
+          "проходит",
+          "пропускается",
+          "висит"
+        ],
+        "correct": 0,
+        "explanation": "Несовпадение → провал теста.",
+        "topic": "testing"
+      },
+      "challenge": {
+        "question": "Тест без assert, просто вызывает функцию. Полезен?",
+        "options": [
+          "почти нет — ловит лишь падение, не неверный результат",
+          "да, полностью",
+          "лучший",
+          "нет, упадёт"
+        ],
+        "correct": 0,
+        "explanation": "Без assert он не проверяет корректность.",
+        "topic": "testing"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "testing",
+      "title": "Fixtures",
+      "theory": "<b>Fixture</b> — переиспользуемая подготовка (БД, клиент, данные). pytest сам создаёт её и передаёт в тест по имени аргумента. Меньше дублирования, чистый setup/teardown.",
+      "association": "🍱 Fixture — заранее накрытый стол: каждый тест садится за готовое, не накрывая заново; после — посуду убирают (teardown).",
+      "real_example": "Fixture с тестовой БД/сессией, с авторизованным клиентом. Один раз настроил — десятки тестов используют. (conftest.py этого бота поднимает тестовую БД так.)",
+      "example": "import pytest\n\n@pytest.fixture\ndef user():\n    return {'id': 1, 'name': 'Alex'}\n\ndef test_name(user):\n    assert user['name'] == 'Alex'",
+      "code_explained": "• <code>@pytest.fixture</code> помечает подготовку.\n• Тест объявляет <code>user</code> в аргументах → pytest подставит.\n• yield-fixture делает teardown после yield.\n• <code>scope='session'</code> — создать раз на все тесты.",
+      "common_mistakes": [
+        "Тяжёлый setup без scope — пересоздаётся на каждый тест (медленно).",
+        "Fixture с побочкой, протекающей между тестами.",
+        "Забыть teardown — утечки соединений."
+      ],
+      "practice": {
+        "question": "Как тест получает fixture?",
+        "options": [
+          "объявляет её имя в аргументах",
+          "импортирует",
+          "вызывает вручную",
+          "через global"
+        ],
+        "correct": 0,
+        "explanation": "pytest внедряет fixture по имени параметра.",
+        "topic": "testing"
+      },
+      "quiz": {
+        "question": "Что делает scope='session' у fixture?",
+        "options": [
+          "создаёт её один раз на всю сессию",
+          "на каждый тест",
+          "удаляет её",
+          "ускоряет assert"
+        ],
+        "correct": 0,
+        "explanation": "Один setup на всю сессию тестов.",
+        "topic": "testing"
+      },
+      "challenge": {
+        "question": "Fixture с реальной БД пересоздаётся на 500 тестов — тормозит. Решение?",
+        "options": [
+          "поднять scope или транзакция с откатом",
+          "удалить тесты",
+          "мокать assert",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Дорогой setup переиспользуют, а не плодят.",
+        "topic": "testing"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "testing",
+      "title": "Mock и patch",
+      "theory": "<b>Mock</b> подменяет реальную зависимость (внешний API, платёж, время) на управляемую заглушку. Тестируешь СВОЙ код, не дёргая чужие сервисы. <b>patch</b> временно заменяет объект на время теста.",
+      "association": "🎭 Mock — дублёр актёра: в опасной сцене (реальный платёж, внешний API) снимаешь дублёра, а не звезду.",
+      "real_example": "Не слать реальный email / не списывать деньги в тесте — мокаешь PaymentProvider.charge и проверяешь, что сервис вызвал его с нужной суммой.",
+      "example": "from unittest.mock import Mock\n\nprovider = Mock()\nprovider.charge.return_value = True\n\nassert checkout(provider, 100) is True\nprovider.charge.assert_called_once_with(100)",
+      "code_explained": "• <code>Mock()</code> — объект с любыми методами-заглушками.\n• <code>return_value</code> задаёт, что вернёт charge.\n• <code>assert_called_once_with</code> проверяет, КАК вызвали.\n• Реальный провайдер не трогаем.",
+      "common_mistakes": [
+        "Мокать всё подряд → тест проверяет моки, а не логику.",
+        "Патчить не там (нужно там, где объект ИСПОЛЬЗУЕТСЯ).",
+        "Хрупкие тесты, завязанные на детали реализации."
+      ],
+      "practice": {
+        "question": "Зачем нужен Mock в тестах?",
+        "options": [
+          "подменить внешнюю зависимость заглушкой",
+          "ускорить pytest",
+          "форматировать код",
+          "логировать"
+        ],
+        "correct": 0,
+        "explanation": "Изолируешь свой код от внешних сервисов.",
+        "topic": "testing"
+      },
+      "quiz": {
+        "question": "Что проверяет assert_called_once_with(100)?",
+        "options": [
+          "вызван ровно раз с аргументом 100",
+          "вернул 100",
+          "существует",
+          "быстрый"
+        ],
+        "correct": 0,
+        "explanation": "Проверка факта и аргументов вызова.",
+        "topic": "testing"
+      },
+      "challenge": {
+        "question": "patch('a.requests') не сработал — код берёт requests из b. Правило?",
+        "options": [
+          "патчить там, где используется, а не где определён",
+          "патчить дважды",
+          "не патчить",
+          "перезапустить"
+        ],
+        "correct": 0,
+        "explanation": "Patch by usage location.",
+        "topic": "testing"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "testing",
+      "title": "Интеграционные тесты",
+      "theory": "Unit-тесты проверяют кусок в изоляции (с моками). <b>Integration</b>-тесты проверяют, что куски РАБОТАЮТ ВМЕСТЕ: сервис + реальная БД, эндпоинт + валидация + репозиторий. Медленнее, но ловят баги стыков.",
+      "association": "🔌 Unit — проверить лампочку отдельно; integration — вкрутить её в реальную проводку и щёлкнуть выключателем.",
+      "real_example": "Тест POST /signup с реальной тестовой БД проверяет валидацию + сохранение + ответ целиком. Async-эндпоинты — через httpx.AsyncClient + pytest-asyncio.",
+      "example": "import pytest\n\n@pytest.mark.asyncio\nasync def test_signup(client):\n    resp = await client.post('/signup', json={'email': 'a@b.com'})\n    assert resp.status_code == 201",
+      "code_explained": "• <code>@pytest.mark.asyncio</code> — тест-корутина (или asyncio_mode=auto).\n• <code>client</code> — async-клиент к приложению (fixture).\n• Реальный путь: роут → валидация → репозиторий.\n• Проверяем статус и эффект целиком.",
+      "common_mistakes": [
+        "Только unit или только integration — нужна пирамида.",
+        "Тесты, ходящие в ПРОД-БД/реальные API.",
+        "Не изолировать данные между тестами."
+      ],
+      "practice": {
+        "question": "Что проверяет integration-тест (в отличие от unit)?",
+        "options": [
+          "что компоненты работают вместе",
+          "одну функцию в изоляции",
+          "стиль кода",
+          "типы"
+        ],
+        "correct": 0,
+        "explanation": "Интеграция реальных частей системы.",
+        "topic": "testing"
+      },
+      "quiz": {
+        "question": "Чем тестируют async-эндпоинты FastAPI?",
+        "options": [
+          "async-клиентом (httpx) + pytest-asyncio",
+          "обычным циклом",
+          "requests",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "Нужен асинхронный клиент.",
+        "topic": "testing"
+      },
+      "challenge": {
+        "question": "Пирамида тестов: чего больше — unit или integration?",
+        "options": [
+          "unit (быстрых, многочисленных)",
+          "integration",
+          "поровну",
+          "только e2e"
+        ],
+        "correct": 0,
+        "explanation": "Много быстрых unit, меньше медленных integration.",
+        "topic": "testing"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "testing",
+      "title": "testcontainers",
+      "theory": "<b>testcontainers</b> поднимает настоящую БД (Postgres, Redis) в Docker на время тестов — потом сносит. Тестируешь на РЕАЛЬНОМ Postgres, а не на SQLite-подделке, без ручной установки.",
+      "association": "🐳 testcontainers — одноразовая лаборатория: на время эксперимента арендовал настоящую БД, провёл тесты, сдал — следов нет.",
+      "real_example": "Интеграционные тесты против реального Postgres (с его типами, индексами, транзакциями), чтобы не было «на SQLite работало, на проде упало».",
+      "example": "from testcontainers.postgres import PostgresContainer\n\nwith PostgresContainer('postgres:16') as pg:\n    dsn = pg.get_connection_url()\n    run_migrations(dsn)\n    # тесты против настоящего Postgres",
+      "code_explained": "• <code>with PostgresContainer</code> — поднял реальный Postgres в Docker.\n• <code>get_connection_url</code> — строка подключения.\n• Прогнал миграции и тесты на настоящей БД.\n• Вышли из with → контейнер удалён.",
+      "common_mistakes": [
+        "Тестировать на SQLite, деплоить на Postgres (разные диалекты).",
+        "Поднимать контейнер на каждый тест — медленно (поднимай на сессию).",
+        "Забыть, что нужен Docker в CI."
+      ],
+      "practice": {
+        "question": "Что поднимает testcontainers?",
+        "options": [
+          "реальную БД в Docker на время тестов",
+          "мок БД",
+          "SQLite-файл",
+          "прод-БД"
+        ],
+        "correct": 0,
+        "explanation": "Эфемерная настоящая БД для тестов.",
+        "topic": "testing"
+      },
+      "quiz": {
+        "question": "Зачем реальный Postgres в тестах, а не SQLite?",
+        "options": [
+          "избежать различий диалектов",
+          "он быстрее",
+          "проще",
+          "меньше памяти"
+        ],
+        "correct": 0,
+        "explanation": "SQLite ≠ Postgres по поведению.",
+        "topic": "testing"
+      },
+      "challenge": {
+        "question": "Тесты на SQLite зелёные, на проде (Postgres) запрос падает. Чем помог бы testcontainers?",
+        "options": [
+          "гонял бы тесты против настоящего Postgres",
+          "ускорил SQLite",
+          "отключил тест",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "Поймал бы расхождение заранее.",
+        "topic": "testing"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "testing",
+      "title": "mypy — статическая типизация",
+      "theory": "<b>mypy</b> проверяет типы БЕЗ запуска кода. Находит баги (str вместо int, забытая None-проверка) на этапе разработки, а не в проде. Type hints + mypy = меньше runtime-ошибок.",
+      "association": "🔎 mypy — корректор, читающий черновик до публикации: ловит несоответствия типов, пока их не увидел читатель (прод).",
+      "real_example": "get_user(id) -> User | None; mypy заставит проверить на None перед user.email → не словишь AttributeError в проде. CI блокирует merge при ошибках типов.",
+      "example": "def half(n: int) -> int:\n    return n / 2     # mypy: ошибка — / даёт float\n\n# верно:\n#     return n // 2",
+      "code_explained": "• Аннотации задают контракт.\n• mypy сверяет фактическое использование с типами.\n• <code>n / 2</code> → float, а обещан int → ошибка ДО запуска.\n• Запуск: <code>mypy .</code> (часто в CI/pre-commit).",
+      "common_mistakes": [
+        "Лепить Any везде — отключает проверку.",
+        "Глушить ошибки <code># type: ignore</code> без причины.",
+        "Не запускать mypy в CI — тогда он бесполезен."
+      ],
+      "practice": {
+        "question": "Когда mypy находит ошибки типов?",
+        "options": [
+          "до запуска, статически",
+          "в рантайме",
+          "только в тестах",
+          "никогда"
+        ],
+        "correct": 0,
+        "explanation": "Статический анализ без выполнения.",
+        "topic": "testing"
+      },
+      "quiz": {
+        "question": "Что подсветит mypy в def f() -> int: return n/2?",
+        "options": [
+          "возврат float вместо int",
+          "ничего",
+          "синтаксис",
+          "медленно"
+        ],
+        "correct": 0,
+        "explanation": "/ всегда даёт float.",
+        "topic": "testing"
+      },
+      "challenge": {
+        "question": "Везде проставили Any, чтобы mypy молчал. Что не так?",
+        "options": [
+          "Any отключает проверку — типизация бессмысленна",
+          "медленно",
+          "много кода",
+          "всё ок"
+        ],
+        "correct": 0,
+        "explanation": "Any = «не проверяй».",
+        "topic": "testing"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "testing",
+      "title": "ruff — линт и формат",
+      "theory": "<b>ruff</b> — сверхбыстрый линтер+форматтер. Линтер ловит запахи (неиспользуемый импорт, баг-паттерны), форматтер приводит код к единому стилю. Команда не спорит о стиле — ruff решает.",
+      "association": "🧹 ruff — авто-редактор-уборщик: единый стиль и чистота во всём проекте, без ручных придирок на ревью.",
+      "real_example": "pre-commit + CI гоняют <code>ruff check</code> и <code>ruff format</code> → в репозиторий попадает только чистый код. Заменяет flake8+isort+black, но в разы быстрее.",
+      "example": "import os          # F401: 'os' imported but unused\nx=1                # форматтер → x = 1",
+      "code_explained": "• <code>ruff check</code> — линт (найти проблемы).\n• <code>ruff format</code> — автоформат.\n• Неиспользуемый импорт os → F401.\n• Кривые пробелы → автоисправление.",
+      "common_mistakes": [
+        "Спорить о стиле руками вместо автоформата.",
+        "Отключать слишком много правил.",
+        "Не ставить ruff в pre-commit — стиль разъезжается."
+      ],
+      "practice": {
+        "question": "Что делает ruff format?",
+        "options": [
+          "приводит код к единому стилю автоматически",
+          "запускает тесты",
+          "проверяет типы",
+          "деплоит"
+        ],
+        "correct": 0,
+        "explanation": "Автоформат всего проекта.",
+        "topic": "testing"
+      },
+      "quiz": {
+        "question": "Зачем линтер в CI?",
+        "options": [
+          "не пускать код с запахами/ошибками стиля",
+          "ускорять",
+          "деплоить",
+          "логировать"
+        ],
+        "correct": 0,
+        "explanation": "Линт как gate качества.",
+        "topic": "testing"
+      },
+      "challenge": {
+        "question": "Ревью уходит на споры о пробелах и кавычках. Решение?",
+        "options": [
+          "автоформаттер в pre-commit",
+          "больше ревьюеров",
+          "гайд на 50 страниц",
+          "игнорировать"
+        ],
+        "correct": 0,
+        "explanation": "Стиль перестаёт быть темой ревью.",
+        "topic": "testing"
+      },
+      "xp": 50
+    },
+    {
+      "topic": "testing",
+      "title": "Профилирование",
+      "theory": "Не угадывай, ГДЕ медленно — измеряй. Профайлер показывает, какие функции съедают время. Оптимизируй только горячие точки (80% времени в 20% кода). «Преждевременная оптимизация — корень зла».",
+      "association": "📊 Профайлер — счётчик на электрощите: показывает, какой прибор жрёт энергию, чтобы не менять лампочки, когда виноват холодильник.",
+      "real_example": "Эндпоинт тормозит → cProfile/py-spy показывают: 90% времени в N+1 запросах к БД, а не в Python-коде. Чинишь запрос, а не логику.",
+      "example": "import cProfile\n\ncProfile.run('slow_function()')\n# покажет cumtime по функциям → где реальное узкое место",
+      "code_explained": "• <code>cProfile.run</code> меряет время по функциям.\n• Смотришь cumulative time — где затык.\n• Часто это I/O/БД, а не CPU.\n• <code>py-spy</code> профилирует живой прод-процесс без остановки.",
+      "common_mistakes": [
+        "Оптимизировать вслепую, «на глаз».",
+        "Микрооптимизации в холодном коде.",
+        "Игнорировать, что узкое место чаще БД/сеть, а не Python."
+      ],
+      "practice": {
+        "question": "Что показывает профайлер?",
+        "options": [
+          "какие функции съедают больше всего времени",
+          "ошибки типов",
+          "стиль",
+          "покрытие"
+        ],
+        "correct": 0,
+        "explanation": "Профиль времени исполнения.",
+        "topic": "testing"
+      },
+      "quiz": {
+        "question": "С чего начать оптимизацию медленного эндпоинта?",
+        "options": [
+          "измерить профайлером, найти горячую точку",
+          "переписать всё",
+          "добавить кеш везде",
+          "сменить язык"
+        ],
+        "correct": 0,
+        "explanation": "Сначала измерь, потом оптимизируй.",
+        "topic": "testing"
+      },
+      "challenge": {
+        "question": "Профайлер: 90% времени — запросы к БД. Что чинить?",
+        "options": [
+          "запросы (N+1/индексы)",
+          "Python-код",
+          "версию Python",
+          "форматирование"
+        ],
+        "correct": 0,
+        "explanation": "Оптимизируй доказанное узкое место.",
+        "topic": "testing"
+      },
+      "xp": 50
+    }
+  ]
+}

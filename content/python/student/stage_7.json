@@ -1,0 +1,314 @@
+{
+  "id": 7,
+  "title": "DevOps & Infra",
+  "subtitle": "Доставка в прод",
+  "emoji": "🐳",
+  "lessons": [
+    {
+      "topic": "devops",
+      "title": "Docker — образы и контейнеры",
+      "theory": "<b>Docker</b> упаковывает приложение со ВСЕМИ зависимостями в образ. Контейнер из образа запускается одинаково везде — «у меня работает» исчезает. Образ = рецепт (Dockerfile), контейнер = блюдо.",
+      "association": "📦 Docker — контейнеровоз: приложение в стандартном контейнере едет на любой сервер и работает одинаково, что бы ни стояло на хосте.",
+      "real_example": "Dockerfile с Python + зависимости + код → один образ работает на ноуте, в CI и на проде идентично. Конец «на моей машине работало».",
+      "example": "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"bot.py\"]",
+      "code_explained": "• <code>FROM</code> — базовый образ (Python).\n• COPY requirements + RUN pip — слой зависимостей (кешируется).\n• <code>COPY . .</code> — код.\n• <code>CMD</code> — команда запуска контейнера.",
+      "common_mistakes": [
+        "COPY . . до установки зависимостей → кеш слоёв не работает.",
+        "Жирный базовый образ вместо slim.",
+        "Секреты внутри образа — они остаются в слоях!"
+      ],
+      "practice": {
+        "question": "Что упаковывает Docker-образ?",
+        "options": [
+          "приложение со всеми зависимостями",
+          "только код",
+          "только БД",
+          "логи"
+        ],
+        "correct": 0,
+        "explanation": "Воспроизводимое окружение целиком.",
+        "topic": "devops"
+      },
+      "quiz": {
+        "question": "Почему COPY requirements + RUN pip ставят ДО COPY . .?",
+        "options": [
+          "кешировать слой зависимостей (код меняется чаще)",
+          "так короче",
+          "для безопасности",
+          "случайно"
+        ],
+        "correct": 0,
+        "explanation": "Слой зависимостей переиспользуется между сборками.",
+        "topic": "devops"
+      },
+      "challenge": {
+        "question": "«У меня работает, на сервере нет». Как Docker это убирает?",
+        "options": [
+          "одинаковое окружение из образа везде",
+          "ускоряет код",
+          "чинит баги",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "Хост перестаёт влиять на запуск.",
+        "topic": "devops"
+      },
+      "xp": 55
+    },
+    {
+      "topic": "devops",
+      "title": "docker-compose",
+      "theory": "Реальный бэкенд — не один контейнер: app + Postgres + Redis. <b>docker-compose</b> описывает все сервисы в одном YAML и поднимает их вместе одной командой, со своей сетью между ними.",
+      "association": "🎼 compose — дирижёр: одним взмахом (<code>up</code>) поднимает app, БД и кеш, и они играют слаженно в общей сети.",
+      "real_example": "<code>docker compose up</code> → поднялись бот, Postgres, Redis; бот видит БД по имени сервиса <code>db:5432</code>. Локально один-в-один как на проде.",
+      "example": "services:\n  app:\n    build: .\n    depends_on: [db]\n    environment:\n      DATABASE_URL: postgresql://user:pass@db:5432/app\n  db:\n    image: postgres:16",
+      "code_explained": "• <code>services</code> — app и db.\n• <code>build: .</code> — собрать app из Dockerfile.\n• <code>depends_on</code> — db стартует раньше.\n• app обращается к БД по имени сервиса <code>db</code> (внутренний DNS compose).",
+      "common_mistakes": [
+        "Хардкодить хост БД как localhost — внутри compose это имя сервиса.",
+        "Хранить пароли в compose в открытую — нужны .env/секреты.",
+        "Не задать volume для БД → данные теряются при пересоздании."
+      ],
+      "practice": {
+        "question": "Что делает docker compose up?",
+        "options": [
+          "поднимает все описанные сервисы вместе",
+          "собирает один образ",
+          "деплоит",
+          "тестирует"
+        ],
+        "correct": 0,
+        "explanation": "Оркестрация локального стека.",
+        "topic": "devops"
+      },
+      "quiz": {
+        "question": "Как app обращается к БД в одной compose-сети?",
+        "options": [
+          "по имени сервиса (db:5432)",
+          "по localhost",
+          "по IP вручную",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "Внутренний DNS по именам сервисов.",
+        "topic": "devops"
+      },
+      "challenge": {
+        "question": "Пересоздали контейнер Postgres — данные пропали. Чего не хватало?",
+        "options": [
+          "volume для постоянного хранения",
+          "больше памяти",
+          "depends_on",
+          "сети"
+        ],
+        "correct": 0,
+        "explanation": "Без volume данные живут только в контейнере.",
+        "topic": "devops"
+      },
+      "xp": 55
+    },
+    {
+      "topic": "devops",
+      "title": "CI/CD (GitHub Actions)",
+      "theory": "<b>CI</b> — на каждый push автоматически гонять тесты/линт/типы (ничего сломанного не вмёрджится). <b>CD</b> — автодеплой после зелёного CI. Пайплайн = качество без ручной рутины.",
+      "association": "🏭 CI/CD — конвейер с контролем качества: каждый коммит проходит проверки автоматически; брак не доезжает до прилавка (прода).",
+      "real_example": "PR → GitHub Actions ставит зависимости, гоняет pytest + ruff + mypy. Красное — merge заблокирован. Зелёное в main → автодеплой.",
+      "example": "on: [push]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: pip install -r requirements-dev.txt\n      - run: pytest",
+      "code_explained": "• <code>on: [push]</code> — запуск на каждый push.\n• checkout — забрать код.\n• Ставим зависимости, гоняем pytest.\n• Падение шага → красный билд → merge блокируется.",
+      "common_mistakes": [
+        "Деплоить без прогонки тестов в CI.",
+        "Складывать секреты в YAML — нужны GitHub Secrets.",
+        "Медленный пайплайн без кеша зависимостей."
+      ],
+      "practice": {
+        "question": "Что делает CI на каждый push?",
+        "options": [
+          "автоматически гоняет тесты/линт/типы",
+          "деплоит на прод",
+          "удаляет ветку",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Continuous Integration = постоянные проверки.",
+        "topic": "devops"
+      },
+      "quiz": {
+        "question": "Чем отличается CD от CI?",
+        "options": [
+          "CD — автодеплой после зелёного CI",
+          "это синонимы",
+          "CD медленнее",
+          "CD про тесты"
+        ],
+        "correct": 0,
+        "explanation": "Delivery/Deployment следует за Integration.",
+        "topic": "devops"
+      },
+      "challenge": {
+        "question": "Команда деплоит вручную, забывая прогнать тесты. Что внедрить?",
+        "options": [
+          "CI с обязательными тестами как gate",
+          "больше ручных проверок",
+          "ничего",
+          "деплой по пятницам"
+        ],
+        "correct": 0,
+        "explanation": "Тесты как обязательный барьер перед merge/деплоем.",
+        "topic": "devops"
+      },
+      "xp": 55
+    },
+    {
+      "topic": "devops",
+      "title": "Структурное логирование",
+      "theory": "print не годится для прода. Логи должны быть <b>структурными</b> (уровень, время, контекст: user_id, request_id), чтобы искать и фильтровать в системе сбора. Уровни: DEBUG/INFO/WARNING/ERROR.",
+      "association": "🗂️ Структурный лог — заполненная анкета вместо записки от руки: машина мгновенно фильтрует «все ERROR по user_id=42».",
+      "real_example": "Каждый запрос логируется с request_id → при инциденте находишь всю цепочку одного запроса среди миллионов строк. (logger уже настроен в utils/logger.py.)",
+      "example": "import logging\nlogger = logging.getLogger(__name__)\n\nlogger.info('payment_ok', extra={'user_id': 42, 'amount': 100})\nlogger.error('payment_failed', extra={'user_id': 42})",
+      "code_explained": "• <code>getLogger(__name__)</code> — логгер модуля.\n• Уровень (info/error) задаёт важность.\n• <code>extra</code> добавляет структурный контекст.\n• В проде форматтер сериализует это в JSON для поиска.",
+      "common_mistakes": [
+        "print вместо логгера — нет уровней, времени, не отключить.",
+        "Логировать секреты/пароли/токены.",
+        "Один уровень на всё — ERROR утонет в шуме INFO."
+      ],
+      "practice": {
+        "question": "Чем структурный лог лучше print?",
+        "options": [
+          "уровни, контекст, машинный поиск",
+          "цветной",
+          "короче",
+          "ничем"
+        ],
+        "correct": 0,
+        "explanation": "Логи становятся данными, а не текстом.",
+        "topic": "devops"
+      },
+      "quiz": {
+        "question": "Зачем request_id в логах?",
+        "options": [
+          "связать все строки одного запроса",
+          "ускорить",
+          "для красоты",
+          "обязателен"
+        ],
+        "correct": 0,
+        "explanation": "Трассировка одного запроса.",
+        "topic": "devops"
+      },
+      "challenge": {
+        "question": "Инцидент, миллионы строк логов. Как найти проблему одного юзера?",
+        "options": [
+          "фильтр по структурному полю (user_id)",
+          "читать всё подряд",
+          "перезапуск",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "Поэтому логи делают структурными.",
+        "topic": "devops"
+      },
+      "xp": 55
+    },
+    {
+      "topic": "devops",
+      "title": "Мониторинг (Prometheus/Grafana)",
+      "theory": "Логи — что случилось; <b>метрики</b> — как система чувствует себя СЕЙЧАС (RPS, latency, ошибки, память). Prometheus собирает метрики, Grafana рисует, алерты будят при выходе p95-latency/error-rate за порог.",
+      "association": "🩺 Мониторинг — кардиомонитор системы: видишь пульс (latency) и давление (error rate) в реальном времени; тревога — до «инфаркта».",
+      "real_example": "Дашборд: запросов/сек, p95 latency, % ошибок 5xx, память. Алерт «error rate > 1% 5 минут» → команда узнаёт раньше юзеров.",
+      "example": "from prometheus_client import Counter\n\nrequests_total = Counter('requests_total', 'All requests')\n\n@app.middleware('http')\nasync def count(request, call_next):\n    requests_total.inc()\n    return await call_next(request)",
+      "code_explained": "• <code>Counter</code> — метрика-счётчик.\n• <code>inc()</code> на каждый запрос.\n• Prometheus периодически забирает /metrics.\n• Grafana строит графики, алерты следят за порогами.",
+      "common_mistakes": [
+        "Только логи без метрик — узнаёшь о падении от юзеров.",
+        "Алерты на всё → усталость → игнор.",
+        "Мерить average вместо перцентилей (p95/p99 честнее)."
+      ],
+      "practice": {
+        "question": "Чем метрики отличаются от логов?",
+        "options": [
+          "состояние системы сейчас (latency/ошибки)",
+          "это одно и то же",
+          "метрики — текст",
+          "логи быстрее"
+        ],
+        "correct": 0,
+        "explanation": "Метрики — агрегированное состояние во времени.",
+        "topic": "devops"
+      },
+      "quiz": {
+        "question": "Что собирает Prometheus?",
+        "options": [
+          "метрики (RPS, latency, ошибки)",
+          "логи",
+          "трейсы",
+          "дампы"
+        ],
+        "correct": 0,
+        "explanation": "Числовые временные ряды.",
+        "topic": "devops"
+      },
+      "challenge": {
+        "question": "Почему p95 latency честнее средней?",
+        "options": [
+          "среднее прячет хвост — 5% могут страдать",
+          "p95 быстрее считать",
+          "среднее точнее",
+          "нет разницы"
+        ],
+        "correct": 0,
+        "explanation": "Перцентили показывают реальный худший опыт.",
+        "topic": "devops"
+      },
+      "xp": 55
+    },
+    {
+      "topic": "devops",
+      "title": "Очереди (Celery / RabbitMQ)",
+      "theory": "Долгие/ненадёжные задачи (рассылка, видео, отчёты) нельзя делать в запросе. <b>Очередь</b> принимает задачу, воркеры разбирают её асинхронно. Брокер (RabbitMQ/Redis) хранит задачи; упал воркер → задача переедет к другому.",
+      "association": "🎫 Очередь — талончики в МФЦ: сдал задачу (взял талон) и ушёл; свободный сотрудник (воркер) выполнит. Никто не стоит над душой.",
+      "real_example": "Рассылка 100k писем, генерация PDF, обработка видео → в Celery-очередь; веб-процесс мгновенно отвечает, воркеры жуют в фоне и переживают рестарты.",
+      "example": "from celery import Celery\n\napp = Celery(broker='redis://localhost:6379')\n\n@app.task\ndef send_email(to: str):\n    ...   # выполнит воркер, не веб-процесс\n\nsend_email.delay('a@b.com')   # поставить в очередь",
+      "code_explained": "• <code>@app.task</code> — задача для воркеров.\n• <code>.delay(...)</code> кладёт задачу в очередь и сразу возвращается.\n• Воркер забирает и выполняет асинхронно.\n• Брокер хранит задачи → переживут рестарт.",
+      "common_mistakes": [
+        "Тяжёлые задачи прямо в HTTP-запросе — таймауты, упал процесс = потеря.",
+        "Неидемпотентные задачи — повтор → двойная рассылка.",
+        "Без мониторинга очереди backlog растёт незаметно."
+      ],
+      "practice": {
+        "question": "Зачем очередь задач?",
+        "options": [
+          "выполнять долгие/фоновые задачи вне запроса, надёжно",
+          "ускорить SQL",
+          "кешировать",
+          "логировать"
+        ],
+        "correct": 0,
+        "explanation": "Разгрузка веб-процесса + надёжность.",
+        "topic": "devops"
+      },
+      "quiz": {
+        "question": "Что делает send_email.delay(...)?",
+        "options": [
+          "ставит задачу в очередь, не выполняя сейчас",
+          "шлёт письмо сразу",
+          "удаляет задачу",
+          "блокирует"
+        ],
+        "correct": 0,
+        "explanation": "Постановка задачи воркерам.",
+        "topic": "devops"
+      },
+      "challenge": {
+        "question": "Воркер упал посреди рассылки, задача повторилась → часть юзеров получила 2 письма. Что нужно?",
+        "options": [
+          "идемпотентность задач",
+          "больше воркеров",
+          "убрать очередь",
+          "ретраи без лимита"
+        ],
+        "correct": 0,
+        "explanation": "Повтор не должен дублировать эффект.",
+        "topic": "devops"
+      },
+      "xp": 55
+    }
+  ]
+}

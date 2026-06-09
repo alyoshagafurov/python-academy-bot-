@@ -1,0 +1,103 @@
+{
+  "tasks": [
+    {
+      "id": "var_name",
+      "topic": "variables",
+      "difficulty": "easy",
+      "tier": "free",
+      "prompt": "Создай переменную <b>name</b> и положи в неё своё имя (строку).",
+      "hint": "Например:\nname = 'Алекс'",
+      "checks": ["assigns_string:name"],
+      "success": "Первая переменная готова — ты кладёшь имя в «коробку» 📦",
+      "xp": 10
+    },
+    {
+      "id": "var_age",
+      "topic": "variables",
+      "difficulty": "easy",
+      "tier": "free",
+      "prompt": "Создай переменную <b>age</b> и присвой ей число — свой возраст.",
+      "hint": "age = 12",
+      "checks": ["assigns_int:age"],
+      "success": "Числа Python любит так же, как и строки 😎",
+      "xp": 10
+    },
+    {
+      "id": "var_city_print",
+      "topic": "variables",
+      "difficulty": "medium",
+      "tier": "free",
+      "prompt": "Создай переменную <b>city</b> со строкой и выведи её через <b>print()</b>.",
+      "hint": "city = 'Москва'\nprint(city)",
+      "checks": ["assigns_string:city", "calls:print", "uses_name:city"],
+      "success": "Переменная + вывод — связка чемпионов!",
+      "xp": 15
+    },
+    {
+      "id": "list_fruits",
+      "topic": "lists",
+      "difficulty": "easy",
+      "tier": "free",
+      "prompt": "Создай список <b>fruits</b> из трёх фруктов (строк).",
+      "hint": "fruits = ['яблоко', 'банан', 'груша']",
+      "checks": ["assigns_list:fruits"],
+      "success": "Рюкзак собран 🎒 Три вещи внутри!",
+      "xp": 10
+    },
+    {
+      "id": "list_nums_print",
+      "topic": "lists",
+      "difficulty": "medium",
+      "tier": "free",
+      "prompt": "Создай список <b>nums = [10, 20, 30]</b> и выведи первый элемент через print().",
+      "hint": "nums = [10, 20, 30]\nprint(nums[0])",
+      "checks": ["assigns_list:nums", "calls:print"],
+      "success": "Индекс 0 — ты помнишь, счёт с нуля!",
+      "xp": 15
+    },
+    {
+      "id": "loop_print",
+      "topic": "loops",
+      "difficulty": "easy",
+      "tier": "pro",
+      "prompt": "Напиши цикл <b>for</b> с <b>range</b>, который что-нибудь печатает.",
+      "hint": "for i in range(5):\n    print(i)",
+      "checks": ["has_for", "calls:print"],
+      "success": "Цикл крутится — лампочка светится 🔁",
+      "xp": 15
+    },
+    {
+      "id": "loop_sum",
+      "topic": "loops",
+      "difficulty": "hard",
+      "tier": "pro",
+      "prompt": "Через <b>for</b> и <b>range</b> посчитай сумму в переменной <b>s</b> и выведи её.",
+      "hint": "s = 0\nfor i in range(1, 4):\n    s = s + i\nprint(s)",
+      "checks": ["assigns:s", "has_for", "calls:print"],
+      "success": "Аккумулятор суммы — настоящая классика алгоритмов!",
+      "xp": 20
+    },
+    {
+      "id": "func_hello",
+      "topic": "functions",
+      "difficulty": "easy",
+      "tier": "pro",
+      "prompt": "Создай функцию <b>hello</b>, которая печатает приветствие.",
+      "hint": "def hello():\n    print('Привет')",
+      "checks": ["defines_func:hello", "calls:print"],
+      "success": "Своя функция — это сила! Теперь её можно вызывать сколько угодно.",
+      "xp": 15
+    },
+    {
+      "id": "func_double",
+      "topic": "functions",
+      "difficulty": "medium",
+      "tier": "pro",
+      "prompt": "Создай функцию <b>double(x)</b>, которая <b>возвращает</b> x * 2.",
+      "hint": "def double(x):\n    return x * 2",
+      "checks": ["defines_func:double:1", "returns"],
+      "success": "return освоен 💪 Функция теперь отдаёт результат!",
+      "xp": 20
+    }
+  ]
+}

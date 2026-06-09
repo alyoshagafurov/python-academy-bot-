@@ -1,0 +1,16 @@
+{
+  "id": "python_beginner",
+  "language": "python",
+  "track": "beginner",
+  "title": "Python Beginner",
+  "emoji": "🐍",
+  "stages": [
+    "stage_1",
+    "stage_2",
+    "stage_3",
+    "stage_4",
+    "stage_5",
+    "stage_6",
+    "stage_7"
+  ]
+}

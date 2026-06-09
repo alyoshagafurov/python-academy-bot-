@@ -1,0 +1,365 @@
+{
+  "id": 3,
+  "title": "Базы данных",
+  "subtitle": "Хранить и доставать данные",
+  "emoji": "🗄️",
+  "lessons": [
+    {
+      "topic": "databases",
+      "title": "PostgreSQL — основы",
+      "theory": "<b>PostgreSQL</b> — мощная реляционная БД: данные в таблицах со строгой схемой, связи через ключи, надёжность (<b>ACID</b>). Стандарт там, где данные важны (юзеры, платежи).",
+      "association": "🗄️ Postgres — картотека с жёсткими правилами: у каждой карточки фиксированные поля, ничего не теряется, всё связано ссылками.",
+      "real_example": "Пользователи, заказы, платежи магазина; связь «у заказа есть user_id». SQLite — для прототипа, Postgres — для прода с нагрузкой.",
+      "example": "CREATE TABLE users (\n    id SERIAL PRIMARY KEY,\n    email TEXT UNIQUE NOT NULL,\n    created_at TIMESTAMP DEFAULT now()\n);",
+      "code_explained": "• <code>SERIAL PRIMARY KEY</code> — автоинкрементный уникальный id.\n• <code>email TEXT UNIQUE NOT NULL</code> — обязателен и без дублей.\n• <code>created_at DEFAULT now()</code> — дата подставится сама.\n• Схема фиксирована — БД не даст записать мусор.",
+      "common_mistakes": [
+        "Хранить всё в одной таблице без связей.",
+        "Не ставить UNIQUE/NOT NULL → грязные данные.",
+        "Путать типы SQLite и Postgres (SERIAL, TIMESTAMP)."
+      ],
+      "practice": {
+        "question": "Что гарантирует PRIMARY KEY?",
+        "options": [
+          "уникальный идентификатор строки",
+          "сортировку",
+          "индексацию всех полей",
+          "шифрование"
+        ],
+        "correct": 0,
+        "explanation": "PK уникально адресует строку.",
+        "topic": "databases"
+      },
+      "quiz": {
+        "question": "Зачем UNIQUE на колонке email?",
+        "options": [
+          "чтобы не было двух юзеров с одним email",
+          "для скорости",
+          "для красоты",
+          "это обязательно"
+        ],
+        "correct": 0,
+        "explanation": "UNIQUE запрещает дубликаты.",
+        "topic": "databases"
+      },
+      "challenge": {
+        "question": "Почему Postgres предпочитают SQLite в нагруженном проде?",
+        "options": [
+          "конкурентный доступ, надёжность, масштаб",
+          "он проще",
+          "он в одном файле",
+          "нет разницы"
+        ],
+        "correct": 0,
+        "explanation": "SQLite — один файл, слабая многопользовательская запись.",
+        "topic": "databases"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "databases",
+      "title": "Raw SQL и psycopg",
+      "theory": "<b>SQL</b> — язык к данным: SELECT/INSERT/UPDATE/DELETE. <b>psycopg</b> — драйвер, через который Python шлёт SQL в Postgres. Значения передаём <b>параметрами</b>, не f-строками!",
+      "association": "💬 Параметр — записка библиотекарю с именем, а не выкрикивание на весь зал. Так чужой ввод не «исполнится» как команда.",
+      "real_example": "«Найти заказы юзера 42», «обновить статус платежа». Параметризация спасает от SQL-инъекций.",
+      "example": "cur.execute(\n    'SELECT id, email FROM users WHERE id = %s',\n    (user_id,)\n)\nrow = cur.fetchone()",
+      "code_explained": "• <code>%s</code> — плейсхолдер, psycopg сам экранирует значение.\n• <code>(user_id,)</code> — значения отдельно от текста запроса.\n• <code>fetchone()</code> — одна строка.\n• НИКОГДА не вставляй ввод через f'' — это инъекция.",
+      "common_mistakes": [
+        "f'... WHERE id = {x}' → SQL-инъекция (критично!).",
+        "Забыть запятую в (x,) — это не кортеж.",
+        "Не закрывать курсор/соединение → утечки."
+      ],
+      "practice": {
+        "question": "Как безопасно подставить значение в SQL?",
+        "options": [
+          "через параметр (%s)",
+          "через f-строку",
+          "через .format()",
+          "конкатенацией"
+        ],
+        "correct": 0,
+        "explanation": "Параметры экранируются драйвером.",
+        "topic": "databases"
+      },
+      "quiz": {
+        "question": "Чем опасен f'SELECT ... WHERE name = {name}'?",
+        "options": [
+          "SQL-инъекция",
+          "медленно",
+          "слишком длинно",
+          "ничем"
+        ],
+        "correct": 0,
+        "explanation": "Чужой ввод может исполниться как SQL.",
+        "topic": "databases"
+      },
+      "challenge": {
+        "question": "Юзер ввёл name = \"'; DROP TABLE users; --\". Что спасёт?",
+        "options": [
+          "параметризованный запрос",
+          "len(name) < 50",
+          "перевод в нижний регистр",
+          "try/except"
+        ],
+        "correct": 0,
+        "explanation": "Параметр не исполнится как команда.",
+        "topic": "databases"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "databases",
+      "title": "Транзакции и ACID",
+      "theory": "Транзакция — группа операций «всё или ничего». <code>COMMIT</code> фиксирует, <code>ROLLBACK</code> откатывает. <b>ACID</b> гарантирует целостность — критично для денег.",
+      "association": "🏦 Транзакция — перевод: списать у А и зачислить Б. Упало посередине → откат, иначе деньги бы исчезли. Никаких «полупереводов».",
+      "real_example": "Перевод денег; оформление заказа (списать товар + создать заказ + списать оплату) — всё в одной транзакции, чтобы не было рассинхрона.",
+      "example": "try:\n    cur.execute('UPDATE accounts SET balance = balance - 100 WHERE id = 1')\n    cur.execute('UPDATE accounts SET balance = balance + 100 WHERE id = 2')\n    conn.commit()\nexcept Exception:\n    conn.rollback()",
+      "code_explained": "• Два UPDATE — одна логическая операция (перевод).\n• <code>commit()</code> фиксирует оба разом.\n• При ошибке <code>rollback()</code> откатывает ВСЁ.\n• A в ACID = Atomicity: всё или ничего.",
+      "common_mistakes": [
+        "Коммитить каждый шаг отдельно → при сбое полперевода.",
+        "Забыть rollback в except → «висящая» транзакция.",
+        "Долгие транзакции блокируют строки для других."
+      ],
+      "practice": {
+        "question": "Что делает ROLLBACK?",
+        "options": [
+          "откатывает все изменения транзакции",
+          "сохраняет изменения",
+          "удаляет таблицу",
+          "коммитит"
+        ],
+        "correct": 0,
+        "explanation": "Откат возвращает БД к состоянию до транзакции.",
+        "topic": "databases"
+      },
+      "quiz": {
+        "question": "За что отвечает Atomicity (A в ACID)?",
+        "options": [
+          "транзакция применяется целиком или никак",
+          "скорость",
+          "уникальность",
+          "индексы"
+        ],
+        "correct": 0,
+        "explanation": "Нет «частично выполненных» транзакций.",
+        "topic": "databases"
+      },
+      "challenge": {
+        "question": "Списали у А, сервер упал до зачисления Б (без транзакции). Итог?",
+        "options": [
+          "деньги пропали",
+          "ничего",
+          "Б получил вдвое",
+          "автооткат"
+        ],
+        "correct": 0,
+        "explanation": "Поэтому перевод оборачивают в транзакцию с rollback.",
+        "topic": "databases"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "databases",
+      "title": "SQLAlchemy 2.0 (ORM)",
+      "theory": "<b>ORM</b> связывает таблицы с классами Python: строка ↔ объект. Пишешь на Python — SQLAlchemy генерирует SQL. Меньше ручного SQL, безопаснее, читаемее.",
+      "association": "🔌 ORM — переводчик между мирами: Python-объекты ↔ строки таблицы. Ты говоришь session.add(user), он переводит в INSERT.",
+      "real_example": "Модель User(id, email) = таблица users; session.get(User, 42) вместо SELECT. Большинство FastAPI-бэкендов на SQLAlchemy.",
+      "example": "from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column\n\nclass Base(DeclarativeBase):\n    pass\n\nclass User(Base):\n    __tablename__ = 'users'\n    id: Mapped[int] = mapped_column(primary_key=True)\n    email: Mapped[str]",
+      "code_explained": "• <code>DeclarativeBase</code> — базовый класс моделей.\n• <code>Mapped[int]</code> + <code>mapped_column</code> — типизированная колонка (стиль 2.0).\n• <code>__tablename__</code> — имя таблицы.\n• Теперь User — и класс Python, и таблица users.",
+      "common_mistakes": [
+        "N+1 запросов: обращение к связям в цикле.",
+        "Держать session открытой слишком долго.",
+        "Путать стиль 1.x (Column) и 2.0 (Mapped)."
+      ],
+      "practice": {
+        "question": "Что связывает ORM?",
+        "options": [
+          "классы Python и таблицы БД",
+          "функции и модули",
+          "потоки и процессы",
+          "кеш и БД"
+        ],
+        "correct": 0,
+        "explanation": "Объект ↔ строка таблицы.",
+        "topic": "databases"
+      },
+      "quiz": {
+        "question": "Что описывает Mapped[int] = mapped_column(primary_key=True)?",
+        "options": [
+          "типизированную колонку-первичный ключ",
+          "функцию",
+          "индекс",
+          "связь"
+        ],
+        "correct": 0,
+        "explanation": "Это объявление PK-колонки в стиле 2.0.",
+        "topic": "databases"
+      },
+      "challenge": {
+        "question": "В цикле по 100 юзерам читаешь user.orders → 101 запрос. Это…",
+        "options": [
+          "проблема N+1",
+          "транзакция",
+          "deadlock",
+          "кеш-промах"
+        ],
+        "correct": 0,
+        "explanation": "Лечится eager-загрузкой / join.",
+        "topic": "databases"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "databases",
+      "title": "Alembic — миграции",
+      "theory": "Схема БД меняется (добавил колонку). <b>Alembic</b> версионирует изменения как git для базы: каждая миграция — шаг вперёд (upgrade) или назад (downgrade). Без ручных ALTER на проде.",
+      "association": "📸 Alembic — точки сохранения схемы: можно накатить вперёд или откатить назад, и у всех (и на проде) структура одинаковая.",
+      "real_example": "Команда из 5 человек: один добавил колонку phone → миграция в git → у всех обновится одной командой alembic upgrade head.",
+      "example": "# alembic revision --autogenerate -m \"add phone\"\n\ndef upgrade():\n    op.add_column('users', sa.Column('phone', sa.String()))\n\ndef downgrade():\n    op.drop_column('users', 'phone')",
+      "code_explained": "• <code>upgrade()</code> — как накатить изменение.\n• <code>downgrade()</code> — как откатить.\n• autogenerate сравнивает модели и БД и пишет черновик.\n• <code>alembic upgrade head</code> применяет все новые миграции.",
+      "common_mistakes": [
+        "Менять схему руками в обход миграций → рассинхрон.",
+        "Не писать downgrade.",
+        "Слепо доверять autogenerate — проверяй результат."
+      ],
+      "practice": {
+        "question": "Что делает alembic upgrade head?",
+        "options": [
+          "применяет все новые миграции",
+          "удаляет БД",
+          "создаёт бэкап",
+          "откатывает всё"
+        ],
+        "correct": 0,
+        "explanation": "Накатывает схему до последней версии.",
+        "topic": "databases"
+      },
+      "quiz": {
+        "question": "Зачем нужны миграции схемы?",
+        "options": [
+          "версионировать и синхронно применять изменения",
+          "ускорять запросы",
+          "шифровать данные",
+          "кешировать"
+        ],
+        "correct": 0,
+        "explanation": "Структура БД меняется контролируемо и воспроизводимо.",
+        "topic": "databases"
+      },
+      "challenge": {
+        "question": "Разработчик поменял схему руками на проде, мимо Alembic. Чем грозит?",
+        "options": [
+          "рассинхрон → следующая миграция сломается",
+          "ничего",
+          "ускорением",
+          "автооткатом"
+        ],
+        "correct": 0,
+        "explanation": "История миграций перестанет совпадать с реальностью.",
+        "topic": "databases"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "databases",
+      "title": "Оптимизация запросов и индексы",
+      "theory": "<b>Индекс</b> — как алфавитный указатель: БД находит строку мгновенно вместо полного перебора. <code>EXPLAIN</code> показывает план запроса. Индексы ускоряют чтение, чуть замедляют запись.",
+      "association": "📖 Индекс — оглавление книги. Без него ищешь слово, листая все 500 страниц; с ним — сразу на нужную.",
+      "real_example": "WHERE email = ... по 10М юзеров: без индекса — секунды (перебор), с индексом по email — миллисекунды.",
+      "example": "CREATE INDEX idx_orders_user ON orders(user_id);\n\nEXPLAIN ANALYZE\nSELECT * FROM orders WHERE user_id = 42;",
+      "code_explained": "• <code>CREATE INDEX</code> — строим указатель по user_id.\n• Поиск заказов юзера теперь по индексу, не перебором.\n• <code>EXPLAIN ANALYZE</code> покажет Index Scan vs Seq Scan.\n• Индексируй то, по чему часто фильтруешь/джойнишь.",
+      "common_mistakes": [
+        "Индексировать всё подряд → медленная запись, раздутая БД.",
+        "Не индексировать внешние ключи и поля в WHERE.",
+        "Оптимизировать вслепую, не глядя в EXPLAIN."
+      ],
+      "practice": {
+        "question": "Что показывает EXPLAIN?",
+        "options": [
+          "план выполнения запроса",
+          "размер таблицы",
+          "список индексов",
+          "права доступа"
+        ],
+        "correct": 0,
+        "explanation": "EXPLAIN раскрывает, как БД исполнит запрос.",
+        "topic": "databases"
+      },
+      "quiz": {
+        "question": "Зачем индекс на колонке, по которой часто фильтруют?",
+        "options": [
+          "искать по указателю, а не перебором",
+          "экономить место",
+          "ускорять запись",
+          "для UNIQUE"
+        ],
+        "correct": 0,
+        "explanation": "Index Scan вместо Seq Scan = быстро.",
+        "topic": "databases"
+      },
+      "challenge": {
+        "question": "SELECT по user_id на 10М строк тормозит. Первый шаг?",
+        "options": [
+          "EXPLAIN → добавить индекс на user_id",
+          "купить сервер",
+          "переписать на NoSQL",
+          "кешировать всё"
+        ],
+        "correct": 0,
+        "explanation": "Сначала диагностика планом, затем индекс.",
+        "topic": "databases"
+      },
+      "xp": 45
+    },
+    {
+      "topic": "databases",
+      "title": "Redis — кеш и очереди",
+      "theory": "<b>Redis</b> — сверхбыстрое хранилище в памяти (key-value). Используют как кеш (снять нагрузку с БД), счётчики, сессии, очереди. В разы быстрее диска, но данные летучие.",
+      "association": "⚡ Redis — стикеры на мониторе: то, что нужно мгновенно и часто, держишь под рукой, а не идёшь в архив (БД) каждый раз.",
+      "real_example": "Кешировать профиль на 60с, хранить rate-limit счётчики и JWT-блэклист, очередь фоновых задач (Celery).",
+      "example": "import redis\n\nr = redis.Redis()\nr.set('user:42:name', 'Alex', ex=60)\nname = r.get('user:42:name')",
+      "code_explained": "• <code>set(key, value, ex=60)</code> — значение с TTL 60 секунд.\n• <code>get(key)</code> — мгновенное чтение из памяти.\n• Через минуту ключ исчезнет сам (кеш протухает).\n• Паттерн: сначала Redis, при промахе — БД и кладём в кеш.",
+      "common_mistakes": [
+        "Хранить в Redis то, что нельзя терять (память может очиститься).",
+        "Кеш без TTL → устаревшие данные навсегда.",
+        "Забыть про инвалидацию кеша при изменении данных."
+      ],
+      "practice": {
+        "question": "Где Redis хранит данные?",
+        "options": [
+          "в оперативной памяти",
+          "на диске",
+          "в облаке",
+          "в Postgres"
+        ],
+        "correct": 0,
+        "explanation": "In-memory → отсюда скорость и летучесть.",
+        "topic": "databases"
+      },
+      "quiz": {
+        "question": "Зачем кешировать профиль в Redis с TTL?",
+        "options": [
+          "снять нагрузку с БД и отдавать мгновенно",
+          "для бэкапа",
+          "ради надёжности",
+          "для миграций"
+        ],
+        "correct": 0,
+        "explanation": "Кеш экономит дорогие запросы к БД.",
+        "topic": "databases"
+      },
+      "challenge": {
+        "question": "Положили в кеш, обновили в БД, но кеш не сбросили. Что увидит юзер?",
+        "options": [
+          "устаревшие данные",
+          "ошибку",
+          "ничего",
+          "новые данные"
+        ],
+        "correct": 0,
+        "explanation": "Нужна инвалидация кеша при изменении.",
+        "topic": "databases"
+      },
+      "xp": 45
+    }
+  ]
+}

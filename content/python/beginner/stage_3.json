@@ -1,0 +1,488 @@
+{
+  "id": 3,
+  "title": "Функции",
+  "subtitle": "Создаём свои инструменты",
+  "emoji": "🛠️",
+  "lessons": [
+    {
+      "topic": "functions",
+      "title": "def — объявление функции",
+      "theory": "Функция — это твоя личная команда, которой ты даёшь имя. Один раз описал, что она делает, — и зовёшь её сколько угодно, не переписывая код заново.",
+      "association": "☕ Функция — кнопка кофемашины. Нажал (вызвал) → получил кофе (результат). Не нужно каждый раз объяснять машине, как варить.",
+      "real_example": "Кнопка «Поделиться», команда бота /start, «посчитать доставку» — всё это функции: одно имя, спрятанное за ним действие.",
+      "example": "def greet():\n    print('Привет!')\n    print('Рад тебя видеть')\n\ngreet()\ngreet()",
+      "code_explained": "• <code>def greet():</code> — объявляем функцию с именем greet.\n• Строки с отступом — её тело (что она делает).\n• <code>greet()</code> — вызов: тело выполняется.\n• Вызвали дважды → приветствие напечатается 2 раза.",
+      "common_mistakes": [
+        "Объявить функцию, но забыть вызвать — тело само не выполнится.",
+        "Забыть скобки при вызове: <code>greet</code> без () не запускает функцию.",
+        "Потерять двоеточие или отступ в теле."
+      ],
+      "practice": {
+        "question": "Как вызвать функцию greet?",
+        "options": [
+          "greet()",
+          "greet",
+          "def greet",
+          "call greet"
+        ],
+        "correct": 0,
+        "explanation": "Вызов — это имя со скобками: greet().",
+        "topic": "functions"
+      },
+      "quiz": {
+        "question": "Сколько раз напечатается «Hi»?",
+        "options": [
+          "2",
+          "1",
+          "0",
+          "3"
+        ],
+        "correct": 0,
+        "explanation": "Функция вызвана дважды → 2 раза.",
+        "topic": "functions",
+        "code": "def f():\n    print('Hi')\nf()\nf()"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "A B A B",
+          "A B",
+          "A A B B",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Каждый вызов печатает A, потом B; два вызова → A B A B.",
+        "topic": "functions",
+        "code": "def f():\n    print('A')\n    print('B')\nf()\nf()"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "functions",
+      "title": "Аргументы функции",
+      "theory": "Аргумент — это то, что ты передаёшь функции на вход, чтобы она работала с твоими данными. В скобках функция принимает параметр и использует его внутри.",
+      "association": "🍕 Функция-пиццерия: аргумент — твой заказ («с сыром»). Передал начинку → получил свою пиццу. Без заказа она не знает, что готовить.",
+      "real_example": "Отправить сообщение конкретному человеку, посчитать цену для конкретного товара — данные передаются как аргументы.",
+      "example": "def greet(name):\n    print('Привет,', name)\n\ngreet('Алекс')\ngreet('Маша')",
+      "code_explained": "• <code>def greet(name):</code> — name это параметр, пустая «ячейка».\n• Внутри функции name = то, что передали.\n• <code>greet('Алекс')</code> → name становится 'Алекс'.\n• Одна функция — разные результаты под разные данные.",
+      "common_mistakes": [
+        "Вызвать функцию без обязательного аргумента → ошибка.",
+        "Перепутать порядок аргументов.",
+        "Думать, что параметр виден снаружи функции."
+      ],
+      "practice": {
+        "question": "Что напечатает greet('Том')?",
+        "options": [
+          "Привет, Том",
+          "Привет, name",
+          "Том",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "name становится 'Том'.",
+        "topic": "functions",
+        "code": "def greet(name):\n    print('Привет,', name)"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "15",
+          "add",
+          "a b",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Передали 5 и 10, функция печатает сумму 15.",
+        "topic": "functions",
+        "code": "def add(a, b):\n    print(a + b)\nadd(5, 10)"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "Привет, Мир",
+          "Привет, name",
+          "Мир",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Аргумент 'Мир' попал в name и вернулся в строке.",
+        "topic": "functions",
+        "code": "def hello(name):\n    return 'Привет, ' + name\nprint(hello('Мир'))"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "functions",
+      "title": "return — возврат значения",
+      "theory": "<b>return</b> — это то, что функция отдаёт обратно как результат. <code>print</code> показывает на экране, а <code>return</code> возвращает значение, чтобы дальше с ним работать: сохранить, сложить, передать.",
+      "association": "🏧 return — банкомат выдаёт деньги тебе в руки (можешь потратить). print — просто показывает баланс на экране (посмотрел и всё).",
+      "real_example": "Функция «сумма корзины» возвращает число, чтобы показать итог и применить скидку. Калькулятор возвращает результат, а не просто печатает.",
+      "example": "def square(x):\n    return x * x\n\nresult = square(5)\nprint(result + 1)",
+      "code_explained": "• <code>return x * x</code> — функция отдаёт квадрат.\n• <code>result = square(5)</code> — ловим возвращённое 25.\n• Работаем дальше: result + 1 = 26.\n• После return функция сразу завершается.",
+      "common_mistakes": [
+        "Перепутать print и return: print не даёт значение для расчётов.",
+        "Код после return не выполнится.",
+        "Забыть поймать результат: square(5) без присваивания теряется."
+      ],
+      "practice": {
+        "question": "Что вернёт square(3)?",
+        "options": [
+          "9",
+          "6",
+          "3",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "3 * 3 = 9.",
+        "topic": "functions",
+        "code": "def square(x):\n    return x * x"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "20",
+          "10",
+          "double",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "double(10) вернёт 20.",
+        "topic": "functions",
+        "code": "def double(x):\n    return x * 2\nprint(double(10))"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "A",
+          "B",
+          "A B",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "После return функция выходит — 'B' уже не печатается.",
+        "topic": "functions",
+        "code": "def f():\n    return 'A'\n    print('B')\nprint(f())"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "functions",
+      "title": "global и local переменные",
+      "theory": "Переменная внутри функции — <b>local</b>: живёт только там и исчезает после. Переменная снаружи — <b>global</b>: видна везде. Функция — как отдельная комната: что создал внутри, снаружи не видно.",
+      "association": "🏠 Функция — комната. local-переменная — вещь на твоём столе (видишь только ты). global — вещь в общем коридоре (видят все).",
+      "real_example": "Счёт игры (global) виден всем функциям, а временная переменная для расчёта внутри функции (local) больше никому не нужна.",
+      "example": "score = 0          # global\n\ndef add_point():\n    bonus = 10     # local\n    print(bonus)\n\nadd_point()\nprint(score)",
+      "code_explained": "• <code>score</code> — global, видна и внутри, и снаружи.\n• <code>bonus</code> — local, существует только внутри add_point.\n• <code>print(bonus)</code> снаружи дал бы ошибку.\n• <code>print(score)</code> работает где угодно.",
+      "common_mistakes": [
+        "Обратиться к local-переменной снаружи функции → ошибка.",
+        "Думать, что присваивание внутри изменит global без слова <code>global</code>.",
+        "Назвать local так же, как global, и запутаться."
+      ],
+      "practice": {
+        "question": "Где видна local-переменная?",
+        "options": [
+          "только внутри функции",
+          "везде",
+          "только снаружи",
+          "в любой функции"
+        ],
+        "correct": 0,
+        "explanation": "local живёт только внутри своей функции.",
+        "topic": "functions"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "ошибка (x не видна)",
+          "5",
+          "x",
+          "0"
+        ],
+        "correct": 0,
+        "explanation": "x создана внутри f, снаружи её нет → ошибка.",
+        "topic": "functions",
+        "code": "def f():\n    x = 5\nf()\nprint(x)"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "10",
+          "20",
+          "30",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "n внутри функции — local, глобальную n=10 он не меняет.",
+        "topic": "functions",
+        "code": "n = 10\ndef change():\n    n = 20\nchange()\nprint(n)"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "functions",
+      "title": "*args — много аргументов",
+      "theory": "<code>*args</code> позволяет функции принять сколько угодно аргументов — они собираются в один кортеж. Удобно, когда заранее не знаешь, сколько значений придёт.",
+      "association": "🛒 *args — корзина с открытым верхом: кидай хоть 2, хоть 20 продуктов. Функция обработает всё, что принесёшь.",
+      "real_example": "Функция «сумма всех покупок», чат с любым числом участников, сам print() принимает сколько угодно аргументов.",
+      "example": "def total(*args):\n    print(sum(args))\n\ntotal(10, 20)\ntotal(1, 2, 3, 4)",
+      "code_explained": "• <code>*args</code> — все переданные значения попадают в кортеж args.\n• <code>total(10, 20)</code> → args = (10, 20).\n• <code>sum(args)</code> складывает их → 30, затем 10.\n• Количество аргументов не ограничено.",
+      "common_mistakes": [
+        "Забыть звёздочку: <code>def total(args)</code> примет ровно один аргумент.",
+        "Думать, что args — это список (это кортеж).",
+        "Ставить обычные параметры после *args без необходимости."
+      ],
+      "practice": {
+        "question": "Во что собираются значения в *args?",
+        "options": [
+          "в кортеж",
+          "в строку",
+          "в число",
+          "в словарь"
+        ],
+        "correct": 0,
+        "explanation": "*args собирает аргументы в кортеж.",
+        "topic": "functions"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "6",
+          "3",
+          "123",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "args = (1, 2, 3), сумма 6.",
+        "topic": "functions",
+        "code": "def total(*args):\n    print(sum(args))\ntotal(1, 2, 3)"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "3",
+          "2",
+          "1",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "В кортеже 3 аргумента → len = 3.",
+        "topic": "functions",
+        "code": "def count(*args):\n    return len(args)\nprint(count(7, 8, 9))"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "functions",
+      "title": "**kwargs — именованные аргументы",
+      "theory": "<code>**kwargs</code> принимает любое число именованных аргументов (имя=значение) и складывает их в словарь. Когда важно не только значение, но и его «подпись».",
+      "association": "🏷️ **kwargs — коробка с подписанными ячейками: name='Алекс', age=20. Каждое значение лежит со своей наклейкой-ключом.",
+      "real_example": "Настройки профиля (theme='dark', lang='ru'), параметры запроса к API — передаются по именам через **kwargs.",
+      "example": "def show(**kwargs):\n    for key, value in kwargs.items():\n        print(key, '=', value)\n\nshow(name='Алекс', age=20)",
+      "code_explained": "• <code>**kwargs</code> — именованные аргументы попадают в словарь.\n• <code>show(name='Алекс', age=20)</code> → {'name': 'Алекс', 'age': 20}.\n• <code>.items()</code> перебирает пары ключ-значение.\n• Печатает: name = Алекс, age = 20.",
+      "common_mistakes": [
+        "Передать позиционный аргумент туда, где ждут именованный.",
+        "Думать, что kwargs — кортеж (это словарь).",
+        "Перепутать *args (кортеж) и **kwargs (словарь)."
+      ],
+      "practice": {
+        "question": "Во что собирается **kwargs?",
+        "options": [
+          "в словарь",
+          "в кортеж",
+          "в список",
+          "в строку"
+        ],
+        "correct": 0,
+        "explanation": "**kwargs собирает именованные аргументы в словарь.",
+        "topic": "functions"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "dark",
+          "theme",
+          "color",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "kwargs['theme'] = 'dark'.",
+        "topic": "functions",
+        "code": "def f(**kwargs):\n    print(kwargs['theme'])\nf(theme='dark')"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "2",
+          "1",
+          "name age",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Два именованных аргумента → словарь из 2 пар → len 2.",
+        "topic": "functions",
+        "code": "def f(**kwargs):\n    return len(kwargs)\nprint(f(name='A', age=5))"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "functions",
+      "title": "Значения по умолчанию",
+      "theory": "Параметру можно задать <b>значение по умолчанию</b>: если аргумент не передали — используется оно. Удобно для необязательных настроек.",
+      "association": "🍦 Мороженое по умолчанию — ваниль. Не выбрал вкус → получишь ваниль. Выбрал → будет твой.",
+      "real_example": "Размер пиццы по умолчанию «средняя», язык интерфейса «русский», громкость 50% — пока не поменял.",
+      "example": "def greet(name='друг'):\n    print('Привет,', name)\n\ngreet()\ngreet('Алекс')",
+      "code_explained": "• <code>name='друг'</code> — значение по умолчанию.\n• <code>greet()</code> без аргумента → name = 'друг'.\n• <code>greet('Алекс')</code> → name = 'Алекс' (переопределили).\n• Печатает: Привет, друг / Привет, Алекс.",
+      "common_mistakes": [
+        "Ставить параметр с умолчанием перед обычным → ошибка.",
+        "Использовать изменяемый список как значение по умолчанию — частая ловушка.",
+        "Думать, что умолчание пересчитывается при каждом вызове."
+      ],
+      "practice": {
+        "question": "Что напечатает greet() без аргумента?",
+        "options": [
+          "Привет, друг",
+          "Привет, name",
+          "ошибка",
+          "Привет,"
+        ],
+        "correct": 0,
+        "explanation": "Сработает значение по умолчанию 'друг'.",
+        "topic": "functions",
+        "code": "def greet(name='друг'):\n    print('Привет,', name)"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "15",
+          "10",
+          "5",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "b по умолчанию 10; 5 + 10 = 15.",
+        "topic": "functions",
+        "code": "def add(a, b=10):\n    return a + b\nprint(add(5))"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "8",
+          "13",
+          "5",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Передали b=3, умолчание переопределено: 5 + 3 = 8.",
+        "topic": "functions",
+        "code": "def add(a, b=10):\n    return a + b\nprint(add(5, 3))"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "functions",
+      "title": "lambda — анонимные функции",
+      "theory": "<b>lambda</b> — крошечная функция в одну строку без имени. Когда нужна простая операция «на лету», необязательно писать целый def.",
+      "association": "📝 lambda — стикер-напоминалка, а def — целая тетрадь. Для короткой мысли хватит стикера.",
+      "real_example": "Сортировать список по своему правилу, задать быстрое преобразование, передать мини-функцию в map/filter.",
+      "example": "square = lambda x: x * x\nprint(square(5))\n\nadd = lambda a, b: a + b\nprint(add(2, 3))",
+      "code_explained": "• <code>lambda x: x * x</code> — функция: вход x, результат x*x.\n• Присвоили её переменной square.\n• <code>square(5)</code> → 25.\n• <code>lambda a, b: a + b</code> — два входа, возвращает сумму.",
+      "common_mistakes": [
+        "Писать сложную логику в lambda — лучше обычный def.",
+        "Ставить return внутри lambda (результат и так возвращается).",
+        "Делать lambda нечитаемой ради краткости."
+      ],
+      "practice": {
+        "question": "Что вернёт (lambda x: x + 1)(4)?",
+        "options": [
+          "5",
+          "4",
+          "x+1",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "4 + 1 = 5.",
+        "topic": "functions"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "20",
+          "10",
+          "lambda",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "lambda удваивает: 10 * 2 = 20.",
+        "topic": "functions",
+        "code": "double = lambda x: x * 2\nprint(double(10))"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "7",
+          "12",
+          "ошибка",
+          "10"
+        ],
+        "correct": 0,
+        "explanation": "lambda a, b: a + b → 3 + 4 = 7.",
+        "topic": "functions",
+        "code": "f = lambda a, b: a + b\nprint(f(3, 4))"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "functions",
+      "title": "map() и filter()",
+      "theory": "<b>map</b> применяет функцию к каждому элементу коллекции (преобразует все). <b>filter</b> оставляет только те, что прошли проверку. Заменяют цикл одной строкой.",
+      "association": "🏭 map — конвейер-покрасочная: каждая деталь красится одинаково. filter — фейс-контроль: проходят только подходящие.",
+      "real_example": "Сделать все имена с заглавной буквы (map), оставить только взрослых из списка возрастов (filter), удвоить все цены.",
+      "example": "nums = [1, 2, 3, 4]\ndoubled = list(map(lambda x: x * 2, nums))\nevens = list(filter(lambda x: x % 2 == 0, nums))\nprint(doubled)\nprint(evens)",
+      "code_explained": "• <code>map(lambda x: x*2, nums)</code> — удваивает каждый → [2, 4, 6, 8].\n• <code>filter(lambda x: x%2==0, nums)</code> — оставляет чётные → [2, 4].\n• <code>list(...)</code> превращает результат в список.\n• Одна строка вместо целого цикла.",
+      "common_mistakes": [
+        "Забыть list() — map/filter возвращают объект, а не список.",
+        "Перепутать map (преобразует все) и filter (отбирает нужные).",
+        "Передать в map функцию, которая ничего не возвращает."
+      ],
+      "practice": {
+        "question": "Что делает filter?",
+        "options": [
+          "оставляет подходящие элементы",
+          "преобразует все элементы",
+          "сортирует",
+          "складывает"
+        ],
+        "correct": 0,
+        "explanation": "filter оставляет элементы, прошедшие проверку.",
+        "topic": "functions"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "[2, 4, 6]",
+          "[1, 2, 3]",
+          "[1, 4, 9]",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "map удваивает каждый: 2, 4, 6.",
+        "topic": "functions",
+        "code": "n = [1, 2, 3]\nprint(list(map(lambda x: x * 2, n)))"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "[4, 5]",
+          "[1, 2, 3]",
+          "[1, 2]",
+          "[3, 4, 5]"
+        ],
+        "correct": 0,
+        "explanation": "filter оставляет элементы > 3 → 4 и 5.",
+        "topic": "functions",
+        "code": "n = [1, 2, 3, 4, 5]\nprint(list(filter(lambda x: x > 3, n)))"
+      },
+      "xp": 25
+    }
+  ]
+}

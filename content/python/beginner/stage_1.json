@@ -1,0 +1,322 @@
+{
+  "id": 1,
+  "title": "Фундамент",
+  "subtitle": "Основы синтаксиса",
+  "emoji": "📍",
+  "lessons": [
+    {
+      "topic": "install",
+      "title": "Установка Python и IDE",
+      "theory": "Чтобы Python заработал, нужны две вещи: сам <b>Python</b> (интерпретатор, который исполняет код) и <b>редактор/IDE</b> (где ты пишешь программы).",
+      "association": "⚙️ Python — это «движок», а IDE (VS Code, PyCharm) — «руль и панель приборов». Движок исполняет, IDE помогает писать.",
+      "real_example": "Скачиваешь Python с python.org, ставишь VS Code — и пишешь первую программу, как открываешь тетрадь и ручку.",
+      "example": "# файл hello.py\nprint('Hello, Python!')",
+      "code_explained": "• Файлы с кодом заканчиваются на <code>.py</code>.\n• <code>print(...)</code> выводит текст на экран.\n• Запуск в терминале: <code>python hello.py</code>.",
+      "common_mistakes": [
+        "Запускать код без установленного Python.",
+        "Сохранять файл как hello.txt вместо hello.py.",
+        "Забыть сохранить файл перед запуском."
+      ],
+      "practice": {
+        "question": "Каким расширением заканчиваются файлы Python?",
+        "options": [
+          ".py",
+          ".python",
+          ".exe",
+          ".txt"
+        ],
+        "correct": 0,
+        "explanation": "Файлы Python имеют расширение .py.",
+        "topic": "install"
+      },
+      "quiz": {
+        "question": "Чем запускают программу hello.py в терминале?",
+        "options": [
+          "python hello.py",
+          "run hello.py",
+          "hello.py start",
+          "open hello.py"
+        ],
+        "correct": 0,
+        "explanation": "Команда запуска: python имя_файла.py.",
+        "topic": "install"
+      },
+      "challenge": {
+        "question": "Что делает IDE (например, VS Code)?",
+        "options": [
+          "Помогает писать и запускать код",
+          "Исполняет код вместо Python",
+          "Хранит файлы в облаке",
+          "Рисует графику"
+        ],
+        "correct": 0,
+        "explanation": "IDE — удобная среда для написания и запуска; исполняет код всё равно Python.",
+        "topic": "install"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "variables",
+      "title": "Синтаксис: переменные и комментарии",
+      "theory": "Переменная — <b>коробка с наклейкой</b> 📦: кладёшь значение, обращаешься по имени. Комментарий (<code>#</code>) — заметка для человека, Python её игнорирует.",
+      "association": "📦 Переменная — коробка. 📝 Комментарий — стикер «машине не читать».",
+      "real_example": "Счёт игрока и имя пользователя — это переменные. Комментарии — подписи в коде «здесь считаем сумму».",
+      "example": "name = 'Алекс'   # имя игрока\nscore = 0        # очки\nprint(name, score)",
+      "code_explained": "• <code>name = 'Алекс'</code> — кладём строку в коробку name.\n• <code># ...</code> — комментарий, Python его пропускает.\n• Вывод: <i>Алекс 0</i>.",
+      "common_mistakes": [
+        "Начинать имя переменной с цифры: 1name — нельзя.",
+        "Путать <code>=</code> (присвоить) и <code>==</code> (сравнить).",
+        "Думать, что комментарий влияет на работу кода."
+      ],
+      "practice": {
+        "question": "Что выведет код?",
+        "options": [
+          "Алекс",
+          "name",
+          "'Алекс'",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "print(name) достаёт содержимое коробки name.",
+        "topic": "variables",
+        "code": "name = 'Алекс'\nprint(name)"
+      },
+      "quiz": {
+        "question": "Какой символ начинает комментарий в Python?",
+        "options": [
+          "#",
+          "//",
+          "--",
+          "/*"
+        ],
+        "correct": 0,
+        "explanation": "Комментарий в Python начинается с #.",
+        "topic": "variables"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "3",
+          "10",
+          "x",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Часть после # — комментарий, он игнорируется, печатается 3.",
+        "topic": "variables",
+        "code": "x = 3  # x = 10\nprint(x)"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "types",
+      "title": "Базовые типы данных: int, float, str",
+      "theory": "У данных есть <b>тип</b>: <code>int</code> — целые (5), <code>float</code> — дробные (3.14), <code>str</code> — строки ('hi'). Тип определяет, что можно делать со значением.",
+      "association": "🔢 int — счёт яблок, ⚖️ float — вес на весах, 🔤 str — слова в кавычках.",
+      "real_example": "Возраст — int (12), цена — float (9.99), имя — str ('Анна').",
+      "example": "age = 12        # int\nprice = 9.99    # float\nname = 'Анна'   # str\nprint(type(age))",
+      "code_explained": "• <code>12</code> — int (без точки).\n• <code>9.99</code> — float (с точкой).\n• <code>'Анна'</code> — str (в кавычках).\n• <code>type(age)</code> → &lt;class 'int'&gt;.",
+      "common_mistakes": [
+        "Считать '5' (в кавычках) числом — это str, а не int.",
+        "Писать дробь через запятую 9,99 — нужно 9.99.",
+        "Складывать str и int без конвертации."
+      ],
+      "practice": {
+        "question": "Какой тип у значения 3.14?",
+        "options": [
+          "float",
+          "int",
+          "str",
+          "bool"
+        ],
+        "correct": 0,
+        "explanation": "Число с точкой — это float.",
+        "topic": "types"
+      },
+      "quiz": {
+        "question": "Какой тип у значения 'Привет'?",
+        "options": [
+          "str",
+          "int",
+          "float",
+          "char"
+        ],
+        "correct": 0,
+        "explanation": "Текст в кавычках — строка str.",
+        "topic": "types"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "&lt;class 'int'&gt;",
+          "&lt;class 'str'&gt;",
+          "&lt;class 'float'&gt;",
+          "int"
+        ],
+        "correct": 0,
+        "explanation": "5 без точки — целое число int.",
+        "topic": "types",
+        "code": "print(type(5))"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "io",
+      "title": "print() и input()",
+      "theory": "<code>print()</code> — голос программы 🗣️ (выводит на экран). <code>input()</code> — уши 👂 (читает ввод пользователя). Важно: input всегда возвращает <b>строку</b>.",
+      "association": "🗣️ print — сказать вслух, 👂 input — услышать ответ.",
+      "real_example": "Бот спрашивает имя через input и здоровается через print. Любая форма ввода — это input.",
+      "example": "name = input('Как тебя зовут? ')\nprint('Привет,', name)",
+      "code_explained": "• <code>input('...')</code> показывает вопрос и ждёт ввод.\n• Введённое попадает в name (как строка).\n• <code>print('Привет,', name)</code> → Привет, &lt;имя&gt;.",
+      "common_mistakes": [
+        "Думать, что input возвращает число — это всегда строка.",
+        "Забыть сохранить результат input в переменную.",
+        "Сравнивать input с числом без int()."
+      ],
+      "practice": {
+        "question": "Что возвращает input()?",
+        "options": [
+          "строку (str)",
+          "число (int)",
+          "ничего",
+          "True"
+        ],
+        "correct": 0,
+        "explanation": "input() всегда возвращает строку.",
+        "topic": "io"
+      },
+      "quiz": {
+        "question": "Что делает print()?",
+        "options": [
+          "выводит на экран",
+          "читает ввод",
+          "удаляет переменную",
+          "считает"
+        ],
+        "correct": 0,
+        "explanation": "print() выводит значение на экран.",
+        "topic": "io"
+      },
+      "challenge": {
+        "question": "Что выведет код, если ввести 5?",
+        "options": [
+          "55",
+          "10",
+          "25",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "input — строка '5'; '5' * 2 = '55' (повтор строки).",
+        "topic": "io",
+        "code": "x = input()\nprint(x * 2)"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "conditions",
+      "title": "bool и условия: if / elif / else",
+      "theory": "<code>bool</code> — это да/нет (<code>True</code>/<code>False</code>). <b>if</b> проверяет условие: если правда — одно, иначе (<b>else</b>) — другое. <b>elif</b> — «а если...».",
+      "association": "🚦 Условие — светофор: if зелёный — идём, else красный — стоим.",
+      "real_example": "Игра: если очки > 100 — «победа», иначе — «играем дальше». Любой выбор в программе — это условие.",
+      "example": "age = 15\nif age >= 18:\n    print('взрослый')\nelif age >= 13:\n    print('подросток')\nelse:\n    print('ребёнок')",
+      "code_explained": "• <code>age >= 18</code> — False, идём дальше.\n• <code>elif age >= 13</code> — True → «подросток».\n• Отступ (4 пробела) внутри if обязателен.",
+      "common_mistakes": [
+        "Забыть двоеточие <code>:</code> после условия.",
+        "Пропустить отступ внутри if.",
+        "Использовать <code>=</code> вместо <code>==</code> в условии."
+      ],
+      "practice": {
+        "question": "Чему равно выражение 5 > 3?",
+        "options": [
+          "True",
+          "False",
+          "5",
+          "yes"
+        ],
+        "correct": 0,
+        "explanation": "5 больше 3 — это True.",
+        "topic": "conditions"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "взрослый",
+          "подросток",
+          "ребёнок",
+          "ошибка"
+        ],
+        "correct": 1,
+        "explanation": "age=15: >=18 нет, >=13 да → подросток.",
+        "topic": "conditions",
+        "code": "age = 15\nif age >= 18:\n    print('взрослый')\nelif age >= 13:\n    print('подросток')\nelse:\n    print('ребёнок')"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "BC"
+        ],
+        "correct": 1,
+        "explanation": "x>20 ложь, x>5 истина → B.",
+        "topic": "conditions",
+        "code": "x = 10\nif x > 20:\n    print('A')\nelif x > 5:\n    print('B')\nelse:\n    print('C')"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "conversion",
+      "title": "Конвертация типов",
+      "theory": "<b>Конвертация</b> — перевод значения из одного типа в другой: <code>int('5')</code>→5, <code>str(5)</code>→'5', <code>float('3.14')</code>→3.14. Нужна, чтобы, например, посчитать введённое число.",
+      "association": "🔄 Конвертация — обмен валюты: то же значение, другой «формат».",
+      "real_example": "input даёт строку '5'; чтобы прибавить число, делаем <code>int(input())</code>.",
+      "example": "x = input('Число: ')\nn = int(x)\nprint(n + 1)",
+      "code_explained": "• <code>x</code> — строка, например '5'.\n• <code>int(x)</code> → число 5.\n• <code>n + 1</code> → 6 (теперь можно складывать).",
+      "common_mistakes": [
+        "<code>int('абв')</code> — ошибка, строка не число.",
+        "Складывать '5' + 5 без конвертации.",
+        "Терять дробную часть: int(3.9) = 3."
+      ],
+      "practice": {
+        "question": "Во что превратит int('7')?",
+        "options": [
+          "7",
+          "'7'",
+          "7.0",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "int('7') → целое число 7.",
+        "topic": "conversion"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "7",
+          "52",
+          "'5'+2",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "int('5')=5, 5+2=7.",
+        "topic": "conversion",
+        "code": "x = '5'\nprint(int(x) + 2)"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "3",
+          "3.9",
+          "4",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "int отбрасывает дробную часть: int(3.9)=3.",
+        "topic": "conversion",
+        "code": "print(int(3.9))"
+      },
+      "xp": 20
+    }
+  ]
+}

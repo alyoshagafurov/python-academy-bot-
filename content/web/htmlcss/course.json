@@ -1,0 +1,15 @@
+{
+  "id": "web_htmlcss",
+  "language": "web",
+  "track": "htmlcss",
+  "title": "HTML & CSS",
+  "emoji": "🎨",
+  "description": "С нуля: как устроены веб-страницы, теги, стили и вёрстка. Чистый HTML/CSS, без Python.",
+  "stages": [
+    "stage_1",
+    "stage_2",
+    "stage_3",
+    "stage_4",
+    "stage_5"
+  ]
+}

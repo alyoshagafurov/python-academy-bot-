@@ -1,0 +1,332 @@
+{
+  "id": 3,
+  "title": "Условия и циклы",
+  "subtitle": "Логика, узоры и функции",
+  "emoji": "🟣",
+  "lessons": [
+    {
+      "topic": "conditions",
+      "title": "if / elif / else",
+      "theory": "Условные операторы управляют логикой. <code>if</code> проверяет условие, <code>elif</code> — следующее, <code>else</code> — если ничего не подошло. Отступы (4 пробела) обязательны — они показывают, что внутри.",
+      "association": "🚦 if/elif/else — это развилка дорог: по условию выбираем, куда ехать.",
+      "real_example": "🎮 Миссия: определи блок под игроком и опиши его словами в чате.",
+      "example": "pos = mc.player.getTilePos()\nb = mc.getBlock(pos.x, pos.y - 1, pos.z)\nif b == block.WATER.id:\n    mc.postToChat(\"Ты в воде!\")\nelif b == block.GRASS.id:\n    mc.postToChat(\"Стоишь на траве\")\nelse:\n    mc.postToChat(\"Какой-то блок\")",
+      "code_explained": "• <code>if</code> — первое условие.\n• <code>elif</code> — «а если...».\n• <code>else</code> — для всех остальных случаев.",
+      "common_mistakes": [
+        "Забыть двоеточие <code>:</code> после условия.",
+        "Пропустить отступ внутри блока.",
+        "Использовать <code>=</code> вместо <code>==</code> в условии."
+      ],
+      "quiz": {
+        "question": "Когда выполнится else?",
+        "options": [
+          "Когда ни if, ни elif не сработали",
+          "Всегда",
+          "Когда if истинно",
+          "Никогда"
+        ],
+        "correct": 0,
+        "explanation": "else — запасной вариант, если все условия выше оказались False.",
+        "topic": "conditions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "while",
+      "title": "Цикл while",
+      "theory": "<code>while условие:</code> повторяет код, пока условие истинно. Подходит для интерактивных программ, которые ждут команд. Чтобы выйти, используют <code>break</code> — иначе цикл будет бесконечным.",
+      "association": "🔁 while — это «делай, пока»: моем посуду, пока есть грязные тарелки.",
+      "real_example": "🎮 Миссия: строй столб по блоку за раз, пока игрок не введёт <code>stop</code>.",
+      "example": "pos = mc.player.getTilePos()\ni = 0\nwhile True:\n    cmd = input(\"Enter = блок, stop = выход: \")\n    if cmd == \"stop\":\n        break\n    mc.setBlock(pos.x, pos.y + i, pos.z, block.STONE.id)\n    i += 1",
+      "code_explained": "• <code>while True</code> — повторяем бесконечно...\n• ...пока не сработает <code>break</code>.\n• <code>i += 1</code> поднимает столб выше.",
+      "common_mistakes": [
+        "Забыть <code>break</code> — цикл зациклится навсегда.",
+        "Не менять условие внутри цикла.",
+        "Ставить блоки без сдвига — будут на одном месте."
+      ],
+      "quiz": {
+        "question": "Что делает break?",
+        "options": [
+          "Выходит из цикла",
+          "Пропускает шаг",
+          "Перезапускает цикл",
+          "Ставит блок"
+        ],
+        "correct": 0,
+        "explanation": "break немедленно прерывает цикл и выходит из него.",
+        "topic": "while"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "loops",
+      "title": "Вложенные циклы и узоры",
+      "theory": "Цикл внутри цикла плюс условие создаёт узоры. Чередуя блоки по условию (например, по чётности), можно строить полосатые стены и сложные паттерны.",
+      "association": "🧩 Вложенные циклы с условием — это вязание: ряд за рядом по схеме получается узор.",
+      "real_example": "🎮 Миссия: построй стену 10×5, где чётные ряды — камень, нечётные — стекло (окна).",
+      "example": "pos = mc.player.getTilePos()\nfor i in range(10):\n    for j in range(5):\n        if j % 2 == 0:\n            mc.setBlock(pos.x+i, pos.y+j, pos.z, block.STONE.id)\n        else:\n            mc.setBlock(pos.x+i, pos.y+j, pos.z, block.GLASS.id)",
+      "code_explained": "• Внешний цикл — длина стены (X).\n• Внутренний — высота (Y).\n• <code>j % 2</code> чередует камень и стекло по рядам.",
+      "common_mistakes": [
+        "Перепутать оси i и j.",
+        "Поставить условие не туда — узор сломается.",
+        "Забыть, что <code>j % 2 == 0</code> — это чётные ряды."
+      ],
+      "quiz": {
+        "question": "Что делает j % 2 == 0?",
+        "options": [
+          "Выбирает чётные ряды",
+          "Все ряды",
+          "Нечётные ряды",
+          "Удваивает j"
+        ],
+        "correct": 0,
+        "explanation": "Остаток от деления на 2 равен 0 у чётных чисел: 0, 2, 4...",
+        "topic": "loops"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "conditions",
+      "title": "Логика: and / or / not",
+      "theory": "Логические операторы соединяют условия: <code>and</code> — истинно, если оба истинны; <code>or</code> — если хотя бы одно; <code>not</code> — переворачивает. Приоритет: <code>not</code> → <code>and</code> → <code>or</code>.",
+      "association": "🔗 <code>and</code> — это цепь (нужны все звенья), <code>or</code> — это запасные двери (хватит одной).",
+      "real_example": "🎮 Миссия: проверь, что игрок в безопасной зоне (X &gt; 5 И Z &lt; 10).",
+      "example": "pos = mc.player.getTilePos()\nif pos.x > 5 and pos.z < 10:\n    mc.postToChat(\"Безопасная зона\")\nelif pos.x > 100 or pos.z > 100:\n    mc.postToChat(\"Слишком далеко!\")",
+      "code_explained": "• <code>and</code> — оба условия должны быть True.\n• <code>or</code> — достаточно одного True.\n• Скобки помогают управлять порядком.",
+      "common_mistakes": [
+        "Думать, что <code>or</code> требует оба условия.",
+        "Забыть приоритет — добавляй скобки для ясности.",
+        "Писать <code>and</code>/<code>or</code> с большой буквы."
+      ],
+      "quiz": {
+        "question": "Когда True and False даёт True?",
+        "options": [
+          "Никогда",
+          "Всегда",
+          "Иногда",
+          "Если not"
+        ],
+        "correct": 0,
+        "explanation": "and требует оба True. Раз одно False — результат False.",
+        "topic": "conditions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "loops",
+      "title": "Практика: шахматная доска",
+      "theory": "Соединим циклы и условие в красивом приёме: если сумма координат <code>(x + z)</code> чётная — один цвет, иначе — другой. Так получается идеальная шахматная доска.",
+      "association": "♟️ Трюк <code>(x + z) % 2</code> — это «раскраска по диагонали»: соседние клетки всегда разного цвета.",
+      "real_example": "🎮 Миссия: выложи доску 8×8 из белой и чёрной шерсти.",
+      "example": "pos = mc.player.getTilePos()\nfor x in range(8):\n    for z in range(8):\n        if (x + z) % 2 == 0:\n            mc.setBlock(pos.x+x, pos.y, pos.z+z, 35, 0)\n        else:\n            mc.setBlock(pos.x+x, pos.y, pos.z+z, 35, 15)",
+      "code_explained": "• ID 35 — шерсть; второе число — оттенок (0 белый, 15 чёрный).\n• <code>(x + z) % 2</code> чередует цвета как на шахматах.\n• Меняй 8 на любой размер доски.",
+      "common_mistakes": [
+        "Использовать только <code>x % 2</code> — получатся полосы, не клетки.",
+        "Забыть второй параметр оттенка у шерсти.",
+        "Ставить доску в воздухе без опоры."
+      ],
+      "quiz": {
+        "question": "Почему (x + z) % 2 даёт шахматный узор?",
+        "options": [
+          "Соседние клетки всегда разной чётности",
+          "Это случайность",
+          "x всегда чётный",
+          "Так быстрее"
+        ],
+        "correct": 0,
+        "explanation": "У соседних клеток сумма меняется на 1, значит чётность чередуется.",
+        "topic": "loops"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "loops",
+      "title": "Циклические узоры и фигуры",
+      "theory": "Циклами рисуют спирали, зигзаги и контуры. Например, четыре строки кода рисуют четыре стороны квадрата — основа для спиралей и рамок.",
+      "association": "🌀 Цикл-узор — это спирограф: одно правило, повторённое много раз, рождает сложную фигуру.",
+      "real_example": "🎮 Миссия: нарисуй квадратный контур 10×10 из светящегося камня.",
+      "example": "pos = mc.player.getTilePos()\nfor i in range(10):\n    mc.setBlock(pos.x+i, pos.y, pos.z, 89)\n    mc.setBlock(pos.x+9, pos.y, pos.z+i, 89)\n    mc.setBlock(pos.x+9-i, pos.y, pos.z+9, 89)\n    mc.setBlock(pos.x, pos.y, pos.z+9-i, 89)",
+      "code_explained": "• Четыре <code>setBlock</code> — четыре стороны квадрата.\n• ID 89 — светящийся камень (glowstone).\n• Уменьшая размер на каждом витке, получишь спираль.",
+      "common_mistakes": [
+        "Считать стороны от 0 до 10 — выйдешь за контур (нужно 0..9).",
+        "Рисовать только две стороны — контур не замкнётся.",
+        "Забыть, что углы рисуются дважды (это нормально)."
+      ],
+      "quiz": {
+        "question": "Сколько сторон у квадрата рисует этот цикл?",
+        "options": [
+          "4",
+          "1",
+          "2",
+          "8"
+        ],
+        "correct": 0,
+        "explanation": "Четыре setBlock в цикле рисуют все четыре стороны квадрата.",
+        "topic": "loops"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "functions",
+      "title": "Проект: узорный двор",
+      "theory": "Проектное занятие: комбинируем несколько условий, чтобы создать сложный декоративный пол. Разные правила <code>(x+z)%3</code> и <code>(x*z)%5</code> дают уникальный паттерн.",
+      "association": "🎨 Узорный двор — это мозаика: несколько простых правил вместе дают богатый рисунок.",
+      "real_example": "🎮 Миссия: выложи двор 16×16 с узором из трёх типов блоков.",
+      "example": "pos = mc.player.getTilePos()\nfor x in range(16):\n    for z in range(16):\n        if (x + z) % 3 == 0:\n            mc.setBlock(pos.x+x, pos.y, pos.z+z, 35, 1)\n        elif (x * z) % 5 == 0:\n            mc.setBlock(pos.x+x, pos.y, pos.z+z, 35, 4)\n        else:\n            mc.setBlock(pos.x+x, pos.y, pos.z+z, block.COBBLESTONE.id)",
+      "code_explained": "• <code>(x + z) % 3</code> — диагональные линии.\n• <code>(x * z) % 5</code> — точечный узор.\n• Комбинация условий даёт уникальный пол.",
+      "common_mistakes": [
+        "Слишком много условий — узор превратится в кашу.",
+        "Забыть <code>else</code> — останутся дырки.",
+        "Не выровнять двор по высоте."
+      ],
+      "quiz": {
+        "question": "Что создаёт сложный узор?",
+        "options": [
+          "Комбинация нескольких условий",
+          "Одно условие",
+          "Случайность",
+          "Длинный цикл"
+        ],
+        "correct": 0,
+        "explanation": "Несколько разных условий вместе рисуют богатый паттерн.",
+        "topic": "functions"
+      },
+      "xp": 30
+    },
+    {
+      "topic": "conditions",
+      "title": "Повторение модуля 3",
+      "theory": "Проверим логику: <code>if/elif/else</code>, <code>while</code>, <code>break</code>, вложенные циклы, <code>and/or/not</code>. Также важны <code>continue</code> (пропустить шаг) и понимание, как условия управляют потоком.",
+      "association": "🔁 Повторение логики — это разбор партии в шахматах: видишь, какие ходы (условия) к чему ведут.",
+      "real_example": "🎮 Миссия: предскажи, какие числа выведет цикл с continue, затем проверь в коде.",
+      "example": "for i in range(6):\n    if i % 2 == 0:\n        continue\n    print(i)\n# Выведет: 1, 3, 5",
+      "code_explained": "• <code>continue</code> пропускает текущий шаг и идёт к следующему.\n• Чётные <code>i</code> пропускаются.\n• Остаются нечётные: 1, 3, 5.",
+      "common_mistakes": [
+        "Путать <code>break</code> (выйти) и <code>continue</code> (пропустить).",
+        "Думать, что continue завершает цикл.",
+        "Забывать про отступы в условиях."
+      ],
+      "quiz": {
+        "question": "Что делает continue?",
+        "options": [
+          "Пропускает текущий шаг цикла",
+          "Выходит из цикла",
+          "Перезапускает программу",
+          "Ставит блок"
+        ],
+        "correct": 0,
+        "explanation": "continue пропускает остаток текущей итерации и переходит к следующей.",
+        "topic": "conditions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "functions",
+      "title": "Функции: определение и вызов",
+      "theory": "<b>Функция</b> — это команда, которую ты придумал сам. <code>def имя():</code> определяет её, а <code>имя()</code> вызывает. Функции позволяют переиспользовать код и не повторяться.",
+      "association": "🛠️ Функция — это своя кнопка на пульте: нажал — выполнилось целое действие.",
+      "real_example": "🎮 Миссия: напиши функцию build_tower и построй ею башню любой высоты.",
+      "example": "def build_tower(x, y, z, height):\n    for i in range(height):\n        mc.setBlock(x, y + i, z, block.STONE.id)\n\npos = mc.player.getTilePos()\nbuild_tower(pos.x, pos.y, pos.z, 10)",
+      "code_explained": "• <code>def build_tower(...)</code> — определение функции.\n• <code>build_tower(...)</code> — её вызов.\n• Одну функцию можно вызывать сколько угодно раз.",
+      "common_mistakes": [
+        "Определить функцию, но забыть вызвать.",
+        "Перепутать параметры местами при вызове.",
+        "Давать функции непонятное имя вроде <code>f</code>."
+      ],
+      "quiz": {
+        "question": "Чем вызывают функцию build_tower?",
+        "options": [
+          "build_tower(...)",
+          "def build_tower",
+          "call build_tower",
+          "run"
+        ],
+        "correct": 0,
+        "explanation": "Функция вызывается по имени со скобками: build_tower(...).",
+        "topic": "functions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "functions",
+      "title": "Параметры и значения по умолчанию",
+      "theory": "Функции принимают <b>параметры</b> — это делает их гибкими. Можно задать значение <b>по умолчанию</b>: <code>def f(block_id=1)</code>. Если аргумент не передали — возьмётся значение по умолчанию.",
+      "association": "🎛️ Параметры — это ручки настройки: одна функция строит и линии, и стены — смотря что задашь.",
+      "real_example": "🎮 Миссия: сделай функцию линии с параметром длины и необязательным цветом блока.",
+      "example": "def build_line(length, block_id=block.STONE.id):\n    pos = mc.player.getTilePos()\n    for i in range(length):\n        mc.setBlock(pos.x + i, pos.y, pos.z, block_id)\n\nbuild_line(5)\nbuild_line(8, block.GOLD_BLOCK.id)",
+      "code_explained": "• <code>length</code> — обязательный параметр.\n• <code>block_id=...</code> — значение по умолчанию (камень).\n• <code>build_line(5)</code> — золото не указали, будет камень.",
+      "common_mistakes": [
+        "Ставить параметр со значением по умолчанию перед обычным.",
+        "Передавать аргументы не в том порядке.",
+        "Думать, что без аргумента будет ошибка — есть значение по умолчанию."
+      ],
+      "quiz": {
+        "question": "Что будет, если не передать block_id?",
+        "options": [
+          "Возьмётся значение по умолчанию",
+          "Ошибка",
+          "None",
+          "0"
+        ],
+        "correct": 0,
+        "explanation": "Параметр со значением по умолчанию подставится автоматически.",
+        "topic": "functions"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "modules",
+      "title": "Модули и импорт",
+      "theory": "Когда кода много, его разбивают на <b>модули</b> — отдельные файлы. Полезные функции выносят в <code>buildings.py</code>, а в главном файле подключают через <code>from buildings import build_house</code>. Все файлы — в одной папке, имена без пробелов.",
+      "association": "📦 Модуль — это ящик с инструментами: достаёшь нужную функцию, когда она понадобилась.",
+      "real_example": "🎮 Миссия: вынеси функцию дома в buildings.py и собери его из главного файла.",
+      "example": "# файл buildings.py\ndef build_house(mc, x, y, z):\n    mc.setBlocks(x, y, z, x+5, y+3, z+4, block.STONE.id)\n    mc.setBlocks(x+1, y+1, z+1, x+4, y+2, z+3, block.AIR.id)\n\n# главный файл\nfrom buildings import build_house\npos = mc.player.getTilePos()\nbuild_house(mc, pos.x, pos.y, pos.z)",
+      "code_explained": "• <code>from buildings import build_house</code> — берём функцию из файла.\n• Все файлы лежат в одной папке.\n• Имена файлов — без пробелов и заглавных.",
+      "common_mistakes": [
+        "Создавать циклические импорты (файлы импортируют друг друга).",
+        "Класть файлы в разные папки и удивляться ошибке импорта.",
+        "Давать модулю имя с пробелом или как у стандартного модуля."
+      ],
+      "quiz": {
+        "question": "Как подключить функцию из buildings.py?",
+        "options": [
+          "from buildings import build_house",
+          "import build_house",
+          "include buildings",
+          "open buildings"
+        ],
+        "correct": 0,
+        "explanation": "from модуль import функция — стандартный способ импорта.",
+        "topic": "modules"
+      },
+      "xp": 20
+    },
+    {
+      "topic": "modules",
+      "title": "Проект модуля 3: маяк",
+      "theory": "Финал модуля — мигающий маяк. Соберём <b>функции</b> и <b>модуль time</b>: одна функция строит столб, другая в цикле меняет цвет верхушки. Это твой первый «живой» объект.",
+      "association": "🚨 Маяк — это оркестр функций: каждая играет свою партию, а вместе получается шоу.",
+      "real_example": "🎮 Миссия: построй столб-маяк и заставь его верхушку мигать цветами.",
+      "example": "import time\ndef build_beacon(x, y, z, h):\n    for i in range(h):\n        mc.setBlock(x, y + i, z, 89)\n\npos = mc.player.getTilePos()\nbuild_beacon(pos.x, pos.y, pos.z, 8)\ncolors = [14, 4, 5, 3, 11]\nfor c in colors:\n    mc.setBlock(pos.x, pos.y + 8, pos.z, 35, c)\n    time.sleep(0.5)",
+      "code_explained": "• <code>build_beacon</code> строит светящийся столб.\n• Цикл по <code>colors</code> меняет оттенок верхушки.\n• <code>time.sleep</code> создаёт эффект мигания.",
+      "common_mistakes": [
+        "Менять цвет без паузы — мигание не увидишь.",
+        "Забыть вызвать функцию построения маяка.",
+        "Поставить верхушку не на высоту <code>h</code>."
+      ],
+      "quiz": {
+        "question": "Что отвечает за мигание маяка?",
+        "options": [
+          "time.sleep в цикле смены цвета",
+          "build_beacon",
+          "getBlock",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Смена цвета + пауза time.sleep дают эффект мигания.",
+        "topic": "modules"
+      },
+      "xp": 30
+    }
+  ]
+}

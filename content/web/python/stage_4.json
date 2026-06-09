@@ -1,0 +1,83 @@
+{
+  "id": 4,
+  "title": "Формы и данные",
+  "subtitle": "Принимаем ввод пользователя",
+  "emoji": "📨",
+  "lessons": [
+    {
+      "topic": "forms_web",
+      "title": "GET и POST",
+      "theory": "<b>GET</b> — «дай посмотреть» (данные в адресе, для чтения). <b>POST</b> — «прими и сохрани» (данные в теле запроса, для отправки форм). Пароли и заказы шлют только POST.",
+      "association": "📥 GET — заглянуть в витрину (ничего не меняешь). POST — отдать заполненную анкету в окошко (что-то происходит).",
+      "real_example": "Открыть страницу — GET. Нажать «Зарегистрироваться» — POST с логином и паролем в теле (их не видно в адресе).",
+      "example": "<form action=\"/login\" method=\"post\">\n  <input name=\"email\">\n  <button>Войти</button>\n</form>\n\n<!-- поиск обычно GET -->\n<form action=\"/search\" method=\"get\"> ... </form>",
+      "code_explained": "• <code>method=\"get\"</code> — данные в URL (?...), для чтения/поиска.\n• <code>method=\"post\"</code> — данные в теле, для изменений и паролей.\n• GET можно «забукмаркать», POST — нет.\n• По умолчанию форма использует GET — для отправки явно ставь POST.",
+      "common_mistakes": [
+        "Слать пароли через GET → они попадают в адрес и логи.",
+        "Менять данные на сервере по GET-запросу.",
+        "Забыть method=\"post\" у формы регистрации."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "forms_web",
+      "title": "Чтение формы: request.form",
+      "theory": "Чтобы маршрут принимал POST, укажи <code>methods=['GET','POST']</code>. Данные формы читаются из <code>request.form.get('поле')</code> — по атрибуту <code>name</code> из HTML.",
+      "association": "📬 request.form — почтовый ящик: достаёшь из него письма по подписям (name полей), которые прислала форма.",
+      "real_example": "Форма логина с name=\"email\" и name=\"password\" → на сервере request.form.get('email') и .get('password').",
+      "example": "from flask import request\n\n@app.route('/login', methods=['GET', 'POST'])\ndef login():\n    if request.method == 'POST':\n        email = request.form.get('email')\n        return f'Привет, {email}'\n    return render_template('login.html')",
+      "code_explained": "• <code>methods=['GET','POST']</code> — маршрут принимает оба.\n• <code>request.method</code> — каким методом пришли.\n• <code>request.form.get('email')</code> — значение поля name=\"email\".\n• GET показывает форму, POST обрабатывает ввод.",
+      "common_mistakes": [
+        "Забыть добавить 'POST' в methods → ошибка 405.",
+        "Читать поле по неверному name.",
+        "Доверять данным формы без проверки (валидируй на сервере!)."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "forms_web",
+      "title": "Обработка и проверка",
+      "theory": "Полученные данные нельзя слепо использовать: их <b>проверяют</b> (не пусто, верный формат) и только потом сохраняют. Правило бэкенда: <b>никогда не доверяй вводу пользователя</b>.",
+      "association": "🛂 Сервер — пограничник: проверяет «паспорт» каждого поля, прежде чем пустить данные внутрь системы.",
+      "real_example": "Регистрация: проверить, что email не пустой и содержит @, пароль не короче 8 символов — иначе вернуть ошибку.",
+      "example": "@app.route('/register', methods=['POST'])\ndef register():\n    email = request.form.get('email', '')\n    if '@' not in email:\n        return 'Неверный email', 400\n    return 'Готово!'",
+      "code_explained": "• Проверяем данные ДО использования.\n• <code>return 'текст', 400</code> — ответ с кодом ошибки клиента.\n• Браузерная проверка (required) — не защита, её легко обойти.\n• Настоящая проверка всегда на сервере.",
+      "common_mistakes": [
+        "Полагаться только на проверку в HTML/браузере.",
+        "Сохранять данные в БД без валидации.",
+        "Возвращать 200 при ошибке валидации вместо 400."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "forms_web",
+      "title": "Редиректы (PRG)",
+      "theory": "После успешного POST принято делать <b>редирект</b> на другую страницу (паттерн <b>Post/Redirect/Get</b>). Иначе обновление страницы повторно отправит форму. Во Flask: <code>redirect(url_for('view'))</code>.",
+      "association": "🔁 PRG — «оплатил и отошёл от кассы»: после оплаты тебя уводят со страницы оплаты, чтобы случайно не заплатить дважды (F5).",
+      "real_example": "Оформил заказ (POST) → редирект на «Спасибо за заказ» (GET). Жмёшь F5 — заказ не дублируется.",
+      "example": "from flask import redirect, url_for\n\n@app.route('/save', methods=['POST'])\ndef save():\n    # ... сохранили ...\n    return redirect(url_for('done'))\n\n@app.route('/done')\ndef done():\n    return 'Сохранено!'",
+      "code_explained": "• <code>redirect(...)</code> отвечает кодом 302 «иди туда».\n• <code>url_for('done')</code> строит URL по имени функции (не хардкодь пути).\n• Браузер сам идёт на новый адрес уже через GET.\n• Это убирает «повторную отправку формы» при F5.",
+      "common_mistakes": [
+        "Не делать редирект после POST → дубли при обновлении.",
+        "Хардкодить '/done' вместо url_for (ломается при смене путей).",
+        "Редиректить в бесконечный цикл."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "forms_web",
+      "title": "Flash-сообщения",
+      "theory": "<b>Flash</b> — одноразовое сообщение, которое переживает редирект и показывается на следующей странице: «Сохранено!», «Неверный пароль». Требует <code>secret_key</code> и вывода в шаблоне.",
+      "association": "📌 Flash — стикер на двери следующей комнаты: оставил записку, человек перешёл туда и прочитал её один раз.",
+      "real_example": "После сохранения профиля видишь зелёное «Изменения сохранены» — это flash-сообщение после редиректа.",
+      "example": "from flask import flash, redirect, url_for\napp.secret_key = 'тайный-ключ'\n\n@app.route('/save', methods=['POST'])\ndef save():\n    flash('Сохранено!')\n    return redirect(url_for('home'))",
+      "code_explained": "• <code>app.secret_key</code> обязателен (flash хранит данные в подписанной сессии).\n• <code>flash('текст')</code> кладёт сообщение до следующего запроса.\n• В шаблоне его достают через <code>get_flashed_messages()</code> и выводят циклом.\n• Сообщение показывается один раз и исчезает.",
+      "common_mistakes": [
+        "Забыть secret_key → flash упадёт с ошибкой.",
+        "Не вывести сообщения в шаблоне — они «потеряются».",
+        "Совать во flash чувствительные данные."
+      ],
+      "xp": 35
+    }
+  ]
+}

@@ -1,0 +1,373 @@
+{
+  "id": 4,
+  "title": "Модули и файлы",
+  "subtitle": "Подключаем и сохраняем",
+  "emoji": "📦",
+  "lessons": [
+    {
+      "topic": "modules",
+      "title": "import — подключение модулей",
+      "theory": "Модуль — готовый набор функций, который написали до тебя. <b>import</b> подключает его, и ты пользуешься чужой работой, не изобретая велосипед.",
+      "association": "🧰 import — взять готовый инструмент из ящика. Нужна пила (math)? Не выковываешь — берёшь готовую.",
+      "real_example": "math для вычислений, random для случайностей, datetime для дат — миллионы готовых модулей в Python и на pip.",
+      "example": "import math\nimport random\n\nprint(math.sqrt(16))\nprint(random.randint(1, 6))",
+      "code_explained": "• <code>import math</code> — подключаем модуль математики.\n• <code>math.sqrt(16)</code> → 4.0 (корень).\n• <code>random.randint(1, 6)</code> → случайное число 1..6 (как кубик).\n• Через точку: модуль.функция.",
+      "common_mistakes": [
+        "Использовать функцию модуля без import.",
+        "Забыть имя модуля: sqrt(16) вместо math.sqrt(16).",
+        "Назвать свой файл math.py — он перекроет настоящий модуль."
+      ],
+      "practice": {
+        "question": "Что сделать перед использованием math?",
+        "options": [
+          "import math",
+          "open math",
+          "math()",
+          "load math"
+        ],
+        "correct": 0,
+        "explanation": "Модуль сначала подключают через import.",
+        "topic": "modules"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "5.0",
+          "5",
+          "25",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Корень из 25 = 5.0.",
+        "topic": "modules",
+        "code": "import math\nprint(math.sqrt(25))"
+      },
+      "challenge": {
+        "question": "Что код точно НЕ может вывести?",
+        "options": [
+          "7",
+          "1",
+          "6",
+          "3"
+        ],
+        "correct": 0,
+        "explanation": "randint(1, 6) даёт 1..6; 7 невозможно.",
+        "topic": "modules",
+        "code": "import random\nprint(random.randint(1, 6))"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "modules",
+      "title": "Пакеты (packages)",
+      "theory": "Пакет — это папка с модулями, объединёнными по теме. Большие библиотеки (например, requests) — это пакеты. Импортируются так же: через import или from.",
+      "association": "📚 Модуль — книга, пакет — целая полка книг на одну тему. requests — полка «работа с интернетом».",
+      "real_example": "requests (запросы в интернет), numpy (математика), django (сайты) — всё это пакеты, которые ставят через pip.",
+      "example": "from math import pi, sqrt\n\nprint(pi)\nprint(sqrt(9))",
+      "code_explained": "• <code>from math import pi, sqrt</code> — берём из модуля только нужное.\n• Теперь можно писать pi и sqrt без префикса 'math.'.\n• <code>pi</code> → 3.14159...\n• <code>sqrt(9)</code> → 3.0.",
+      "common_mistakes": [
+        "Импортировать всё через * — засоряет пространство имён.",
+        "Думать, что пакет и модуль — одно и то же.",
+        "Путать <code>from X import Y</code> и <code>import X</code>."
+      ],
+      "practice": {
+        "question": "Что такое пакет?",
+        "options": [
+          "папка с модулями",
+          "одна функция",
+          "переменная",
+          "тип данных"
+        ],
+        "correct": 0,
+        "explanation": "Пакет — папка с модулями по одной теме.",
+        "topic": "modules"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "3.0",
+          "9",
+          "sqrt",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "sqrt(9) = 3.0, импортирован напрямую.",
+        "topic": "modules",
+        "code": "from math import sqrt\nprint(sqrt(9))"
+      },
+      "challenge": {
+        "question": "Чем `from math import pi` отличается от `import math`?",
+        "options": [
+          "можно писать pi без math.",
+          "ничем",
+          "pi станет строкой",
+          "будет ошибка"
+        ],
+        "correct": 0,
+        "explanation": "from ... import даёт прямой доступ к имени без префикса модуля.",
+        "topic": "modules"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "modules",
+      "title": "Модуль datetime",
+      "theory": "<b>datetime</b> — модуль для работы с датами и временем: узнать «сейчас», посчитать разницу, отформатировать. Сам Python даты «из коробки» не знает — нужен этот модуль.",
+      "association": "📅 datetime — календарь с часами. Спросил «какое сегодня число?» → получил точный ответ.",
+      "real_example": "Показать дату регистрации, посчитать «сколько дней до дедлайна», поставить время на сообщение.",
+      "example": "from datetime import date\n\ntoday = date.today()\nprint(today)\nprint(today.year)",
+      "code_explained": "• <code>from datetime import date</code> — берём работу с датой.\n• <code>date.today()</code> — сегодняшняя дата.\n• <code>print(today)</code> → например 2026-05-31.\n• <code>today.year</code> → 2026 (только год).",
+      "common_mistakes": [
+        "Писать <code>import datetime</code>, а потом <code>datetime.today()</code> (нужно datetime.date.today()).",
+        "Путать date (дата) и datetime (дата + время).",
+        "Сравнивать дату со строкой."
+      ],
+      "practice": {
+        "question": "Для чего нужен datetime?",
+        "options": [
+          "работа с датами и временем",
+          "работа с файлами",
+          "случайные числа",
+          "графика"
+        ],
+        "correct": 0,
+        "explanation": "datetime — про даты и время.",
+        "topic": "modules"
+      },
+      "quiz": {
+        "question": "Что вернёт date.today()?",
+        "options": [
+          "сегодняшнюю дату",
+          "строку 'today'",
+          "число",
+          "ошибку"
+        ],
+        "correct": 0,
+        "explanation": "date.today() возвращает сегодняшнюю дату.",
+        "topic": "modules",
+        "code": "from datetime import date\nprint(date.today())"
+      },
+      "challenge": {
+        "question": "Что вернёт today.year?",
+        "options": [
+          "год числом",
+          "полную дату",
+          "месяц",
+          "строку"
+        ],
+        "correct": 0,
+        "explanation": ".year возвращает год как число.",
+        "topic": "modules",
+        "code": "from datetime import date\nt = date.today()\nprint(t.year)"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "modules",
+      "title": "open() — работа с файлами",
+      "theory": "<b>open()</b> открывает файл, чтобы прочитать его или записать в него. Режим 'r' — читать, 'w' — писать (перезаписать). Файлы — это память, которая остаётся после выхода из программы.",
+      "association": "📂 open() — открыть тетрадь. Режим 'r' — читаешь, 'w' — пишешь (стирая старое). Закрыл тетрадь — записи сохранились.",
+      "real_example": "Сохранить настройки, записать лог, прочитать список задач, выгрузить результат — всё через файлы.",
+      "example": "f = open('note.txt', 'w')\nf.write('Привет, файл!')\nf.close()\n\nf = open('note.txt', 'r')\nprint(f.read())\nf.close()",
+      "code_explained": "• <code>open('note.txt', 'w')</code> — открываем на запись.\n• <code>f.write(...)</code> — пишем текст.\n• <code>f.close()</code> — закрываем (важно!).\n• <code>open(..., 'r')</code> + <code>f.read()</code> — читаем обратно.",
+      "common_mistakes": [
+        "Забыть f.close() — данные могут не сохраниться.",
+        "Открыть в 'w' существующий файл — старое содержимое стирается.",
+        "Читать файл, открытый в режиме записи."
+      ],
+      "practice": {
+        "question": "Какой режим открывает файл на чтение?",
+        "options": [
+          "'r'",
+          "'w'",
+          "'read'",
+          "'open'"
+        ],
+        "correct": 0,
+        "explanation": "'r' — read (чтение).",
+        "topic": "modules"
+      },
+      "quiz": {
+        "question": "Что делает режим 'w'?",
+        "options": [
+          "пишет, стирая старое",
+          "только читает",
+          "добавляет в конец",
+          "удаляет файл"
+        ],
+        "correct": 0,
+        "explanation": "'w' перезаписывает файл новым содержимым.",
+        "topic": "modules"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "Hi",
+          "note.txt",
+          "ошибка",
+          "пусто"
+        ],
+        "correct": 0,
+        "explanation": "Записали Hi и тут же прочитали → Hi.",
+        "topic": "modules",
+        "code": "f = open('a.txt', 'w')\nf.write('Hi')\nf.close()\nf = open('a.txt', 'r')\nprint(f.read())\nf.close()"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "modules",
+      "title": "with — безопасные файлы",
+      "theory": "<b>with</b> открывает файл и сам закрывает его, даже если случилась ошибка. Это безопасный современный способ работы с файлами — про close() можно забыть.",
+      "association": "🚪 with — дверь с автодоводчиком: вошёл, сделал дело, дверь закрылась сама. Не нужно помнить «закрой за собой».",
+      "real_example": "Любая надёжная запись логов, сохранение данных, чтение конфигов — профессионалы почти всегда используют with.",
+      "example": "with open('note.txt', 'w') as f:\n    f.write('Безопасно!')\n\nwith open('note.txt', 'r') as f:\n    print(f.read())",
+      "code_explained": "• <code>with open(...) as f:</code> — открываем файл как f.\n• Внутри блока работаем с f.\n• Файл закроется автоматически на выходе из блока.\n• Никаких f.close() — за нас всё сделано.",
+      "common_mistakes": [
+        "Обращаться к файлу вне блока with — он уже закрыт.",
+        "Писать f.close() внутри with (лишнее).",
+        "Забыть отступ внутри with."
+      ],
+      "practice": {
+        "question": "Что хорошего делает with?",
+        "options": [
+          "сам закрывает файл",
+          "ускоряет код",
+          "удаляет файл",
+          "шифрует данные"
+        ],
+        "correct": 0,
+        "explanation": "with автоматически закрывает файл.",
+        "topic": "modules"
+      },
+      "quiz": {
+        "question": "Нужно ли писать f.close() внутри with?",
+        "options": [
+          "Нет, закроется само",
+          "Да, обязательно",
+          "Только при чтении",
+          "Только при записи"
+        ],
+        "correct": 0,
+        "explanation": "with закрывает файл сам — close() не нужен.",
+        "topic": "modules"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "Data",
+          "note",
+          "ошибка",
+          "пусто"
+        ],
+        "correct": 0,
+        "explanation": "Записали Data через with и прочитали → Data.",
+        "topic": "modules",
+        "code": "with open('b.txt', 'w') as f:\n    f.write('Data')\nwith open('b.txt') as f:\n    print(f.read())"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "modules",
+      "title": "Формат JSON",
+      "theory": "<b>JSON</b> — универсальный формат для хранения и обмена данными: словари и списки в виде текста. На нём общаются почти все сайты и приложения. Модуль json превращает данные Python в текст и обратно.",
+      "association": "📦 JSON — как разборная мебель: дома (в программе) — собранный шкаф (словарь), для перевозки — плоская коробка (текст). dumps пакует, loads собирает.",
+      "real_example": "Настройки приложения, ответы от API, сохранение профиля игрока — почти всегда в JSON.",
+      "example": "import json\n\nuser = {'name': 'Алекс', 'xp': 100}\ntext = json.dumps(user)\nprint(text)\n\nback = json.loads(text)\nprint(back['xp'])",
+      "code_explained": "• <code>json.dumps(user)</code> — словарь → строка JSON.\n• text выглядит как {\"name\": \"Алекс\", \"xp\": 100}.\n• <code>json.loads(text)</code> — строка → обратно словарь.\n• <code>back['xp']</code> → 100.",
+      "common_mistakes": [
+        "Путать dumps (в текст) и loads (из текста).",
+        "Хранить в JSON то, что он не умеет (например, функции).",
+        "Читать JSON-строку как словарь без loads."
+      ],
+      "practice": {
+        "question": "Что делает json.dumps?",
+        "options": [
+          "превращает данные в JSON-текст",
+          "читает файл",
+          "удаляет данные",
+          "считает"
+        ],
+        "correct": 0,
+        "explanation": "dumps превращает объект Python в JSON-строку.",
+        "topic": "modules"
+      },
+      "quiz": {
+        "question": "Что выведет код?",
+        "options": [
+          "100",
+          "'xp'",
+          "text",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "loads вернул словарь, ['xp'] = 100.",
+        "topic": "modules",
+        "code": "import json\nt = json.dumps({'xp': 100})\nprint(json.loads(t)['xp'])"
+      },
+      "challenge": {
+        "question": "Что вернёт json.loads('[1, 2, 3]')?",
+        "options": [
+          "список [1, 2, 3]",
+          "строку",
+          "число 6",
+          "ошибку"
+        ],
+        "correct": 0,
+        "explanation": "JSON-массив превращается в список Python.",
+        "topic": "modules"
+      },
+      "xp": 25
+    },
+    {
+      "topic": "modules",
+      "title": "Формат CSV",
+      "theory": "<b>CSV</b> — простая таблица в виде текста, где значения разделены запятыми, а строки — переносами. Это «Excel для программ»: открывается везде. Модуль csv помогает читать и писать такие таблицы.",
+      "association": "📊 CSV — таблица, разрезанная на строчки и разделённая запятыми. Каждая строка — ряд таблицы, запятая — граница ячейки.",
+      "real_example": "Экспорт списка пользователей, отчёт по продажам, выгрузка оценок — CSV открывают в Excel и Google Sheets.",
+      "example": "import csv\n\nwith open('people.csv', 'w', newline='') as f:\n    writer = csv.writer(f)\n    writer.writerow(['Имя', 'Возраст'])\n    writer.writerow(['Алекс', 20])",
+      "code_explained": "• <code>csv.writer(f)</code> — создаёт «писателя» таблицы.\n• <code>writerow([...])</code> — пишет одну строку-ряд.\n• Первая строка обычно — заголовки.\n• Получится: Имя,Возраст / Алекс,20.",
+      "common_mistakes": [
+        "Забыть newline='' при открытии — появятся пустые строки.",
+        "Складывать в CSV данные без единой структуры столбцов.",
+        "Путать запятую-разделитель с запятой внутри текста."
+      ],
+      "practice": {
+        "question": "Чем разделяются значения в CSV?",
+        "options": [
+          "запятыми",
+          "точками",
+          "пробелами",
+          "табами"
+        ],
+        "correct": 0,
+        "explanation": "CSV = Comma-Separated Values — запятые.",
+        "topic": "modules"
+      },
+      "quiz": {
+        "question": "Что делает writerow(['A', 'B'])?",
+        "options": [
+          "пишет одну строку таблицы",
+          "читает строку",
+          "удаляет строку",
+          "считает строки"
+        ],
+        "correct": 0,
+        "explanation": "writerow записывает один ряд таблицы.",
+        "topic": "modules"
+      },
+      "challenge": {
+        "question": "Зачем первая строка с заголовками?",
+        "options": [
+          "подписать столбцы",
+          "ускорить файл",
+          "зашифровать",
+          "это обязательно по синтаксису"
+        ],
+        "correct": 0,
+        "explanation": "Заголовки подписывают, что означает каждый столбец.",
+        "topic": "modules"
+      },
+      "xp": 25
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": 3,
+  "title": "Формы и семантика",
+  "subtitle": "Ввод данных и осмысленная разметка",
+  "emoji": "📝",
+  "lessons": [
+    {
+      "topic": "forms",
+      "title": "Форма: form и input",
+      "theory": "<code>&lt;form&gt;</code> — контейнер для сбора данных от пользователя. Внутри — поля ввода <code>&lt;input&gt;</code>. Атрибуты формы: <code>action</code> (куда отправить) и <code>method</code> (как: GET или POST).",
+      "association": "📋 Форма — анкета на стойке: input'ы — это поля для заполнения, action — адрес, куда анкету отнести, method — способ доставки.",
+      "real_example": "Логин, регистрация, поиск, оформление заказа — всё это HTML-формы. Данные уходят на сервер (например, на Python-бэкенд).",
+      "example": "<form action=\"/login\" method=\"post\">\n  <input type=\"text\" name=\"username\">\n  <input type=\"password\" name=\"password\">\n  <button type=\"submit\">Войти</button>\n</form>",
+      "code_explained": "• <code>action=\"/login\"</code> — адрес, куда уйдут данные.\n• <code>method=\"post\"</code> — отправка скрыто в теле запроса (для паролей).\n• <code>name</code> у input — ключ, под которым придёт значение.\n• Без <code>name</code> поле не отправится на сервер.",
+      "common_mistakes": [
+        "Забыть атрибут name → данные поля не дойдут до сервера.",
+        "Слать пароль методом GET (он попадёт в адресную строку).",
+        "Ставить несколько форм друг в друга — формы не вкладывают."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "forms",
+      "title": "Типы полей input",
+      "theory": "Атрибут <code>type</code> задаёт вид поля: <code>text</code>, <code>email</code>, <code>password</code>, <code>number</code>, <code>checkbox</code>, <code>radio</code>, <code>date</code>. Браузер сам подстраивает клавиатуру и базовую проверку.",
+      "association": "🎛️ type — это насадка на поле: одна для текста, другая для даты, третья для галочки. Один тег &lt;input&gt;, много режимов.",
+      "real_example": "Поле email на телефоне открывает клавиатуру с @, type=number — цифровую, type=date — календарик.",
+      "example": "<input type=\"email\" name=\"mail\">\n<input type=\"number\" name=\"age\">\n<input type=\"checkbox\" name=\"agree\">\n<input type=\"date\" name=\"birthday\">",
+      "code_explained": "• <code>type=\"email\"</code> — проверит, что похоже на почту.\n• <code>type=\"number\"</code> — только числа, со стрелочками.\n• <code>type=\"checkbox\"</code> — галочка (да/нет).\n• <code>type=\"radio\"</code> с одинаковым name — выбор одного из вариантов.",
+      "common_mistakes": [
+        "Использовать type=text для всего, теряя удобство и проверку.",
+        "Дать radio-кнопкам разные name → можно выбрать несколько.",
+        "Полагаться только на проверку браузера (сервер обязан проверять тоже)."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "forms",
+      "title": "label и кнопки",
+      "theory": "<code>&lt;label&gt;</code> — подпись к полю. Если связать её с input через <code>for</code>=<code>id</code>, клик по подписи активирует поле. Кнопки: <code>&lt;button&gt;</code> или <code>&lt;input type=\"submit\"&gt;</code>.",
+      "association": "🏷️ label — табличка над окошком в банке: нажал на табличку — и тебя перенесло к нужному окну (полю).",
+      "real_example": "Чекбокс «Запомнить меня» с кликабельной подписью; кнопка «Отправить» внизу формы.",
+      "example": "<label for=\"email\">Почта</label>\n<input id=\"email\" type=\"email\" name=\"email\">\n\n<button type=\"submit\">Отправить</button>",
+      "code_explained": "• <code>for=\"email\"</code> у label = <code>id=\"email\"</code> у input — они связаны.\n• Клик по тексту label фокусирует поле (удобно на телефоне).\n• <code>&lt;button type=\"submit\"&gt;</code> отправляет форму.\n• <code>type=\"button\"</code> — кнопка без отправки (для JS).",
+      "common_mistakes": [
+        "Не связывать label с input → клик по подписи не работает.",
+        "Несовпадение for и id.",
+        "Забыть type у кнопки внутри формы (по умолчанию submit)."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "html",
+      "title": "Семантические теги",
+      "theory": "Вместо моря одинаковых &lt;div&gt; есть <b>семантические</b> теги, объясняющие смысл блока: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;footer&gt;</code>.",
+      "association": "🏠 Семантика — подписанные комнаты в доме: «кухня», «спальня». div — безымянная комната; header/nav/footer сразу говорят, что внутри.",
+      "real_example": "Шапка сайта — header, меню — nav, основной контент — main, подвал с контактами — footer. Это помогает SEO и screen reader'ам.",
+      "example": "<header>Логотип</header>\n<nav>Меню</nav>\n<main>\n  <article>Текст статьи</article>\n</main>\n<footer>© 2026</footer>",
+      "code_explained": "• <code>&lt;header&gt;</code> — верхняя часть (шапка).\n• <code>&lt;nav&gt;</code> — навигация (меню ссылок).\n• <code>&lt;main&gt;</code> — главный контент (один на страницу).\n• <code>&lt;footer&gt;</code> — подвал; <code>&lt;article&gt;</code> — самостоятельная единица контента.",
+      "common_mistakes": [
+        "Делать всё на div'ах, игнорируя семантику.",
+        "Несколько &lt;main&gt; на странице — должен быть один.",
+        "Путать section (раздел) и article (самостоятельная статья)."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "html",
+      "title": "Мета-теги и доступность",
+      "theory": "В <code>&lt;head&gt;</code> живут <b>мета-теги</b>: кодировка, описание для поисковиков, настройка под телефоны (viewport). Плюс базовая <b>доступность</b>: alt у картинок, label у полей, осмысленные ссылки.",
+      "association": "🪪 Мета-теги — паспорт страницы: язык, кодировка, как показываться на телефоне и в поиске. Снаружи не видно, но всем важно.",
+      "real_example": "Без viewport сайт на телефоне выглядит крошечным. Description — это текст, который Google показывает под ссылкой в выдаче.",
+      "example": "<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <meta name=\"description\" content=\"Рецепты борща\">\n  <title>Борщ</title>\n</head>",
+      "code_explained": "• <code>charset=\"UTF-8\"</code> — корректная кириллица.\n• <code>viewport</code> — адаптация под ширину телефона (обязательно!).\n• <code>description</code> — сниппет для поисковика.\n• <code>&lt;title&gt;</code> — текст вкладки и ссылки в поиске.",
+      "common_mistakes": [
+        "Забыть viewport → сайт на телефоне нечитаемый.",
+        "Пустой или отсутствующий title.",
+        "Игнорировать доступность (alt, label) — теряешь часть пользователей."
+      ],
+      "xp": 20
+    }
+  ]
+}

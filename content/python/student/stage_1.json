@@ -1,0 +1,367 @@
+{
+  "id": 1,
+  "title": "Production Python",
+  "subtitle": "Код, который не стыдно в проде",
+  "emoji": "🏭",
+  "lessons": [
+    {
+      "topic": "typing",
+      "title": "Type hints на практике",
+      "theory": "Типы в Python нужны не интерпретатору, а <b>людям и инструментам</b>. Аннотации делают код самодокументируемым, а mypy и IDE ловят баги <b>до запуска</b>. В проде без типов — больно.",
+      "association": "🏷️ Типы — подписи на проводах в щитке. Другой инженер сразу видит, что куда идёт, и не устроит короткое замыкание.",
+      "real_example": "В production-репозитории типы обязательны: ревьюер читает сигнатуру и понимает контракт функции без чтения тела.",
+      "example": "from typing import Optional\n\ndef get_user(uid: int) -> Optional[str]:\n    users = {1: 'Alex'}\n    return users.get(uid)",
+      "code_explained": "• <code>uid: int</code> — ждём целое.\n• <code>-> Optional[str]</code> — вернём строку <b>или None</b>.\n• mypy подсветит вызов <code>get_user('1')</code> ещё до запуска.\n• <code>.get()</code> честно возвращает None — поэтому Optional.",
+      "common_mistakes": [
+        "Вернуть Optional и забыть проверить на None → AttributeError в проде.",
+        "Писать <code>list</code> вместо <code>list[int]</code> — теряется польза.",
+        "Думать, что типы проверяются в рантайме (нет — нужен mypy)."
+      ],
+      "practice": {
+        "question": "Что значит <code>-> Optional[int]</code>?",
+        "options": [
+          "вернёт int или None",
+          "вернёт только int",
+          "примет int",
+          "ошибка"
+        ],
+        "correct": 0,
+        "explanation": "Optional[int] = int | None.",
+        "topic": "typing"
+      },
+      "quiz": {
+        "question": "Кто на самом деле проверяет type hints?",
+        "options": [
+          "mypy / IDE, не рантайм",
+          "интерпретатор при запуске",
+          "никто",
+          "сборщик мусора"
+        ],
+        "correct": 0,
+        "explanation": "Python не проверяет типы при выполнении — это делают mypy и IDE.",
+        "topic": "typing"
+      },
+      "challenge": {
+        "question": "Что не так с точки зрения типов?",
+        "options": [
+          "return float, а обещан int",
+          "всё ок",
+          "n не используется",
+          "нужен Optional"
+        ],
+        "correct": 0,
+        "explanation": "n / 2 даёт float, а аннотация обещает int — mypy будет ругаться (нужно //).",
+        "topic": "typing",
+        "code": "def half(n: int) -> int:\n    return n / 2"
+      },
+      "xp": 40
+    },
+    {
+      "topic": "dataclass",
+      "title": "dataclass — данные без боли",
+      "theory": "<code>@dataclass</code> генерирует <code>__init__</code>, <code>__repr__</code> и <code>__eq__</code> за тебя. Вместо 20 строк болерплейта — один декоратор. Идеально для DTO, конфигов и моделей.",
+      "association": "🧱 dataclass — конструктор LEGO: объявил поля → коробка с готовыми методами собралась сама.",
+      "real_example": "DTO между слоями, конфиг приложения, событие в очереди — везде, где нужен «чистый объект с данными».",
+      "example": "from dataclasses import dataclass, field\n\n@dataclass\nclass User:\n    id: int\n    name: str\n    roles: list[str] = field(default_factory=list)\n\nprint(User(1, 'Alex'))",
+      "code_explained": "• <code>@dataclass</code> сам пишет __init__/__repr__/__eq__.\n• <code>roles: list[str] = field(default_factory=list)</code> — безопасный изменяемый дефолт.\n• <code>print(User(1,'Alex'))</code> → читаемый repr бесплатно.\n• Сравнение User == User работает из коробки.",
+      "common_mistakes": [
+        "<code>roles: list = []</code> как дефолт — общий список на все объекты (баг!). Нужен default_factory.",
+        "Ждать от dataclass валидацию типов (её нет — это Pydantic).",
+        "Забыть frozen=True там, где объект должен быть неизменяемым/хешируемым."
+      ],
+      "practice": {
+        "question": "Что генерирует @dataclass?",
+        "options": [
+          "__init__, __repr__, __eq__",
+          "только __init__",
+          "ничего",
+          "сам класс"
+        ],
+        "correct": 0,
+        "explanation": "Три метода бесплатно.",
+        "topic": "dataclass"
+      },
+      "quiz": {
+        "question": "Как задать изменяемый дефолт (список)?",
+        "options": [
+          "field(default_factory=list)",
+          "= []",
+          "= list",
+          "= None"
+        ],
+        "correct": 0,
+        "explanation": "Изменяемые дефолты только через default_factory.",
+        "topic": "dataclass"
+      },
+      "challenge": {
+        "question": "Что выведет код?",
+        "options": [
+          "True",
+          "False",
+          "ошибка",
+          "адрес объекта"
+        ],
+        "correct": 0,
+        "explanation": "dataclass генерирует __eq__ по полям → P(1) == P(1) это True.",
+        "topic": "dataclass",
+        "code": "from dataclasses import dataclass\n@dataclass\nclass P:\n    x: int\nprint(P(1) == P(1))"
+      },
+      "xp": 40
+    },
+    {
+      "topic": "decorators",
+      "title": "Декораторы в проде",
+      "theory": "Декоратор оборачивает функцию и добавляет поведение — логи, кеш, ретраи, замер времени — <b>не трогая её код</b>. Cross-cutting concerns в одну строку <code>@</code>.",
+      "association": "🎁 Декоратор — подарочная упаковка: содержимое (функция) то же, но добавился бантик до и открытка после.",
+      "real_example": "@retry на флапающем HTTP-запросе, @cache на тяжёлой функции, @timeit для профайлинга — хлеб backend-разработчика.",
+      "example": "import functools\n\ndef logged(func):\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        print(f'-> {func.__name__}')\n        return func(*args, **kwargs)\n    return wrapper\n\n@logged\ndef add(a, b):\n    return a + b",
+      "code_explained": "• <code>functools.wraps</code> сохраняет имя и докстринг оригинала.\n• <code>*args, **kwargs</code> пропускают любые аргументы.\n• <code>return func(...)</code> — не теряем результат.\n• <code>@logged</code> = <code>add = logged(add)</code>.",
+      "common_mistakes": [
+        "Забыть <code>functools.wraps</code> → ломаются интроспекция, docs, другие декораторы.",
+        "Не пробросить <code>*args/**kwargs</code> → декоратор сломает функции с аргументами.",
+        "Забыть <code>return</code> внутри wrapper → функция начнёт возвращать None."
+      ],
+      "practice": {
+        "question": "Зачем functools.wraps?",
+        "options": [
+          "сохраняет __name__ и __doc__",
+          "ускоряет функцию",
+          "ловит ошибки",
+          "кеширует"
+        ],
+        "correct": 0,
+        "explanation": "wraps копирует метаданные оригинала на wrapper.",
+        "topic": "decorators"
+      },
+      "quiz": {
+        "question": "Как wrapper принимает любые аргументы?",
+        "options": [
+          "*args, **kwargs",
+          "args, kwargs",
+          "только *args",
+          "никак"
+        ],
+        "correct": 0,
+        "explanation": "*args/**kwargs пробрасывают всё.",
+        "topic": "decorators"
+      },
+      "challenge": {
+        "question": "Сколько уровней вложенности у декоратора с аргументами — <code>@retry(times=3)</code>?",
+        "options": [
+          "3: фабрика → декоратор → wrapper",
+          "2",
+          "1",
+          "4"
+        ],
+        "correct": 0,
+        "explanation": "retry(times=3) возвращает декоратор, тот возвращает wrapper — три функции.",
+        "topic": "decorators"
+      },
+      "xp": 40
+    },
+    {
+      "topic": "context_managers",
+      "title": "Контекстные менеджеры (with)",
+      "theory": "<code>with</code> гарантирует освобождение ресурса (файл, соединение, лок) <b>даже при ошибке</b>. Свой менеджер — через <code>@contextmanager</code> или <code>__enter__/__exit__</code>: setup и teardown без забытого close.",
+      "association": "🚪 Менеджер — аренда переговорки: вошёл (enter), поработал, вышел — свет и проектор выключились сами (exit), даже если ты убежал в панике.",
+      "real_example": "Пул соединений к БД, транзакция, временная блокировка, замер времени блока — всё это контекстные менеджеры.",
+      "example": "import time\nfrom contextlib import contextmanager\n\n@contextmanager\ndef timer():\n    start = time.perf_counter()\n    try:\n        yield\n    finally:\n        print(f'{time.perf_counter() - start:.3f}s')\n\nwith timer():\n    sum(range(1_000_000))",
+      "code_explained": "• До <code>yield</code> — setup (старт таймера).\n• <code>yield</code> отдаёт управление телу with.\n• <code>finally</code> вокруг yield — teardown сработает даже при ошибке.\n• Печатает время выполнения блока.",
+      "common_mistakes": [
+        "Не обернуть yield в try/finally → при исключении ресурс утечёт.",
+        "Делать в __exit__ то, что само может упасть, без защиты.",
+        "Открывать ресурс вне with «по старинке» и забывать close()."
+      ],
+      "practice": {
+        "question": "Что гарантирует with при ошибке в теле?",
+        "options": [
+          "ресурс всё равно освободится",
+          "программа упадёт молча",
+          "ничего",
+          "повтор"
+        ],
+        "correct": 0,
+        "explanation": "Контекстный менеджер выполнит teardown даже при исключении.",
+        "topic": "context_managers"
+      },
+      "quiz": {
+        "question": "Где код teardown в @contextmanager?",
+        "options": [
+          "после yield (в finally)",
+          "до yield",
+          "вместо yield",
+          "в __init__"
+        ],
+        "correct": 0,
+        "explanation": "Код после yield = очистка; finally делает её надёжной.",
+        "topic": "context_managers"
+      },
+      "challenge": {
+        "question": "Почему teardown оборачивают в <code>try/finally</code> вокруг yield?",
+        "options": [
+          "чтобы освободить ресурс при ошибке в with",
+          "для скорости",
+          "так короче",
+          "это необязательно"
+        ],
+        "correct": 0,
+        "explanation": "Если тело with бросит исключение — finally всё равно закроет ресурс.",
+        "topic": "context_managers"
+      },
+      "xp": 40
+    },
+    {
+      "topic": "protocols",
+      "title": "Protocol и ABC — интерфейсы",
+      "theory": "Интерфейс — это <b>контракт</b> «что объект умеет», без привязки к классу. <code>ABC</code> — явное наследование; <code>Protocol</code> (PEP 544) — структурная типизация (duck typing, проверяемый mypy). Основа развязки кода.",
+      "association": "🔌 Protocol — стандарт розетки: неважно, кто производитель устройства, главное — подходит ли вилка (есть ли нужные методы).",
+      "real_example": "Слой storage: код зависит от Protocol Storage, а не от Redis/Postgres напрямую — реализацию можно менять без переписывания.",
+      "example": "from typing import Protocol\n\nclass Storage(Protocol):\n    def save(self, key: str, value: str) -> None: ...\n\nclass RedisStorage:\n    def save(self, key: str, value: str) -> None:\n        print('redis save')\n\ndef use(s: Storage) -> None:\n    s.save('k', 'v')\n\nuse(RedisStorage())",
+      "code_explained": "• <code>Storage(Protocol)</code> — контракт с методом save.\n• <code>RedisStorage</code> <b>не наследует</b> Storage, но подходит структурно.\n• <code>use</code> принимает любой объект с нужным save.\n• mypy проверит соответствие сигнатуры.",
+      "common_mistakes": [
+        "Путать ABC (наследование «is-a») и Protocol (структура «умеет»).",
+        "Писать реализацию методов прямо в Protocol.",
+        "Ждать проверку в рантайме без <code>@runtime_checkable</code>."
+      ],
+      "practice": {
+        "question": "Чем Protocol отличается от ABC?",
+        "options": [
+          "структурная типизация, без наследования",
+          "это одно и то же",
+          "Protocol быстрее",
+          "ABC для async"
+        ],
+        "correct": 0,
+        "explanation": "Protocol проверяет структуру (есть ли методы), ABC требует явного наследования.",
+        "topic": "protocols"
+      },
+      "quiz": {
+        "question": "Что проверяет Protocol?",
+        "options": [
+          "есть ли у объекта нужные методы",
+          "имя класса",
+          "размер объекта",
+          "тип файла"
+        ],
+        "correct": 0,
+        "explanation": "Совпадение по структуре — набору методов и сигнатур.",
+        "topic": "protocols"
+      },
+      "challenge": {
+        "question": "RedisStorage не наследует Storage. Почему use(RedisStorage()) ок для mypy?",
+        "options": [
+          "совпадает сигнатура save (структурно)",
+          "случайно",
+          "из-за наследования",
+          "mypy это пропускает всегда"
+        ],
+        "correct": 0,
+        "explanation": "Структурная типизация: достаточно нужного метода с правильной сигнатурой.",
+        "topic": "protocols"
+      },
+      "xp": 40
+    },
+    {
+      "topic": "di",
+      "title": "Dependency Injection (основы)",
+      "theory": "DI — <b>не создавай зависимости внутри, принимай их снаружи</b> (через конструктор/аргументы). Класс не знает, какой именно Storage — ему дают готовый. Это развязка, тестируемость и гибкость.",
+      "association": "💉 DI — розетка вместо вшитого провода: устройство не припаяно к одной сети, ты «вставляешь» любой источник (прод-БД или мок в тестах).",
+      "real_example": "Сервис принимает repository и cache в __init__ — в проде реальные, в тестах фейковые. Менять код сервиса не нужно.",
+      "example": "class Service:\n    def __init__(self, storage: Storage):\n        self.storage = storage\n\n    def run(self) -> None:\n        self.storage.save('k', 'v')\n\nService(RedisStorage()).run()   # прод\nService(FakeStorage()).run()    # тест",
+      "code_explained": "• <code>Service</code> получает storage в <code>__init__</code> (инъекция).\n• Он <b>не создаёт</b> зависимость сам.\n• В проде даём Redis, в тестах — Fake.\n• Код Service не меняется — меняется то, что «вставили».",
+      "common_mistakes": [
+        "Создавать зависимость внутри (<code>self.storage = RedisStorage()</code>) → не подменить в тестах.",
+        "Инъектировать всё подряд → god object с 15 зависимостями.",
+        "Путать DI (паттерн) с DI-фреймворком (библиотека)."
+      ],
+      "practice": {
+        "question": "В чём суть DI?",
+        "options": [
+          "зависимости передают снаружи",
+          "всё создаётся внутри класса",
+          "это библиотека",
+          "способ кеширования"
+        ],
+        "correct": 0,
+        "explanation": "Inversion of control: зависимости приходят извне.",
+        "topic": "di"
+      },
+      "quiz": {
+        "question": "Зачем DI для тестов?",
+        "options": [
+          "подменить реальную зависимость моком",
+          "ускорить тесты",
+          "удалить зависимости",
+          "ни за чем"
+        ],
+        "correct": 0,
+        "explanation": "Можно подсунуть Fake/Mock вместо реальной БД.",
+        "topic": "di"
+      },
+      "challenge": {
+        "question": "Service сам пишет <code>self.storage = RedisStorage()</code>. Что плохо?",
+        "options": [
+          "жёсткая связанность — не подменить storage",
+          "медленно",
+          "много памяти",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Tight coupling: класс прибит к Redis, тестировать и менять сложно.",
+        "topic": "di"
+      },
+      "xp": 40
+    },
+    {
+      "topic": "solid",
+      "title": "SOLID на практике",
+      "theory": "SOLID — 5 принципов поддерживаемой ООП-архитектуры. Кратко: <b>S</b> — один класс = одна ответственность; <b>O</b> — расширяй, не меняй; <b>L</b> — потомок заменяет родителя; <b>I</b> — мелкие интерфейсы; <b>D</b> — зависимость от абстракций.",
+      "association": "🏛️ SOLID — правила чистой кухни: каждый нож для своего, новые блюда добавляешь не ломая старые рецепты, любой повар заменяем.",
+      "real_example": "Жирный OrderService, который считает, пишет в БД и шлёт письма, на ревью разносят: это нарушение S — его делят на 3 класса.",
+      "example": "# ❌ один класс делает всё\nclass Report:\n    def build(self): ...\n    def save_to_db(self): ...\n    def send_email(self): ...\n\n# ✅ одна ответственность на класс\nclass ReportBuilder: ...\nclass ReportRepository: ...\nclass Mailer: ...",
+      "code_explained": "• Было: Report меняется по 3 причинам (формат, БД, почта).\n• Стало: 3 класса, у каждого одна причина меняться.\n• Поменять почту → трогаешь только Mailer.\n• <b>D</b> подключается через Protocol/DI из прошлых уроков.",
+      "common_mistakes": [
+        "Превращать SOLID в догму и плодить классы ради классов.",
+        "Прятать god-object за красивым именем «Manager/Service».",
+        "Путать SOLID с «просто много мелких файлов»."
+      ],
+      "practice": {
+        "question": "За что отвечает S в SOLID?",
+        "options": [
+          "одна ответственность на класс",
+          "скорость",
+          "наследование",
+          "async"
+        ],
+        "correct": 0,
+        "explanation": "Single Responsibility: одна причина для изменения.",
+        "topic": "solid"
+      },
+      "quiz": {
+        "question": "Принцип D (Dependency Inversion) — про что?",
+        "options": [
+          "зависеть от абстракций, не от классов",
+          "удалять зависимости",
+          "о скорости",
+          "о наследовании"
+        ],
+        "correct": 0,
+        "explanation": "Зависимость от Protocol/ABC, а не от конкретной реализации.",
+        "topic": "solid"
+      },
+      "challenge": {
+        "question": "OrderService считает цену, шлёт email и пишет в БД. Что нарушено?",
+        "options": [
+          "S — Single Responsibility",
+          "L — Liskov",
+          "I — Interface Segregation",
+          "ничего"
+        ],
+        "correct": 0,
+        "explanation": "Три ответственности в одном классе — классическое нарушение SRP.",
+        "topic": "solid"
+      },
+      "xp": 40
+    }
+  ]
+}

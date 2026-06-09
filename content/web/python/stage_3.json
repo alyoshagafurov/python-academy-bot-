@@ -1,0 +1,83 @@
+{
+  "id": 3,
+  "title": "Flask — основы",
+  "subtitle": "Микрофреймворк для сайтов",
+  "emoji": "🍶",
+  "lessons": [
+    {
+      "topic": "flask",
+      "title": "Что такое Flask",
+      "theory": "<b>Flask</b> — лёгкий веб-фреймворк на Python. Он берёт на себя приём запросов, маршрутизацию и работу с шаблонами, а ты пишешь только логику. Запускается в несколько строк.",
+      "association": "🍶 Flask — это мини-кухня «всё под рукой»: не надо строить ресторан с нуля, базовое уже готово, ты только готовишь блюда (страницы).",
+      "real_example": "На Flask написаны прототипы, внутренние панели, небольшие сервисы и API. Старший брат для крупных проектов — Django/FastAPI.",
+      "example": "from flask import Flask\n\napp = Flask(__name__)\n\n@app.route('/')\ndef home():\n    return '<h1>Главная</h1>'\n\nif __name__ == '__main__':\n    app.run(debug=True)",
+      "code_explained": "• <code>Flask(__name__)</code> создаёт приложение.\n• <code>@app.route('/')</code> привязывает функцию к адресу.\n• Функция возвращает HTML (ответ).\n• <code>app.run(debug=True)</code> — локальный сервер с автоперезагрузкой.",
+      "common_mistakes": [
+        "Оставлять debug=True в продакшене (это опасно).",
+        "Забыть установить Flask: pip install flask.",
+        "Думать, что Flask = большой фреймворк со всем внутри (он минималистичный)."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "flask",
+      "title": "Маршруты: @app.route",
+      "theory": "<b>Маршрут</b> связывает URL-путь с функцией-обработчиком (её зовут <i>view</i>). Зашёл на <code>/about</code> — Flask вызвал функцию about и вернул её результат пользователю.",
+      "association": "🗺️ Маршруты — карта здания: каждый адрес (URL) ведёт в свой кабинет (функцию), который выдаёт нужную страницу.",
+      "real_example": "/ — главная, /about — о нас, /contacts — контакты. Каждый путь — отдельная функция.",
+      "example": "@app.route('/')\ndef home():\n    return 'Главная'\n\n@app.route('/about')\ndef about():\n    return 'О нас'",
+      "code_explained": "• <code>@app.route('/about')</code> — декоратор, привязывающий путь.\n• Имя функции произвольное, но осмысленное.\n• Возвращаемая строка становится телом ответа.\n• Разные пути → разные функции → разные страницы.",
+      "common_mistakes": [
+        "Две функции с одинаковым именем — конфликт.",
+        "Забыть слэш в пути или продублировать маршрут.",
+        "Делать одну гигантскую view на всё вместо отдельных."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "flask",
+      "title": "render_template",
+      "theory": "Возвращать HTML строкой неудобно — есть <code>render_template</code>: Flask берёт файл из папки <code>templates/</code>, прогоняет через Jinja2, подставляет данные и возвращает готовую страницу.",
+      "association": "🖨️ render_template — принтер: подаёшь бланк (шаблон) и данные, на выходе — готовый напечатанный лист (HTML).",
+      "real_example": "render_template('profile.html', name='Аня') отдаёт страницу профиля с подставленным именем.",
+      "example": "from flask import render_template\n\n@app.route('/user')\ndef user():\n    return render_template('user.html', name='Аня', age=20)",
+      "code_explained": "• Шаблоны лежат в папке <code>templates/</code> рядом с кодом.\n• <code>render_template('user.html', ...)</code> — имя файла + данные.\n• Переданные значения доступны в шаблоне как <code>{{ name }}</code>.\n• Возвращается готовый HTML.",
+      "common_mistakes": [
+        "Класть шаблоны не в папку templates/ → Flask их не найдёт.",
+        "Опечатка в имени файла шаблона.",
+        "Забыть передать переменную, которую ждёт шаблон."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "flask",
+      "title": "Динамические URL",
+      "theory": "В путь можно встроить <b>переменную</b>: <code>/user/&lt;name&gt;</code>. Flask передаст её в функцию как аргумент. Можно указать тип: <code>&lt;int:id&gt;</code> — только числа.",
+      "association": "📭 Динамический URL — адрес с номером квартиры: /user/anya и /user/oleg ведут в одну функцию, но с разным «жильцом».",
+      "real_example": "/product/15 показывает товар №15, /user/anya — профиль Ани. Один маршрут обслуживает тысячи страниц.",
+      "example": "@app.route('/user/<name>')\ndef profile(name):\n    return f'Профиль: {name}'\n\n@app.route('/post/<int:id>')\ndef post(id):\n    return f'Пост № {id}'",
+      "code_explained": "• <code>&lt;name&gt;</code> в пути → аргумент <code>name</code> функции.\n• <code>&lt;int:id&gt;</code> — конвертер: принимает только числа.\n• Имя в скобках и имя аргумента должны совпадать.\n• Так один маршрут обслуживает множество страниц.",
+      "common_mistakes": [
+        "Несовпадение имени в &lt;...&gt; и аргумента функции.",
+        "Ждать число, но не указать конвертер int.",
+        "Не проверять, существует ли запрошенный объект (нужен 404)."
+      ],
+      "xp": 35
+    },
+    {
+      "topic": "flask",
+      "title": "Query-параметры",
+      "theory": "Данные после <code>?</code> в адресе (<code>/search?q=кот&amp;page=2</code>) — это <b>query-параметры</b>. В Flask их читают через <code>request.args.get('q')</code>. Удобно для фильтров и поиска.",
+      "association": "🔎 Query-параметры — уточнения к заказу: основной адрес /search, а ?q=кот — «ищу именно котов, страница 2».",
+      "real_example": "Поиск и фильтры: /shop?category=книги&sort=price — категория и сортировка приходят как query-параметры.",
+      "example": "from flask import request\n\n@app.route('/search')\ndef search():\n    q = request.args.get('q', '')\n    return f'Ищем: {q}'",
+      "code_explained": "• Всё после <code>?</code> — query-строка (пары ключ=значение через &amp;).\n• <code>request.args.get('q')</code> — прочитать параметр q.\n• Второй аргумент — значение по умолчанию, если параметра нет.\n• Идеально для GET-поиска и фильтров.",
+      "common_mistakes": [
+        "Обращаться к request.args['q'] напрямую → ошибка, если параметра нет (лучше .get).",
+        "Путать query-параметры (?q=) и динамические части пути (/user/&lt;name&gt;).",
+        "Не задавать значение по умолчанию."
+      ],
+      "xp": 35
+    }
+  ]
+}

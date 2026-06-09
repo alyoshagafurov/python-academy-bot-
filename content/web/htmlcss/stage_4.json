@@ -1,0 +1,83 @@
+{
+  "id": 4,
+  "title": "Введение в CSS",
+  "subtitle": "Делаем красиво",
+  "emoji": "🎨",
+  "lessons": [
+    {
+      "topic": "css",
+      "title": "Что такое CSS и как подключить",
+      "theory": "<b>CSS</b> (Cascading Style Sheets) отвечает за <b>внешний вид</b>: цвета, шрифты, отступы, расположение. Подключают тремя способами, лучший — <b>отдельный файл</b> через <code>&lt;link&gt;</code> в head.",
+      "association": "👕 Если HTML — это скелет, то CSS — одежда и стиль. Один и тот же скелет можно одеть совершенно по-разному.",
+      "real_example": "Сменив один CSS-файл, можно перекрасить весь сайт в тёмную тему, не трогая HTML.",
+      "example": "<!-- в HTML, в head -->\n<link rel=\"stylesheet\" href=\"style.css\">\n\n/* в файле style.css */\nh1 {\n  color: blue;\n}",
+      "code_explained": "• <code>&lt;link rel=\"stylesheet\" href=\"style.css\"&gt;</code> подключает CSS-файл.\n• Правило: <code>селектор { свойство: значение; }</code>.\n• <code>h1 { color: blue; }</code> — все h1 станут синими.\n• Отдельный файл лучше, чем стили внутри тегов.",
+      "common_mistakes": [
+        "Писать style прямо в каждом теге — быстро превращается в хаос.",
+        "Забыть точку с запятой в конце свойства.",
+        "Неверный путь в href → стили не подключатся."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "css",
+      "title": "Селекторы",
+      "theory": "Селектор выбирает, к чему применить стиль. Основные: по <b>тегу</b> (<code>p</code>), по <b>классу</b> (<code>.btn</code>), по <b>id</b> (<code>#main</code>). Класс — главный рабочий инструмент: его можно вешать на много элементов.",
+      "association": "🎯 Селектор — это адрес доставки стиля: «всем абзацам», «всем с классом btn», «элементу с id main».",
+      "real_example": "Класс .button задаёт вид всех кнопок сайта сразу — поменял в одном месте, изменилось везде.",
+      "example": "p { color: gray; }\n.btn { background: green; }\n#header { height: 80px; }",
+      "code_explained": "• <code>p</code> — по тегу: все абзацы.\n• <code>.btn</code> — по классу: все с class=\"btn\".\n• <code>#header</code> — по id: один элемент с id=\"header\".\n• В HTML: <code>&lt;a class=\"btn\"&gt;</code> подхватит стиль .btn.",
+      "common_mistakes": [
+        "Забыть точку перед классом (.btn) или решётку перед id (#header).",
+        "Злоупотреблять id для стилей — классы гибче.",
+        "Слишком длинные/запутанные селекторы."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "css",
+      "title": "Цвета и фон",
+      "theory": "Цвет текста — <code>color</code>, фон — <code>background-color</code>. Цвет задают именем (<code>red</code>), HEX-кодом (<code>#ff0000</code>) или <code>rgb(255,0,0)</code>. HEX — самый частый в реальной работе.",
+      "association": "🎨 HEX-код — это рецепт краски: #RRGGBB — сколько красного, зелёного и синего смешать.",
+      "real_example": "Фирменный цвет бренда обычно задают именно HEX-кодом, например #1DA1F2 (голубой Twitter).",
+      "example": "body {\n  background-color: #f0f0f0;\n  color: #333333;\n}\n.alert {\n  color: rgb(200, 0, 0);\n}",
+      "code_explained": "• <code>color</code> — цвет текста.\n• <code>background-color</code> — цвет фона элемента.\n• <code>#f0f0f0</code> — светло-серый (HEX).\n• <code>rgb(200,0,0)</code> — тёмно-красный.",
+      "common_mistakes": [
+        "Путать color (текст) и background-color (фон).",
+        "Низкий контраст текста и фона → нечитаемо.",
+        "Ошибка в длине HEX (#fff и #ffffff — ок, #ff — нет)."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "css",
+      "title": "Текст и шрифты",
+      "theory": "Размер — <code>font-size</code>, насыщенность — <code>font-weight</code>, выравнивание — <code>text-align</code>, семейство — <code>font-family</code>. Шрифты подключают, например, с Google Fonts.",
+      "association": "✍️ Это панель форматирования из Word, только текстом: размер, жирность, выравнивание — всё то же самое.",
+      "real_example": "Заголовки делают крупнее и жирнее, основной текст — спокойным и читаемым; так выглядит любой аккуратный сайт.",
+      "example": "h1 {\n  font-size: 32px;\n  font-weight: bold;\n  text-align: center;\n}\np {\n  font-family: Arial, sans-serif;\n}",
+      "code_explained": "• <code>font-size: 32px</code> — размер шрифта.\n• <code>font-weight: bold</code> — жирный.\n• <code>text-align: center</code> — по центру.\n• <code>font-family</code> со «запасными» шрифтами через запятую.",
+      "common_mistakes": [
+        "Указывать один шрифт без запасного (fallback).",
+        "Слишком мелкий font-size для основного текста.",
+        "Путать font-weight (жирность) и font-size (размер)."
+      ],
+      "xp": 20
+    },
+    {
+      "topic": "css",
+      "title": "Единицы измерения",
+      "theory": "<b>px</b> — фиксированные пиксели. <b>%</b> — доля от родителя. <b>em/rem</b> — относительно размера шрифта. <b>vw/vh</b> — доля от ширины/высоты экрана. Относительные единицы делают сайт гибким.",
+      "association": "📏 px — линейка с жёсткими делениями; % и rem — резиновая лента, которая тянется под экран.",
+      "real_example": "Ширина контейнера в % подстраивается под экран; rem для шрифтов позволяет менять размер всего сайта одной настройкой.",
+      "example": ".box {\n  width: 80%;\n  padding: 1rem;\n  font-size: 16px;\n}\n.hero {\n  height: 100vh;\n}",
+      "code_explained": "• <code>width: 80%</code> — 80% ширины родителя.\n• <code>1rem</code> — относительно базового шрифта (обычно 16px).\n• <code>100vh</code> — на всю высоту экрана.\n• px хорош для границ, % и rem — для адаптивности.",
+      "common_mistakes": [
+        "Всё задавать в px → сайт не тянется под экраны.",
+        "Путать em (от родителя) и rem (от корня).",
+        "Ставить % там, где не задана база у родителя."
+      ],
+      "xp": 20
+    }
+  ]
+}
