@@ -1,25 +1,29 @@
 """Handler routers, assembled into one root router for the dispatcher.
 
-Theory-first hub (free) + premium program layer (paid): theory, discovery,
-Career Path, projects, certificates, referrals and Stars checkout. The remaining
-interactive modules (code, sandbox, practice, daily, coach, achievements,
-leaderboard) stay on disk but are intentionally NOT registered.
+Theory-first hub + interactive practice (write & run real Python) + gamification
+(achievements, weekly leaderboard) + the premium program layer (Career Path,
+projects, certificates, referrals, Stars checkout). The remaining dormant
+modules (practice, daily, coach) stay on disk but are not registered.
 """
 from __future__ import annotations
 
 from aiogram import Router
 
 from . import (
+    achievements,
     admin,
+    code,
     common,
     courses,
     discover,
+    leaderboard,
     lessons,
     modes,
     payments,
     premium,
     profile,
     projects,
+    sandbox,
     snippets,
     start,
 )
@@ -34,6 +38,10 @@ def get_main_router() -> Router:
     router.include_router(lessons.router)
     router.include_router(snippets.router)  # Minecraft code library
     router.include_router(discover.router)
+    router.include_router(code.router)      # Code Practice (AST-checked, safe)
+    router.include_router(sandbox.router)   # Code Runner (real sandboxed execution)
+    router.include_router(achievements.router)
+    router.include_router(leaderboard.router)
     router.include_router(premium.router)   # career / invite / certificate
     router.include_router(projects.router)  # paid portfolio projects (gated inside)
     router.include_router(payments.router)  # Stars offer + checkout

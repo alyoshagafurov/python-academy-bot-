@@ -40,16 +40,19 @@ def main_menu(suggestion: "ReviewSuggestion | None" = None, started: bool = True
     first = "▶️ Продолжить чтение" if started else "🚀 Начать с основ"
     kb.button(text=first, callback_data=MenuCB(action="continue"))
     kb.button(text="📚 Курсы", callback_data=MenuCB(action="lessons"))
+    kb.button(text="💻 Тренажёр кода", callback_data=MenuCB(action="code"))
     kb.button(text="🔍 Поиск", callback_data=MenuCB(action="search"))
+    kb.button(text="🧠 Рекомендации", callback_data=MenuCB(action="recommend"))
     kb.button(text="🎯 Career Path", callback_data=MenuCB(action="career"))
     kb.button(text="🚀 Проекты", callback_data=MenuCB(action="projects"))
-    kb.button(text="🧠 Рекомендации", callback_data=MenuCB(action="recommend"))
+    kb.button(text="🏆 Рейтинг", callback_data=MenuCB(action="leaders"))
+    kb.button(text="🏅 Достижения", callback_data=MenuCB(action="achievements"))
     kb.button(text="⭐ Избранное", callback_data=MenuCB(action="favorites"))
     kb.button(text="💎 PRO", callback_data=MenuCB(action="pro"))
     kb.button(text="🎁 Пригласить друга", callback_data=MenuCB(action="invite"))
     kb.button(text="👤 Профиль", callback_data=MenuCB(action="profile"))
     kb.button(text="ℹ️ О боте", callback_data=MenuCB(action="about"))
-    kb.adjust(1, 2, 2, 2, 2, 2)
+    kb.adjust(1, 2, 2, 2, 2, 2, 2, 1)
     return kb.as_markup()
 
 
